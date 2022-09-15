@@ -2,35 +2,6 @@
 
 namespace CrosswordHelper.Api
 {
-    public class CrosswordHelperManagementService : ICrosswordHelperManagerService
-    {
-        private readonly ICrosswordHelperManagerRepository _helperManagerRepository;
-
-        public CrosswordHelperManagementService(ICrosswordHelperManagerRepository helperManagerRepository)
-        {
-            _helperManagerRepository = helperManagerRepository;
-        }
-
-        public void AddAnagramIndictor(string word)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddContainerIndicator(string word)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddReversalIndicator(string word)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddSeparator(string word)
-        {
-            throw new NotImplementedException();
-        }
-    }
 
     public class CrosswordHelperService : ICrosswordHelperService
     {
@@ -43,6 +14,7 @@ namespace CrosswordHelper.Api
 
         public CrosswordHelperResult Help(string crosswordClue)
         {
+            var details = _helperRepository.CheckWord(crosswordClue);
             return new CrosswordHelperResult(crosswordClue);
         }
     }
@@ -55,14 +27,5 @@ namespace CrosswordHelper.Api
         }
 
         public string OriginalClue { get; }
-    }
-
-    public class WordDetails
-    {
-        public string OriginalWord { get; set; }
-        public string[] PotentialReplacements { get; set; }
-        public bool CouldBeAnagramIndicator { get; set; }
-        public bool CouldBeContainerIndicator { get; set; }
-        public bool CouldBeSeparator { get; set; }
     }
 }

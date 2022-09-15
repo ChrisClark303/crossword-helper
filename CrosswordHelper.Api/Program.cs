@@ -33,5 +33,12 @@ app.MapPost("/help/anagram-indicators/{word}", (string word, [FromServices] ICro
 {
     helperService.AddAnagramIndictor(word);
 });
-
+app.MapPost("/help/container-indicators/{word}", (string word, [FromServices] ICrosswordHelperManagerService helperService) =>
+{
+    helperService.AddContainerIndicator(word);
+});
+app.MapPost("/help/reversal-indicators/{word}", (string word, [FromServices] ICrosswordHelperManagerService helperService) =>
+{
+    helperService.AddReversalIndicator(word);
+});
 app.Run();

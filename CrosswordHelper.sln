@@ -5,9 +5,14 @@ VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrosswordHelper.Api", "CrosswordHelper.Api\CrosswordHelper.Api.csproj", "{A27A3B6F-3D04-43C5-828E-C24548ADE879}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrosswordHelper.Data", "CrosswordHelper.Data\CrosswordHelper.Data.csproj", "{20420B2D-2EF0-4FAB-A714-0E11F7F07C9B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrosswordHelper.Data", "CrosswordHelper.Data\CrosswordHelper.Data.csproj", "{20420B2D-2EF0-4FAB-A714-0E11F7F07C9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrosswordHelper.Data.Postgres", "CrosswordHelper.Data.Postgres\CrosswordHelper.Data.Postgres.csproj", "{22DA02CA-092F-401B-8782-40AA02553AF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrosswordHelper.Data.Postgres", "CrosswordHelper.Data.Postgres\CrosswordHelper.Data.Postgres.csproj", "{22DA02CA-092F-401B-8782-40AA02553AF9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C981FF10-8423-468E-B52E-3DEE01AC2D6B}"
+	ProjectSection(SolutionItems) = preProject
+		crossword_helper_db.bak = crossword_helper_db.bak
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

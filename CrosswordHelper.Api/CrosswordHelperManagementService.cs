@@ -26,6 +26,11 @@ namespace CrosswordHelper.Api
             _helperManagerRepository.AddReversalIndicator(word);
         }
 
+        public void AddRemovalIndicator(string word)
+        {
+            _helperManagerRepository.AddRemovalIndicator(word);
+        }
+
         public void AddSeparator(string word)
         {
             throw new NotImplementedException();

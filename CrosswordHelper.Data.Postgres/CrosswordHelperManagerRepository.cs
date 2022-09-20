@@ -35,5 +35,10 @@ namespace CrosswordHelper.Data.Postgres
         {
             throw new NotImplementedException();
         }
+
+        public void AddRemovalIndicator(string word)
+        {
+            CallAddWordStoredProc("AddRemovalIndicators", word);
+        }
     }
 }

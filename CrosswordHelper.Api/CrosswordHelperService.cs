@@ -14,7 +14,7 @@ namespace CrosswordHelper.Api
 
         public CrosswordHelperResult Help(string crosswordClue)
         {
-            var details = _helperRepository.CheckWord(crosswordClue);
+            var details = _helperRepository.CheckWords(crosswordClue.Split(" "));
             return new CrosswordHelperResult(crosswordClue);
         }
     }

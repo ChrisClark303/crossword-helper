@@ -41,4 +41,8 @@ app.MapPost("/help/reversal-indicators/{word}", (string word, [FromServices] ICr
 {
     helperService.AddReversalIndicator(word);
 });
+app.MapPost("/help/removal-indicators/{word}", (string word, [FromServices] ICrosswordHelperManagerService helperService) =>
+{
+    helperService.AddRemovalIndicator(word);
+});
 app.Run();

@@ -2,6 +2,6 @@
 {
     public interface ICrosswordHelperRepository
     {
-        WordDetails CheckWord(string word);
+        IEnumerable<WordDetails> CheckWords(string[] words);
     }
 }

@@ -11,5 +11,6 @@
         void AddContainerIndicator(string word);
         void AddSeparator(string word);
         void AddReversalIndicator(string word);
+        void AddRemovalIndicator(string word);
     }
 }

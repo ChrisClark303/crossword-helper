@@ -14,18 +14,20 @@ namespace CrosswordHelper.Api
 
         public CrosswordHelperResult Help(string crosswordClue)
         {
-            var details = _helperRepository.CheckWords(crosswordClue.Split(" "));
-            return new CrosswordHelperResult(crosswordClue);
+            IEnumerable<WordDetails> details = _helperRepository.CheckWords(crosswordClue.Split(" "));
+            return new CrosswordHelperResult(crosswordClue, details);
         }
     }
 
     public class CrosswordHelperResult
     {
-        public CrosswordHelperResult(string originalClue)
+        public WordDetails[] WordDetails { get; }
+        public string OriginalClue { get; }
+
+        public CrosswordHelperResult(string originalClue, IEnumerable<WordDetails> wordDetails)
         {
             OriginalClue = originalClue;
+            WordDetails = wordDetails.ToArray();
         }
-
-        public string OriginalClue { get; }
     }
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ANAGRAMS } from '../mock-anagrams';
 
 @Component({
   selector: 'app-anagrams',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./anagrams.component.css']
 })
 export class AnagramsComponent implements OnInit {
+
+  anagrams = ANAGRAMS;
 
   constructor() { }
 

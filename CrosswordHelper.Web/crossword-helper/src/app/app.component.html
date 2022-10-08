@@ -32,11 +32,17 @@
 
 <div class="content" role="main">
 
+  <nav>
+    <a routerLink="/get-help">Get Help</a>
+    <a routerLink="/anagrams">Anagram Indicators</a>
+  </nav>
+
   <h1>{{title}}</h1>
   
-<app-get-help></app-get-help>
-<app-anagrams></app-anagrams>
-  
+  <router-outlet></router-outlet>
+<!-- <app-get-help></app-get-help>
+<app-anagrams></app-anagrams> -->
+
   <!-- Highlight Card -->
   <div class="card highlight-card card-small">
 

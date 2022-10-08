@@ -10,10 +10,47 @@ namespace CrosswordHelper.Data.Postgres
 
         public IEnumerable<WordDetails> CheckWords(string[] words)
         {
-            //TestArray();
-
             var wordDetails = MatchWords("checkcrosswordclue", words);
             return wordDetails;
+        }
+
+        public IEnumerable<string> GetAnagramIndicators()
+        {
+            return GetIndicatorWords("Anagram");
+        }
+
+        public IEnumerable<string> GetContainerIndicators()
+        {
+            return GetIndicatorWords("Container");
+        }
+
+        public IEnumerable<string> GetRemovalIndicators()
+        {
+            return GetIndicatorWords("Removal");
+        }
+
+        public IEnumerable<string> GetReversalIndicators()
+        {
+            return GetIndicatorWords("Reversal");
+        }
+
+        private IEnumerable<string> GetIndicatorWords(string indicatorType)
+        {
+            using (var conn = Connect())
+            {
+                var cmdText = $"get{indicatorType}Indicators";
+                NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                NpgsqlDataReader reader = cmd.ExecuteReader();
+                var listOfWords = new List<string>();
+                while (reader.Read())
+                {
+                    var word = reader.GetString("word");
+                    listOfWords.Add(word);
+                }
+
+                return listOfWords;
+            }
         }
 
         private IEnumerable<WordDetails> MatchWords(string procName, string[] words)

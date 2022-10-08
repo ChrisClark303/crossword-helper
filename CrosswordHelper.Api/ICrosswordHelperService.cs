@@ -2,6 +2,11 @@
 {
     public interface ICrosswordHelperService
     {
+        string[] GetAnagramIndicators();
+        string[] GetContainerIndicators();
+        string[] GetRemovalIndicators();
+        string[] GetReversalIndicators();
+
         CrosswordHelperResult Help(string crosswordClue);
     }
 

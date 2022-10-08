@@ -1,2 +1,2 @@
-<input type="text" id="add-word" />
-<button>Add</button>
+<input type="text" id="add-word" [(ngModel)]="wordToAdd" />
+<button (click)="addAnagram()">Add</button>

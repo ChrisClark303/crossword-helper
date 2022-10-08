@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ANAGRAMS } from '../mock-anagrams';
+import { WordsService } from '../words.service';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-anagrams',
@@ -8,11 +9,22 @@ import { ANAGRAMS } from '../mock-anagrams';
 })
 export class AnagramsComponent implements OnInit {
 
-  anagrams = ANAGRAMS;
+  anagrams$: Observable<string[]>;
 
-  constructor() { }
-
-  ngOnInit(): void {
+  getAnagrams(): void {
+    this.anagrams$ =  this.wordService.getAnagrams();
   }
 
+  onWordAdded(event:Object) : void {
+    console.log("responded to wordAdded event")
+    this.getAnagrams();
+  }
+  
+  constructor(private wordService: WordsService) {
+    this.anagrams$ = new Observable<string[]>;
+   }
+
+  ngOnInit(): void {
+    this.getAnagrams();
+  }
 }

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgModule, EventEmitter, Output } from '@angular/core';
+import { AddWordsService } from '../add-words.service';
 
 @Component({
   selector: 'app-word-add',
@@ -7,9 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WordAddComponent implements OnInit {
 
-  constructor() { }
+  constructor(private addWordsService: AddWordsService) { }
+ 
+  @Output() wordAdded = new EventEmitter<boolean>();
+  wordToAdd: string;
 
   ngOnInit(): void {
+  }
+
+  addAnagram() {
+    this.addWordsService.addAnagramIndicator(this.wordToAdd);
+    this.wordAdded.emit(true);
+    this.wordToAdd = "";
   }
 
 }

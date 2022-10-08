@@ -1,2 +1,5 @@
-<h1>Add an anagram indicator</h1>
-<app-word-list title="Anagrams" [wordlist]=anagrams></app-word-list>
+<h2>Add an anagram indicator</h2>
+<app-word-list title="Anagrams" [wordlist$]=anagrams$></app-word-list>
+<app-word-add (wordAdded)="onWordAdded($event)"></app-word-add>
+
+

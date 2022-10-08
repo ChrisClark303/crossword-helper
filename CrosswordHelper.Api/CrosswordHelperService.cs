@@ -17,6 +17,26 @@ namespace CrosswordHelper.Api
             IEnumerable<WordDetails> details = _helperRepository.CheckWords(crosswordClue.Split(" "));
             return new CrosswordHelperResult(crosswordClue, details);
         }
+
+        public string[] GetAnagramIndicators()
+        {
+            return _helperRepository.GetAnagramIndicators().ToArray();
+        }
+
+        public string[] GetContainerIndicators()
+        {
+            return _helperRepository.GetContainerIndicators().ToArray();
+        }
+
+        public string[] GetRemovalIndicators()
+        {
+            return _helperRepository.GetRemovalIndicators().ToArray();
+        }
+
+        public string[] GetReversalIndicators()
+        {
+            return _helperRepository.GetReversalIndicators().ToArray();
+        }
     }
 
     public class CrosswordHelperResult

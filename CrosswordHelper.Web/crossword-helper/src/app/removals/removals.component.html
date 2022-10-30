@@ -1,0 +1,3 @@
+<h2>Add a removal indicator</h2>
+<app-word-list title="Removals" [wordlist$]=removals$></app-word-list>
+<app-word-add [addWordType]="wordType.Removal" (wordAdded)="onWordAdded($event)"></app-word-add>

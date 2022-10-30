@@ -1,35 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { WordsService } from '../words.service';
 import { delay, Observable, of } from 'rxjs';
-import { AddWordsService } from '../add-words.service';
 import { WordType } from '../word-type';
 
 @Component({
-  selector: 'app-anagrams',
-  templateUrl: './anagrams.component.html',
-  styleUrls: ['./anagrams.component.css']
+  selector: 'app-reversals',
+  templateUrl: './reversals.component.html',
+  styleUrls: ['./reversals.component.css']
 })
-export class AnagramsComponent implements OnInit {
+export class ReversalsComponent implements OnInit {
 
   public wordType: typeof WordType = WordType;
 
-  anagrams$: Observable<string[]>;
+  reversals$: Observable<string[]>;
 
-  getAnagrams(): void {
-    this.anagrams$ =  this.wordService.getAnagrams();
+  getReversals(): void {
+    this.reversals$ =  this.wordService.getRemovals();
   }
 
   onWordAdded(event:Object) : void {
     console.log("responded to wordAdded event")
     delay(500);
-    this.getAnagrams();
+    this.getReversals();
   }
   
   constructor(private wordService: WordsService) {
-    this.anagrams$ = new Observable<string[]>;
+    this.reversals$ = new Observable<string[]>;
    }
 
   ngOnInit(): void {
-    this.getAnagrams();
+    this.getReversals();
   }
+
 }

@@ -11,7 +11,7 @@ export class WordsService {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
   
-  private serviceUrl: string = 'http://localhost:49160';
+  private serviceUrl: string = 'http://localhost:5144';
 
   constructor(private httpClient: HttpClient) { }
 
@@ -22,5 +22,17 @@ export class WordsService {
   getAnagrams(): Observable<string[]>
   {
     return this.get<string>(`${this.serviceUrl}/help/anagram-indicators`);
+  }
+
+  getContainers(): Observable<string[]> {
+    return this.get<string>(`${this.serviceUrl}/help/container-indicators`);
+  }
+
+  getReversals(): Observable<string[]> {
+    return this.get<string>(`${this.serviceUrl}/help/reversals-indicators`);
+  }
+
+  getRemovals(): Observable<string[]> {
+    return this.get<string>(`${this.serviceUrl}/help/removals-indicators`);
   }
 }

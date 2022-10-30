@@ -1,0 +1,3 @@
+<h2>Add a reversal indicator</h2>
+<app-word-list title="Reversals" [wordlist$]=reversals$></app-word-list>
+<app-word-add [addWordType]="wordType.Reversal" (wordAdded)="onWordAdded($event)"></app-word-add>

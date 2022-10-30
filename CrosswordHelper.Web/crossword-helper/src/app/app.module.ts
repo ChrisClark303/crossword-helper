@@ -9,6 +9,9 @@ import { WordListComponent } from './word-list/word-list.component';
 import { WordAddComponent } from './word-add/word-add.component';
 import { GetHelpComponent } from './get-help/get-help.component';
 import { AppRoutingModule } from './app-routing.module';
+import { ContainersComponent } from './containers/containers.component';
+import { RemovalsComponent } from './removals/removals.component';
+import { ReversalsComponent } from './reversals/reversals.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +19,10 @@ import { AppRoutingModule } from './app-routing.module';
     AnagramsComponent,
     WordListComponent,
     WordAddComponent,
-    GetHelpComponent
+    GetHelpComponent,
+    ContainersComponent,
+    RemovalsComponent,
+    ReversalsComponent
   ],
   imports: [
     BrowserModule,

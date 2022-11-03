@@ -1,4 +1,4 @@
 <p>Enter a crossword clue to get help for</p>
 
-<input type="text" />
-<button>Go</button>
+<input type="text" id="get-help" [(ngModel)]="crosswordClue" />
+<button (click)="getHelp()">Help!</button>

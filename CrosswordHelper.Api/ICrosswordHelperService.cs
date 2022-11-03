@@ -1,4 +1,6 @@
-﻿namespace CrosswordHelper.Api
+﻿using CrosswordHelper.Data;
+
+namespace CrosswordHelper.Api
 {
     public interface ICrosswordHelperService
     {
@@ -6,7 +8,7 @@
         string[] GetContainerIndicators();
         string[] GetRemovalIndicators();
         string[] GetReversalIndicators();
-
+        UsualSuspect[] GetUsualSuspects();
         CrosswordHelperResult Help(string crosswordClue);
     }
 

@@ -40,5 +40,17 @@ namespace CrosswordHelper.Data.Postgres
         {
             CallAddWordStoredProc("AddRemovalIndicators", word);
         }
+
+        public void AddAUsualSuspect(string original, string replacement)
+        {
+            using (var conn = Connect())
+            {
+                var cmdText = $"CALL public.AddUsualSuspect(:word,:replacements)";
+                NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
+                cmd.Parameters.AddWithValue("word", original);
+                cmd.Parameters.AddWithValue("replacements", replacement);
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
 }

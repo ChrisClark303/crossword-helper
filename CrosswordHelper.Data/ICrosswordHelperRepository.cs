@@ -7,5 +7,6 @@
         IEnumerable<string> GetRemovalIndicators();
         IEnumerable<string> GetReversalIndicators();
         IEnumerable<string> GetContainerIndicators();
+        IEnumerable<UsualSuspect> GetUsualSuspects();
     }
 }

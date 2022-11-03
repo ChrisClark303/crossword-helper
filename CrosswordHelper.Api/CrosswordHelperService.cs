@@ -37,6 +37,11 @@ namespace CrosswordHelper.Api
         {
             return _helperRepository.GetReversalIndicators().ToArray();
         }
+
+        public UsualSuspect[] GetUsualSuspects()
+        {
+            return _helperRepository.GetUsualSuspects().ToArray();
+        }
     }
 
     public class CrosswordHelperResult

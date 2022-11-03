@@ -15,7 +15,7 @@ export class ReversalsComponent implements OnInit {
   reversals$: Observable<string[]>;
 
   getReversals(): void {
-    this.reversals$ =  this.wordService.getRemovals();
+    this.reversals$ =  this.wordService.getReversals();
   }
 
   onWordAdded(event:Object) : void {

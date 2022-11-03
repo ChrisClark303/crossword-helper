@@ -34,6 +34,7 @@ namespace CrosswordHelper.Data.Postgres
             return GetIndicatorWords("Reversal");
         }
 
+
         private IEnumerable<string> GetIndicatorWords(string indicatorType)
         {
             using (var conn = Connect())
@@ -52,6 +53,7 @@ namespace CrosswordHelper.Data.Postgres
                 return listOfWords;
             }
         }
+
 
         private IEnumerable<WordDetails> MatchWords(string procName, string[] words)
         {
@@ -74,6 +76,27 @@ namespace CrosswordHelper.Data.Postgres
                     };
 
                     yield return wordDetails;
+                };
+            }
+        }
+
+        public IEnumerable<UsualSuspect> GetUsualSuspects()
+        {
+            using (var conn = Connect())
+            {
+                var cmdText = "getUsualSuspects";
+                NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                NpgsqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    var usualSuspect = new UsualSuspect()
+                    {
+                        Word = reader.GetString("word"),
+                        Replacements = reader["replacements"] as string[]
+                    };
+
+                    yield return usualSuspect;
                 };
             }
         }

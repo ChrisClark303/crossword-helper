@@ -9,4 +9,10 @@
         public bool CouldBeReversalIndicator { get; set; }
         public bool CouldBeSeparator { get; set; }
     }
+
+    public class UsualSuspect
+    {
+        public string Word { get; set; }
+        public string[] Replacements { get; set; }
+    }
 }

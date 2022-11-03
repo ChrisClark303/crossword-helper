@@ -56,6 +56,11 @@ app.MapGet("/help/container-indicators", ([FromServices] ICrosswordHelperService
     return helperService.GetContainerIndicators();
 })
 .WithName("GetContainerIndicators");
+app.MapGet("/help/usual-suspects", ([FromServices] ICrosswordHelperService helperService) =>
+{
+    return helperService.GetUsualSuspects();
+})
+.WithName("GetUsualSuspects");
 app.MapPost("/help/anagram-indicators/{word}", (string word, [FromServices] ICrosswordHelperManagerService helperService) =>
 {
     helperService.AddAnagramIndictor(word);

@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  web:
+    build: .
+    ports:
+      - "80:80"
+  db:
+    image: db
+    container_name: db
+    build:
+      context: ./Postgres Container Setup
+      target: db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=database
+    ports:
+      - 5432:5432

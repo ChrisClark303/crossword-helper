@@ -9,7 +9,8 @@ services:
     image: db
     container_name: db
     build:
-      context: ./Postgres Container Setup
+      context: ./Database
+      dockerfile: ./Deploy/Dockerfile
       target: db
     environment:
       - POSTGRES_USER=user

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { WordsService } from '../words.service';
 import { delay, Observable, of } from 'rxjs';
-import { AddWordsService } from '../add-words.service';
 import { WordType } from '../word-type';
+import { IndicatorWord } from '../indicator-word';
 
 @Component({
   selector: 'app-anagrams',
@@ -13,7 +13,7 @@ export class AnagramsComponent implements OnInit {
 
   public wordType: typeof WordType = WordType;
 
-  anagrams$: Observable<string[]>;
+  anagrams$: Observable<IndicatorWord[]>;
 
   getAnagrams(): void {
     this.anagrams$ =  this.wordService.getAnagrams();
@@ -26,7 +26,7 @@ export class AnagramsComponent implements OnInit {
   }
   
   constructor(private wordService: WordsService) {
-    this.anagrams$ = new Observable<string[]>;
+    this.anagrams$ = new Observable<IndicatorWord[]>;
    }
 
   ngOnInit(): void {

@@ -1,4 +1,4 @@
-﻿namespace CrosswordHelper.Data
+﻿namespace CrosswordHelper.Data.Models
 {
     public class WordDetails
     {
@@ -10,9 +10,7 @@
         public bool CouldBeSeparator { get; set; }
     }
 
-    public class UsualSuspect
-    {
-        public string Word { get; set; }
-        public string[] Replacements { get; set; }
-    }
+    public record UsualSuspect(string Word, string[] Replacements);
+
+    public record IndicatorWord(string Word, string? Notes);
 }

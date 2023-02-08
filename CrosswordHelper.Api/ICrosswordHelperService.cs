@@ -1,13 +1,13 @@
-﻿using CrosswordHelper.Data;
+﻿using CrosswordHelper.Data.Models;
 
 namespace CrosswordHelper.Api
 {
     public interface ICrosswordHelperService
     {
-        string[] GetAnagramIndicators();
-        string[] GetContainerIndicators();
-        string[] GetRemovalIndicators();
-        string[] GetReversalIndicators();
+        IndicatorWord[] GetAnagramIndicators();
+        IndicatorWord[] GetContainerIndicators();
+        IndicatorWord[] GetRemovalIndicators();
+        IndicatorWord[] GetReversalIndicators();
         UsualSuspect[] GetUsualSuspects();
         CrosswordHelperResult Help(string crosswordClue);
     }

@@ -7,7 +7,7 @@ import { Observable, of } from 'rxjs';
   })
 export class ServiceBase {
 
-    private serviceUrl: string = 'http://localhost:5144';
+    private serviceUrl: string = 'http://localhost:8080';
     private httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
       };

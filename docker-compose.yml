@@ -2,6 +2,11 @@ version: "3.8"
 
 services:
   web:
+    build:
+        context: ./CrosswordHelper.Web/crossword-helper
+    ports:
+      - 4202:80
+  api:
     build: .
     ports:
       - "8080:80"

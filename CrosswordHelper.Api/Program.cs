@@ -61,20 +61,27 @@ app.MapGet("/help/usual-suspects", ([FromServices] ICrosswordHelperService helpe
     return helperService.GetUsualSuspects();
 })
 .WithName("GetUsualSuspects");
-app.MapPost("/help/anagram-indicators/{word}", (string word, [FromServices] ICrosswordHelperManagerService helperService) =>
+app.MapPost("/help/anagram-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
 {
-    helperService.AddAnagramIndictor(word);
+    helperService.AddAnagramIndictor(word, notes);
 });
-app.MapPost("/help/container-indicators/{word}", (string word, [FromServices] ICrosswordHelperManagerService helperService) =>
+app.MapPost("/help/container-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
 {
-    helperService.AddContainerIndicator(word);
+    helperService.AddContainerIndicator(word, notes);
 });
-app.MapPost("/help/reversal-indicators/{word}", (string word, [FromServices] ICrosswordHelperManagerService helperService) =>
+app.MapPost("/help/reversal-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
 {
-    helperService.AddReversalIndicator(word);
+    helperService.AddReversalIndicator(word, notes);
 });
-app.MapPost("/help/removal-indicators/{word}", (string word, [FromServices] ICrosswordHelperManagerService helperService) =>
+app.MapPost("/help/removal-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
 {
-    helperService.AddRemovalIndicator(word);
+    helperService.AddRemovalIndicator(word, notes);
+});
+app.MapPost("/import/usual-suspects", async (IFormFile file) =>
+{
+    var stream = file.OpenReadStream();
+    StreamReader sReader = new StreamReader(stream);
+    List<string> lines = new List<string>(sReader.ReadAllLines());
+
 });
 app.Run();

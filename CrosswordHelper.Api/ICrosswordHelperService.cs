@@ -14,10 +14,11 @@ namespace CrosswordHelper.Api
 
     public interface ICrosswordHelperManagerService
     {
-        void AddAnagramIndictor(string word);
-        void AddContainerIndicator(string word);
-        void AddSeparator(string word);
-        void AddReversalIndicator(string word);
-        void AddRemovalIndicator(string word);
+        void AddAnagramIndictor(string word, string notes);
+        void AddContainerIndicator(string word, string notes);
+        void AddSeparator(string word, string notes);
+        void AddReversalIndicator(string word, string notes);
+        void AddRemovalIndicator(string word, string notes);
+        void AddUsualSuspect(string word, string replacement);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CrosswordHelper.Data.Models;
 using Npgsql;
 using System.Data;
+using System.Runtime.CompilerServices;
 using System.Xml;
 
 namespace CrosswordHelper.Data.Postgres
@@ -35,21 +36,6 @@ namespace CrosswordHelper.Data.Postgres
 
         private IEnumerable<IndicatorWord> GetIndicatorWords(string indicatorType)
         {
-            //using (var conn = Connect())
-            //{
-            //    var cmdText = $"get{indicatorType}Indicators";
-            //    NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
-            //    cmd.CommandType = CommandType.StoredProcedure;
-            //    NpgsqlDataReader reader = cmd.ExecuteReader();
-            //    var listOfWords = new List<string>();
-            //    while (reader.Read())
-            //    {
-            //        var word = reader.GetString("word");
-            //        listOfWords.Add(word);
-            //    }
-
-            //    return listOfWords;
-            //}
             return Query<IndicatorWord>($"get{indicatorType}Indicators", (reader) =>
             {
                 var word = reader.GetString("word");
@@ -58,7 +44,32 @@ namespace CrosswordHelper.Data.Postgres
             });
         }
 
-        private IEnumerable<T> Query<T>(string cmdText, Func<NpgsqlDataReader, T> resultAction, NpgsqlParameter[]? parameters = null)
+        private IEnumerable<WordDetails> MatchWords(string procName, string[] words)
+        {
+            return Query<WordDetails>(procName, (reader) =>
+            {
+                var wordDetails = new WordDetails()
+                {
+                    OriginalWord = reader.GetString("word"),
+                    CouldBeAnagramIndicator = reader.GetBoolean("isanagram"),
+                    CouldBeContainerIndicator = reader.GetBoolean("iscontainer"),
+                    CouldBeReversalIndicator = reader.GetBoolean("isreversal"),
+                    PotentialReplacements = reader["replacements"] as string[]
+                };
+                return wordDetails;
+            }, new NpgsqlParameter("words", words));
+        }
+
+        public IEnumerable<UsualSuspect> GetUsualSuspects()
+        {
+            return Query<UsualSuspect>("getUsualSuspects", (reader) =>
+            {
+                var usualSuspect = new UsualSuspect(reader.GetString("word"), (reader["replacements"] as string[])!);
+                return usualSuspect;
+            });
+        }
+
+        private IEnumerable<T> Query<T>(string cmdText, Func<NpgsqlDataReader, T> resultAction, params NpgsqlParameter[]? parameters)
         {
             using (var conn = Connect())
             {
@@ -75,47 +86,6 @@ namespace CrosswordHelper.Data.Postgres
                 {
                     yield return resultAction(reader);
                 }
-            }
-        }
-
-        private IEnumerable<WordDetails> MatchWords(string procName, string[] words)
-        {
-            using (var conn = Connect())
-            {
-                var cmdText = procName;
-                NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("words", words);
-                NpgsqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var wordDetails = new WordDetails()
-                    {
-                        OriginalWord = reader.GetString("word"),
-                        CouldBeAnagramIndicator = reader.GetBoolean("isanagram"),
-                        CouldBeContainerIndicator = reader.GetBoolean("iscontainer"),
-                        CouldBeReversalIndicator = reader.GetBoolean("isreversal"),
-                        PotentialReplacements = reader["replacements"] as string[]
-                    };
-
-                    yield return wordDetails;
-                };
-            }
-        }
-
-        public IEnumerable<UsualSuspect> GetUsualSuspects()
-        {
-            using (var conn = Connect())
-            {
-                var cmdText = "getUsualSuspects";
-                NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                NpgsqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var usualSuspect = new UsualSuspect(reader.GetString("word"), (reader["replacements"] as string[])!);
-                    yield return usualSuspect;
-                };
             }
         }
     }

@@ -46,10 +46,11 @@ namespace CrosswordHelper.Data.Postgres
         {
             using (var conn = Connect())
             {
-                var cmdText = $"CALL public.AddUsualSuspect(:word,:replacements)";
+                var cmdText = $"CALL public.\"AddUsualSuspect\"(:word,:replacements, :notes)";
                 NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
                 cmd.Parameters.AddWithValue("word", original);
                 cmd.Parameters.AddWithValue("replacements", replacements);
+                cmd.Parameters.AddWithValue("notes", "");
                 cmd.ExecuteNonQuery();
             }
         }

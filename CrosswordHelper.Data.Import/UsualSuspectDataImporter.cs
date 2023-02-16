@@ -2,7 +2,7 @@
 
 namespace CrosswordHelper.Data.Import
 {
-    public class UsualSuspectDataImporter
+    public class UsualSuspectDataImporter : IUsualSuspectDataImporter
     {
         private readonly ICrosswordHelperManagerRepository _repository;
 
@@ -13,25 +13,32 @@ namespace CrosswordHelper.Data.Import
 
         public void Import(string[] data)
         {
-            //break each row into word/replacement (tuple?)
-            foreach (var item in data) //TODO : Change to select later
-            {
-                var usualSuspectData = SplitOutWordAndReplacementText(item);
-                IEnumerable<string> singleWords = GenerateListOfIndividualWords(usualSuspectData.word);
-                string[] allReplacements = GenerateListOfValidReplacements(usualSuspectData.replacementText);
-
-                foreach (var usualSuspect in singleWords)
+            var usualSuspects = data.Select(SplitOutWordAndReplacementText)
+                .SelectMany(wr =>
                 {
-                    _repository.AddAUsualSuspect(usualSuspect, allReplacements);
-                }
+                    var allReplacements = GenerateListOfValidReplacements(wr.replacementText);
+                    return GenerateListOfIndividualWords(wr.word)
+                        .Select(w => (word: w, allReplacements));
+                });
 
+            foreach (var usualSuspect in usualSuspects)
+            {
+                _repository.AddAUsualSuspect(usualSuspect.word, usualSuspect.allReplacements);
             }
+        }
+
+        private static (string word, string replacementText) SplitOutWordAndReplacementText(string item)
+        {
+            var posOfFirstComma = item.IndexOf(",");
+            var word = item[..posOfFirstComma];
+            var replacementText = item[(posOfFirstComma + 1)..];
+            return (word, replacementText);
         }
 
         private static string[] GenerateListOfValidReplacements(string replacementText)
         {
             return replacementText.Split(';')
-                .Select(t => t.Trim())
+                .Select(t => t.Trim().Trim('\"'))
                 .ToArray();
         }
 
@@ -43,21 +50,15 @@ namespace CrosswordHelper.Data.Import
                 .SelectMany(HandlePlurals);
         }
 
-        private static (string word, string replacementText) SplitOutWordAndReplacementText(string item)
-        {
-            var posOfFirstComma = item.IndexOf(",");
-            var word = item.Substring(0, posOfFirstComma);
-            var replacementText = item.Substring(posOfFirstComma + 1);
-            return (word, replacementText);
-        }
+
 
         private const string PluralMarker = "(s)";
         private static IEnumerable<string> HandlePlurals(string word)
         {
-            if (word.EndsWith("(s)"))
+            if (word.EndsWith(PluralMarker))
             {
-                var nonplural = word.Replace("(s)", "");
-                return new[]{nonplural, $"{nonplural}s"};
+                var nonplural = word.Replace(PluralMarker, string.Empty);
+                return new[] { nonplural, $"{nonplural}s" };
             }
             return new[] { word };
         }

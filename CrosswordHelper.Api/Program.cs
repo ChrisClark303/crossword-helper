@@ -1,5 +1,6 @@
 using CrosswordHelper.Api;
 using CrosswordHelper.Data;
+using CrosswordHelper.Data.Import;
 using CrosswordHelper.Data.Postgres;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,7 @@ builder.Services.AddScoped<ICrosswordHelperService,CrosswordHelperService>();
 builder.Services.AddScoped<ICrosswordHelperRepository, CrosswordHelperRepository>();
 builder.Services.AddScoped<ICrosswordHelperManagerService, CrosswordHelperManagementService>();
 builder.Services.AddScoped<ICrosswordHelperManagerRepository, CrosswordHelperManagerRepository>();
+builder.Services.AddTransient<IUsualSuspectDataImporter, UsualSuspectDataImporter>();
 
 var app = builder.Build();
 
@@ -77,11 +79,11 @@ app.MapPost("/help/removal-indicators/{word}", (string word, string notes, [From
 {
     helperService.AddRemovalIndicator(word, notes);
 });
-app.MapPost("/import/usual-suspects", async (IFormFile file) =>
+app.MapPost("/import/usual-suspects", async (IFormFile file, [FromServices] IUsualSuspectDataImporter dataImporter) =>
 {
     var stream = file.OpenReadStream();
     StreamReader sReader = new StreamReader(stream);
-    List<string> lines = new List<string>(sReader.ReadAllLines());
-
+    var lines = sReader.ReadAllLines().ToArray();
+    dataImporter.Import(lines);
 });
 app.Run();

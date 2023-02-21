@@ -14,10 +14,18 @@ export class ServiceBase {
 
     constructor(private httpClient: HttpClient) { }
 
-    protected get<T>(url:string): Observable<T[]> {
+    protected getSingle<T>(url:string) : Observable<T> {
+        return this.get<T>(url);
+    }
+
+    protected getMany<T>(url:string) : Observable<T[]> {
+        return this.get<T[]>(url);
+    }
+
+    private get<T>(url:string): Observable<T> {
         var absUrl = `${this.serviceUrl}${url}`;
         console.log("Sending request to " + absUrl)
-        return this.httpClient.get<T[]>(absUrl);
+        return this.httpClient.get<T>(absUrl);
       }
 
      protected async add(url:string)  {

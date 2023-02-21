@@ -163,3 +163,15 @@ nav a:hover {
   height: 2.5em;
   text-align: center;
 }
+.crossword-clue-help  {
+  font-size: x-large;
+  margin: 0.5em;
+  border-radius: 0.25em;
+}
+button.crossword-clue-help {
+  background-color:cornflowerblue;
+  border-width: 5px;
+}
+input.crossword-clue-help {
+  width: 800px;
+}

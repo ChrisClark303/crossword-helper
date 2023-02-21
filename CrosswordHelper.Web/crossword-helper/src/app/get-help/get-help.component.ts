@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { CrosswordHelp } from '../crossword-help';
+import { HelpService } from '../help-service';
 
 @Component({
   selector: 'app-get-help',
@@ -8,12 +11,15 @@ import { Component, OnInit } from '@angular/core';
 export class GetHelpComponent implements OnInit {
 
   crosswordClue: string;
+  crosswordClueHelp$: Observable<CrosswordHelp>;
 
-  constructor() { }
+  constructor(private service:HelpService) { }
 
   ngOnInit(): void {
   }
 
-  getHelp() {}
+  getHelp() {
+    this.crosswordClueHelp$ = this.service.getHelp(this.crosswordClue);
+  }
 
 }

@@ -13,18 +13,18 @@ export class WordsService extends ServiceBase {
 
   getAnagrams(): Observable<IndicatorWord[]>
   {
-    return this.get<IndicatorWord>(`/help/anagram-indicators`);
+    return this.getMany<IndicatorWord>(`/help/anagram-indicators`);
   }
 
   getContainers(): Observable<IndicatorWord[]> {
-    return this.get<IndicatorWord>(`/help/container-indicators`);
+    return this.getMany<IndicatorWord>(`/help/container-indicators`);
   }
 
   getReversals(): Observable<IndicatorWord[]> {
-    return this.get<IndicatorWord>(`/help/reversal-indicators`);
+    return this.getMany<IndicatorWord>(`/help/reversal-indicators`);
   }
 
   getRemovals(): Observable<IndicatorWord[]> {
-    return this.get<IndicatorWord>(`/help/removal-indicators`);
+    return this.getMany<IndicatorWord>(`/help/removal-indicators`);
   }
 }

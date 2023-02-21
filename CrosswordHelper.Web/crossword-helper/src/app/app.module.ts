@@ -12,6 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { ContainersComponent } from './containers/containers.component';
 import { RemovalsComponent } from './removals/removals.component';
 import { ReversalsComponent } from './reversals/reversals.component';
+import { CrosswordHelpResultsComponent } from './crossword-help-results/crossword-help-results.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { ReversalsComponent } from './reversals/reversals.component';
     GetHelpComponent,
     ContainersComponent,
     RemovalsComponent,
-    ReversalsComponent
+    ReversalsComponent,
+    CrosswordHelpResultsComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,10 @@
+<div>
+    <ul class="words">
+      <li class="ui-listbox-item" *ngFor="let word of (crosswordHelp$ | async)?.wordDetails">
+        <span class="words-list">
+            <span class="badge">   </span>
+            <span class="name">{{word.originalWord}}</span>
+        </span>
+      </li>
+    </ul>
+  </div>

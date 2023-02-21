@@ -69,6 +69,7 @@ namespace CrosswordHelper.Data.Postgres
             });
         }
 
+        //TODO : Builder for the query - Connect().WithProc(name).WithParams().Reader()/NonReader();
         private IEnumerable<T> Query<T>(string cmdText, Func<NpgsqlDataReader, T> resultAction, params NpgsqlParameter[]? parameters)
         {
             using (var conn = Connect())

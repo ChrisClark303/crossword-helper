@@ -43,14 +43,6 @@ h1 {
     overflow: hidden; 
     overflow-y: scroll;
 }
-.ui-listbox-item {
-  margin: .5em;
-  cursor: pointer;
-  position: relative;
-  left: 0;
-  background-color: #EEE;
-  border-radius: 4px;
-}
   /* everywhere else */
   * {
     font-family: Arial, Helvetica, sans-serif;
@@ -66,15 +58,7 @@ h1 {
   width: 100%;
   height: 100%;
 }
-.words-list {
-  cursor: pointer;
-  background-color: #EEE;
-  padding: 0;
-  border-radius: 4px;
-  display: flex;
-  align-items: stretch;
-  height: 1.8em;
-}
+
 
 .heroes button:hover {
   color: #2c3a41;
@@ -111,10 +95,6 @@ h1 {
   line-height: 1em;
   margin-right: .8em;
   border-radius: 4px 0 0 4px;
-}
-
-.words .name {
-  align-self: center;
 }
 
 nav a {
@@ -174,4 +154,47 @@ button.crossword-clue-help {
 }
 input.crossword-clue-help {
   width: 800px;
+}
+.crossword-help-item-list {
+  margin: .5em;
+  cursor: pointer;
+  position: relative;
+  left: 0;
+  /* background-color: #EEE; */
+  border-radius: 4px;
+}
+.crossword-help-item-row {
+  cursor: pointer;
+  padding: 0;
+  border-radius: 4px;
+  display: flex;
+  align-items: stretch;
+  height: 1.8em;
+}
+
+.crossword-help-item {
+  align-self: center;
+  margin: 0em 0.5em 0em 0.5em;
+  border-radius: 4px;
+  padding: 0.1em 0.3em 0.1em 0.3em;
+}
+
+.original-word {
+  background-color: #aaa;
+}
+
+.anagram {
+  background-color:rgb(151, 78, 219) 
+}
+
+.container {
+  background-color:lightpink 
+}
+
+.original-word {
+  background-color: #aaa;
+}
+
+.replacement {
+  background-color: lemonchiffon;
 }

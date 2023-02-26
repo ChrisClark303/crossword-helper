@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { WordsService } from '../words.service';
 import { delay, Observable, of } from 'rxjs';
 import { WordType } from '../word-type';
+import { IndicatorWord } from '../indicator-word';
 
 @Component({
   selector: 'app-removals',
@@ -12,7 +13,7 @@ export class RemovalsComponent implements OnInit {
 
   public wordType: typeof WordType = WordType;
 
-  removals$: Observable<string[]>;
+  removals$: Observable<IndicatorWord[]>;
 
   getRemovals(): void {
     this.removals$ =  this.wordService.getRemovals();
@@ -25,7 +26,7 @@ export class RemovalsComponent implements OnInit {
   }
   
   constructor(private wordService: WordsService) {
-    this.removals$ = new Observable<string[]>;
+    this.removals$ = new Observable<IndicatorWord[]>;
    }
 
   ngOnInit(): void {

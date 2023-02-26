@@ -1,4 +1,4 @@
-﻿namespace CrosswordHelper.Data
+﻿namespace CrosswordHelper.Data.Models
 {
     public class WordDetails
     {
@@ -7,12 +7,12 @@
         public bool CouldBeAnagramIndicator { get; set; }
         public bool CouldBeContainerIndicator { get; set; }
         public bool CouldBeReversalIndicator { get; set; }
+        public bool CouldBeLetterSelectionIndicator { get; set; }
+        public bool CouldBeHomophoneIndicator { get; set; }
         public bool CouldBeSeparator { get; set; }
     }
 
-    public class UsualSuspect
-    {
-        public string Word { get; set; }
-        public string[] Replacements { get; set; }
-    }
+    public record UsualSuspect(string Word, string[] Replacements);
+
+    public record IndicatorWord(string Word, string? Notes);
 }

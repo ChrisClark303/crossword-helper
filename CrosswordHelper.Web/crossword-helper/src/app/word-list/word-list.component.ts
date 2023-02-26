@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
+import { IndicatorWord } from '../indicator-word';
 
 @Component({
   selector: 'app-word-list',
@@ -8,7 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class WordListComponent implements OnInit {
 
-  @Input() wordlist$: Observable<string[]>;
+  @Input() wordlist$: Observable<IndicatorWord[]>;
   @Input() title?:string;
   
   constructor() { }

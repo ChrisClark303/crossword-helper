@@ -1,5 +1,6 @@
 using CrosswordHelper.Api;
 using CrosswordHelper.Data;
+using CrosswordHelper.Data.Import;
 using CrosswordHelper.Data.Postgres;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,7 @@ builder.Services.AddScoped<ICrosswordHelperService,CrosswordHelperService>();
 builder.Services.AddScoped<ICrosswordHelperRepository, CrosswordHelperRepository>();
 builder.Services.AddScoped<ICrosswordHelperManagerService, CrosswordHelperManagementService>();
 builder.Services.AddScoped<ICrosswordHelperManagerRepository, CrosswordHelperManagerRepository>();
+builder.Services.AddTransient<IUsualSuspectDataImporter, UsualSuspectDataImporter>();
 
 var app = builder.Build();
 
@@ -56,25 +58,55 @@ app.MapGet("/help/container-indicators", ([FromServices] ICrosswordHelperService
     return helperService.GetContainerIndicators();
 })
 .WithName("GetContainerIndicators");
+app.MapGet("/help/letter-selection-indicators", ([FromServices] ICrosswordHelperService helperService) =>
+{
+    return helperService.GetLetterSelectionIndicators();
+})
+.WithName("GetLetterSelectionIndicators");
+app.MapGet("/help/homophone-indicators", ([FromServices] ICrosswordHelperService helperService) =>
+{
+    return helperService.GetHomophoneIndicators();
+})
+.WithName("GetHomophoneIndicators");
 app.MapGet("/help/usual-suspects", ([FromServices] ICrosswordHelperService helperService) =>
 {
     return helperService.GetUsualSuspects();
 })
 .WithName("GetUsualSuspects");
-app.MapPost("/help/anagram-indicators/{word}", (string word, [FromServices] ICrosswordHelperManagerService helperService) =>
+app.MapPost("/help/anagram-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
 {
-    helperService.AddAnagramIndictor(word);
+    var listOfWords = word.Split(',');
+    foreach(var w in listOfWords)
+    {
+        helperService.AddAnagramIndictor(w.Trim(), notes);
+    }
+   // helperService.AddAnagramIndictor(word, notes);
 });
-app.MapPost("/help/container-indicators/{word}", (string word, [FromServices] ICrosswordHelperManagerService helperService) =>
+app.MapPost("/help/container-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
 {
-    helperService.AddContainerIndicator(word);
+    helperService.AddContainerIndicator(word, notes);
 });
-app.MapPost("/help/reversal-indicators/{word}", (string word, [FromServices] ICrosswordHelperManagerService helperService) =>
+app.MapPost("/help/reversal-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
 {
-    helperService.AddReversalIndicator(word);
+    helperService.AddReversalIndicator(word, notes);
 });
-app.MapPost("/help/removal-indicators/{word}", (string word, [FromServices] ICrosswordHelperManagerService helperService) =>
+app.MapPost("/help/removal-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
 {
-    helperService.AddRemovalIndicator(word);
+    helperService.AddRemovalIndicator(word, notes);
+});
+app.MapPost("/help/homophone-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
+{
+    helperService.AddHomophoneIndicator(word, notes);
+});
+app.MapPost("/help/letter-selection-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
+{
+    helperService.AddLetterSelectionIndicator(word, notes);
+});
+app.MapPost("/import/usual-suspects", async (IFormFile file, [FromServices] IUsualSuspectDataImporter dataImporter) =>
+{
+    var stream = file.OpenReadStream();
+    StreamReader sReader = new StreamReader(stream);
+    var lines = sReader.ReadAllLines().ToArray();
+    dataImporter.Import(lines);
 });
 app.Run();

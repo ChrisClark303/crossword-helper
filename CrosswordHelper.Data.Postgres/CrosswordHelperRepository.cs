@@ -1,119 +1,102 @@
-﻿using Npgsql;
+﻿using CrosswordHelper.Data.Models;
+using Npgsql;
 using System.Data;
+using System.Runtime.CompilerServices;
 using System.Xml;
 
 namespace CrosswordHelper.Data.Postgres
 {
     public class CrosswordHelperRepository : CrosswordHelperRepositoryBase, ICrosswordHelperRepository
     {
-        private const string Value = "'{\"One\",\"Two\"}'";
-
         public IEnumerable<WordDetails> CheckWords(string[] words)
         {
-            var wordDetails = MatchWords("checkcrosswordclue", words);
-            return wordDetails;
+            return MatchWords("checkcrosswordclue", words);
         }
 
-        public IEnumerable<string> GetAnagramIndicators()
+        public IEnumerable<IndicatorWord> GetAnagramIndicators()
         {
             return GetIndicatorWords("Anagram");
         }
 
-        public IEnumerable<string> GetContainerIndicators()
+        public IEnumerable<IndicatorWord> GetContainerIndicators()
         {
             return GetIndicatorWords("Container");
         }
 
-        public IEnumerable<string> GetRemovalIndicators()
+        public IEnumerable<IndicatorWord> GetRemovalIndicators()
         {
             return GetIndicatorWords("Removal");
         }
 
-        public IEnumerable<string> GetReversalIndicators()
+        public IEnumerable<IndicatorWord> GetReversalIndicators()
         {
             return GetIndicatorWords("Reversal");
         }
 
-
-        private IEnumerable<string> GetIndicatorWords(string indicatorType)
+        private IEnumerable<IndicatorWord> GetIndicatorWords(string indicatorType)
         {
-            using (var conn = Connect())
+            return Query<IndicatorWord>($"get{indicatorType}Indicators", (reader) =>
             {
-                var cmdText = $"get{indicatorType}Indicators";
-                NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                NpgsqlDataReader reader = cmd.ExecuteReader();
-                var listOfWords = new List<string>();
-                while (reader.Read())
-                {
-                    var word = reader.GetString("word");
-                    listOfWords.Add(word);
-                }
-
-                return listOfWords;
-            }
+                var word = reader.GetString("word");
+                var notes = reader["notes"] as string;
+                return new IndicatorWord(word, notes);
+            });
         }
-
 
         private IEnumerable<WordDetails> MatchWords(string procName, string[] words)
         {
-            using (var conn = Connect())
+            return Query<WordDetails>(procName, (reader) =>
             {
-                var cmdText = procName;
-                NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("words", words);
-                NpgsqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                var wordDetails = new WordDetails()
                 {
-                    var wordDetails = new WordDetails()
-                    {
-                        OriginalWord = reader.GetString("word"),
-                        CouldBeAnagramIndicator = reader.GetBoolean("isanagram"),
-                        CouldBeContainerIndicator = reader.GetBoolean("iscontainer"),
-                        CouldBeReversalIndicator = reader.GetBoolean("isreversal"),
-                        PotentialReplacements = reader["replacements"] as string[]
-                    };
-
-                    yield return wordDetails;
+                    OriginalWord = reader.GetString("word"),
+                    CouldBeAnagramIndicator = reader.GetBoolean("isanagram"),
+                    CouldBeContainerIndicator = reader.GetBoolean("iscontainer"),
+                    CouldBeReversalIndicator = reader.GetBoolean("isreversal"),
+                    PotentialReplacements = reader["replacements"] as string[]
                 };
-            }
+                return wordDetails;
+            }, new NpgsqlParameter("words", words));
         }
 
         public IEnumerable<UsualSuspect> GetUsualSuspects()
         {
-            using (var conn = Connect())
+            return Query<UsualSuspect>("getUsualSuspects", (reader) =>
             {
-                var cmdText = "getUsualSuspects";
-                NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                NpgsqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var usualSuspect = new UsualSuspect()
-                    {
-                        Word = reader.GetString("word"),
-                        Replacements = reader["replacements"] as string[]
-                    };
-
-                    yield return usualSuspect;
-                };
-            }
+                var usualSuspect = new UsualSuspect(reader.GetString("word"), (reader["replacements"] as string[])!);
+                return usualSuspect;
+            });
         }
 
-        private void TestArray()
+        public IEnumerable<IndicatorWord> GetLetterSelectionIndicators()
         {
-            using (var conn = Connect())
-            {
-                NpgsqlCommand cmd = new NpgsqlCommand("ArrayTest", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("testarray", new[] {"One","Two" });
-                NpgsqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var returnArray = reader[0] as string[];
-                }
-            }
+            return GetIndicatorWords("LetterSelection");
         }
+
+        public IEnumerable<IndicatorWord> GetHomophoneIndicators()
+        {
+            return GetIndicatorWords("Homophone");
+        }
+
+        //TODO : Builder for the query - Connect().WithProc(name).WithParams().Reader()/NonReader();
+        //private IEnumerable<T> Query<T>(string cmdText, Func<NpgsqlDataReader, T> resultAction, params NpgsqlParameter[]? parameters)
+        //{
+        //    using (var conn = Connect())
+        //    {
+        //        NpgsqlCommand cmd = new(cmdText, conn)
+        //        {
+        //            CommandType = CommandType.StoredProcedure
+        //        };
+        //        if (parameters != null)
+        //        {
+        //            cmd.Parameters.AddRange(parameters);
+        //        }
+        //        NpgsqlDataReader reader = cmd.ExecuteReader();
+        //        while (reader.Read())
+        //        {
+        //            yield return resultAction(reader);
+        //        }
+        //    }
+        //}
     }
 }

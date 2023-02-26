@@ -2,14 +2,20 @@ version: "3.8"
 
 services:
   web:
+    build:
+        context: ./CrosswordHelper.Web/crossword-helper
+    ports:
+      - 4202:80
+  api:
     build: .
     ports:
-      - "80:80"
+      - "8080:80"
   db:
     image: db
     container_name: db
     build:
-      context: ./Postgres Container Setup
+      context: ./Database
+      dockerfile: ./Deploy/Dockerfile
       target: db
     environment:
       - POSTGRES_USER=user

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { WordsService } from '../words.service';
 import { delay, Observable, of } from 'rxjs';
 import { WordType } from '../word-type';
+import { IndicatorWord } from '../indicator-word';
 
 @Component({
   selector: 'app-containers',
@@ -12,7 +13,7 @@ export class ContainersComponent implements OnInit {
 
   public wordType: typeof WordType = WordType;
 
-  containers$: Observable<string[]>;
+  containers$: Observable<IndicatorWord[]>;
 
   getContainers(): void {
     this.containers$ =  this.wordService.getContainers();
@@ -25,7 +26,7 @@ export class ContainersComponent implements OnInit {
   }
   
   constructor(private wordService: WordsService) {
-    this.containers$ = new Observable<string[]>;
+    this.containers$ = new Observable<IndicatorWord[]>;
    }
 
   ngOnInit(): void {

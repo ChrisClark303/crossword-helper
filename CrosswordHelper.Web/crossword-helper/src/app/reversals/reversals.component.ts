@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { WordsService } from '../words.service';
 import { delay, Observable, of } from 'rxjs';
 import { WordType } from '../word-type';
+import { IndicatorWord } from '../indicator-word';
 
 @Component({
   selector: 'app-reversals',
@@ -12,7 +13,7 @@ export class ReversalsComponent implements OnInit {
 
   public wordType: typeof WordType = WordType;
 
-  reversals$: Observable<string[]>;
+  reversals$: Observable<IndicatorWord[]>;
 
   getReversals(): void {
     this.reversals$ =  this.wordService.getReversals();
@@ -25,11 +26,10 @@ export class ReversalsComponent implements OnInit {
   }
   
   constructor(private wordService: WordsService) {
-    this.reversals$ = new Observable<string[]>;
+    this.reversals$ = new Observable<IndicatorWord[]>;
    }
 
   ngOnInit(): void {
     this.getReversals();
   }
-
 }

@@ -1,5 +1,7 @@
 <h2>Add an anagram indicator</h2>
 <div class="list">
+
     <app-word-list title="Anagrams" [wordlist$]=anagrams$></app-word-list>
     <app-word-add [addWordType]="wordType.Anagram" (wordAdded)="onWordAdded($event)"></app-word-add>
+
 </div>

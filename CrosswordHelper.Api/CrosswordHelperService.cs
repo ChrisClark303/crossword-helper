@@ -1,4 +1,5 @@
 ﻿using CrosswordHelper.Data;
+using CrosswordHelper.Data.Models;
 
 namespace CrosswordHelper.Api
 {
@@ -18,22 +19,22 @@ namespace CrosswordHelper.Api
             return new CrosswordHelperResult(crosswordClue, details);
         }
 
-        public string[] GetAnagramIndicators()
+        public IndicatorWord[] GetAnagramIndicators()
         {
             return _helperRepository.GetAnagramIndicators().ToArray();
         }
 
-        public string[] GetContainerIndicators()
+        public IndicatorWord[] GetContainerIndicators()
         {
             return _helperRepository.GetContainerIndicators().ToArray();
         }
 
-        public string[] GetRemovalIndicators()
+        public IndicatorWord[] GetRemovalIndicators()
         {
             return _helperRepository.GetRemovalIndicators().ToArray();
         }
 
-        public string[] GetReversalIndicators()
+        public IndicatorWord[] GetReversalIndicators()
         {
             return _helperRepository.GetReversalIndicators().ToArray();
         }
@@ -41,6 +42,16 @@ namespace CrosswordHelper.Api
         public UsualSuspect[] GetUsualSuspects()
         {
             return _helperRepository.GetUsualSuspects().ToArray();
+        }
+
+        public IndicatorWord[] GetLetterSelectionIndicators()
+        {
+            return _helperRepository.GetLetterSelectionIndicators().ToArray();
+        }
+
+        public IndicatorWord[] GetHomophoneIndicators()
+        {
+            return _helperRepository.GetHomophoneIndicators().ToArray();
         }
     }
 

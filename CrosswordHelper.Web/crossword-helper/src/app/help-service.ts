@@ -12,8 +12,8 @@ export class HelpService extends ServiceBase {
 
   constructor(httpClient: HttpClient) { super(httpClient); }
 
-  getHelp(clue:string): Observable<CrosswordHelp[]>
+  getHelp(clue:string): Observable<CrosswordHelp>
   {
-    return this.get<CrosswordHelp>(`/help/${clue}`);
+    return this.getSingle<CrosswordHelp>(`/help/${clue}`);
   }
 }

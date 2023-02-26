@@ -58,6 +58,16 @@ app.MapGet("/help/container-indicators", ([FromServices] ICrosswordHelperService
     return helperService.GetContainerIndicators();
 })
 .WithName("GetContainerIndicators");
+app.MapGet("/help/letter-selection-indicators", ([FromServices] ICrosswordHelperService helperService) =>
+{
+    return helperService.GetLetterSelectionIndicators();
+})
+.WithName("GetLetterSelectionIndicators");
+app.MapGet("/help/homophone-indicators", ([FromServices] ICrosswordHelperService helperService) =>
+{
+    return helperService.GetHomophoneIndicators();
+})
+.WithName("GetHomophoneIndicators");
 app.MapGet("/help/usual-suspects", ([FromServices] ICrosswordHelperService helperService) =>
 {
     return helperService.GetUsualSuspects();
@@ -65,7 +75,12 @@ app.MapGet("/help/usual-suspects", ([FromServices] ICrosswordHelperService helpe
 .WithName("GetUsualSuspects");
 app.MapPost("/help/anagram-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
 {
-    helperService.AddAnagramIndictor(word, notes);
+    var listOfWords = word.Split(',');
+    foreach(var w in listOfWords)
+    {
+        helperService.AddAnagramIndictor(w.Trim(), notes);
+    }
+   // helperService.AddAnagramIndictor(word, notes);
 });
 app.MapPost("/help/container-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
 {
@@ -78,6 +93,14 @@ app.MapPost("/help/reversal-indicators/{word}", (string word, string notes, [Fro
 app.MapPost("/help/removal-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
 {
     helperService.AddRemovalIndicator(word, notes);
+});
+app.MapPost("/help/homophone-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
+{
+    helperService.AddHomophoneIndicator(word, notes);
+});
+app.MapPost("/help/letter-selection-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
+{
+    helperService.AddLetterSelectionIndicator(word, notes);
 });
 app.MapPost("/import/usual-suspects", async (IFormFile file, [FromServices] IUsualSuspectDataImporter dataImporter) =>
 {

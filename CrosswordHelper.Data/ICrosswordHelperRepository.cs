@@ -9,6 +9,8 @@ namespace CrosswordHelper.Data
         IEnumerable<IndicatorWord> GetRemovalIndicators();
         IEnumerable<IndicatorWord> GetReversalIndicators();
         IEnumerable<IndicatorWord> GetContainerIndicators();
+        IEnumerable<IndicatorWord> GetLetterSelectionIndicators();
+        IEnumerable<IndicatorWord> GetHomophoneIndicators();
         IEnumerable<UsualSuspect> GetUsualSuspects();
     }
 }

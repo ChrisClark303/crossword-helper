@@ -12,14 +12,20 @@ namespace CrosswordHelper.Data.Postgres
 
         private void CallAddWordStoredProc(string procName, string word, string notes)
         {
-            using (var conn = Connect())
+            var cmdText = $"CALL public.\"{procName}\"(:word,:notes)";
+            Execute(cmdText, new[]
             {
-                var cmdText = $"CALL public.\"{procName}\"(:word)";
-                NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
-                cmd.Parameters.AddWithValue("word", word);
-                cmd.Parameters.AddWithValue("notes", notes);
-                cmd.ExecuteNonQuery();
-            }
+                new NpgsqlParameter("word", word),
+                new NpgsqlParameter("notes", notes)
+            });
+            //using (var conn = Connect())
+            //{
+            //    var cmdText = $"CALL public.\"{procName}\"(:word)";
+            //    NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
+            //    cmd.Parameters.AddWithValue("word", word);
+            //    cmd.Parameters.AddWithValue("notes", notes);
+            //    cmd.ExecuteNonQuery();
+            //}
         }
 
         public void AddContainerIndicator(string word, string notes)
@@ -44,15 +50,39 @@ namespace CrosswordHelper.Data.Postgres
 
         public void AddAUsualSuspect(string original, params string[] replacements)
         {
-            using (var conn = Connect())
+            var cmdText = $"CALL public.\"AddUsualSuspect\"(:word,:replacements, :notes)";
+            Execute(cmdText, new[]
             {
-                var cmdText = $"CALL public.\"AddUsualSuspect\"(:word,:replacements, :notes)";
-                NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
-                cmd.Parameters.AddWithValue("word", original);
-                cmd.Parameters.AddWithValue("replacements", replacements);
-                cmd.Parameters.AddWithValue("notes", "");
-                cmd.ExecuteNonQuery();
-            }
+                new NpgsqlParameter("word", original),
+                new NpgsqlParameter("replacements", replacements),
+                new NpgsqlParameter("notes", "")
+            });
+
+            //using (var conn = Connect())
+            //{
+            //    var cmdText = $"CALL public.\"AddUsualSuspect\"(:word,:replacements, :notes)";
+            //    NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
+            //    //cmd.Parameters.AddWithValue("word", original);
+            //    //cmd.Parameters.AddWithValue("replacements", replacements);
+            //    //cmd.Parameters.AddWithValue("notes", "");
+            //    cmd.Parameters.AddRange(new[]
+            //{
+            //    new NpgsqlParameter("word", original),
+            //    new NpgsqlParameter("replacements", replacements),
+            //    new NpgsqlParameter("notes", "")
+            //});
+            //    cmd.ExecuteNonQuery();
+            //}
+        }
+
+        public void AddLetterSelectionIndicator(string word, string notes)
+        {
+            CallAddWordStoredProc("AddLetterSelectionIndicators", word, notes);
+        }
+
+        public void AddHomophoneIndicator(string word, string notes)
+        {
+            CallAddWordStoredProc("AddHomophoneIndicators", word, notes);
         }
     }
 }

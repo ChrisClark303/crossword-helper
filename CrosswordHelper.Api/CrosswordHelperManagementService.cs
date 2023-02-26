@@ -40,5 +40,15 @@ namespace CrosswordHelper.Api
         {
             _helperManagerRepository.AddAUsualSuspect(word, replacement);
         }
+
+        public void AddLetterSelectionIndicator(string word, string notes)
+        {
+            _helperManagerRepository.AddLetterSelectionIndicator(word, notes);
+        }
+
+        public void AddHomophoneIndicator(string word, string notes)
+        {
+            _helperManagerRepository.AddHomophoneIndicator(word, notes);
+        }
     }
 }

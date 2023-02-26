@@ -9,6 +9,8 @@ namespace CrosswordHelper.Api
         IndicatorWord[] GetRemovalIndicators();
         IndicatorWord[] GetReversalIndicators();
         UsualSuspect[] GetUsualSuspects();
+        IndicatorWord[] GetLetterSelectionIndicators();
+        IndicatorWord[] GetHomophoneIndicators();
         CrosswordHelperResult Help(string crosswordClue);
     }
 
@@ -19,6 +21,8 @@ namespace CrosswordHelper.Api
         void AddSeparator(string word, string notes);
         void AddReversalIndicator(string word, string notes);
         void AddRemovalIndicator(string word, string notes);
+        void AddLetterSelectionIndicator(string word, string notes);
+        void AddHomophoneIndicator(string word, string notes);
         void AddUsualSuspect(string word, string replacement);
     }
 }

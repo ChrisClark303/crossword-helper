@@ -7,6 +7,8 @@
         public bool CouldBeAnagramIndicator { get; set; }
         public bool CouldBeContainerIndicator { get; set; }
         public bool CouldBeReversalIndicator { get; set; }
+        public bool CouldBeLetterSelectionIndicator { get; set; }
+        public bool CouldBeHomophoneIndicator { get; set; }
         public bool CouldBeSeparator { get; set; }
     }
 

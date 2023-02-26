@@ -43,6 +43,16 @@ namespace CrosswordHelper.Api
         {
             return _helperRepository.GetUsualSuspects().ToArray();
         }
+
+        public IndicatorWord[] GetLetterSelectionIndicators()
+        {
+            return _helperRepository.GetLetterSelectionIndicators().ToArray();
+        }
+
+        public IndicatorWord[] GetHomophoneIndicators()
+        {
+            return _helperRepository.GetHomophoneIndicators().ToArray();
+        }
     }
 
     public class CrosswordHelperResult

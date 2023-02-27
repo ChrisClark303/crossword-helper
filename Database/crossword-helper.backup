@@ -24,7 +24,7 @@ DROP DATABASE crossword_helper;
 -- Name: crossword_helper; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE DATABASE crossword_helper WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'en_US.utf8';
+-- *not* creating schema, since initdb creates it
 
 
 ALTER DATABASE crossword_helper OWNER TO postgres;

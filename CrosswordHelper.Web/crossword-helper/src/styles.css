@@ -207,6 +207,10 @@ input.crossword-clue-help {
   background-color:aquamarine
 }
 
-.homophone {
-  background-color:seagreen
+.reversal {
+  background-color:lawngreen
+}
+
+.original-word-container {
+ min-width: 150px; 
 }

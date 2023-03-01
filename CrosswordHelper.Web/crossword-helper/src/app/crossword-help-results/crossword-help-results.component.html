@@ -2,7 +2,7 @@
     <ul class="words">
       <li class="crossword-help-item-list" *ngFor="let word of (crosswordHelp$ | async)?.wordDetails"> <!--  -->
         <span class="crossword-help-item-row">
-            <span class="crossword-help-item original-word">{{word.originalWord}}</span>
+            <div class="original-word-container"><span class="crossword-help-item original-word">{{word.originalWord}}</span></div>
             <span *ngIf="word.couldBeAnagramIndicator" class="crossword-help-item anagram">
               anagram
             </span>

@@ -5,7 +5,7 @@
 -- Dumped from database version 14.5 (Debian 14.5-1.pgdg110+1)
 -- Dumped by pg_dump version 15.1
 
--- Started on 2023-02-26 19:25:53
+-- Started on 2023-03-01 22:37:33
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,11 +19,12 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 3383 (class 1262 OID 16385)
+-- TOC entry 3393 (class 1262 OID 16385)
 -- Name: crossword_helper; Type: DATABASE; Schema: -; Owner: user
 --
 
-CREATE DATABASE crossword_helper WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'en_US.utf8';
+CREATE DATABASE crossword_helper WITH TEMPLATE = template0 ENCODING = 'UTF8'  LOCALE = 'en_US.utf8';
+
 
 ALTER DATABASE crossword_helper OWNER TO "user";
 
@@ -51,22 +52,27 @@ SET row_security = off;
 ALTER SCHEMA public OWNER TO "user";
 
 --
--- TOC entry 223 (class 1255 OID 16386)
+-- TOC entry 226 (class 1255 OID 16386)
 -- Name: AddAnagramIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
 CREATE PROCEDURE public."AddAnagramIndicators"(IN word text, IN notes text)
     LANGUAGE sql
     AS $$
+
 INSERT INTO public."AnagramIndicators"("Word", "Notes")
-	VALUES (word, notes);
+	VALUES (word, notes)
+ON CONFLICT ("Word")
+	DO UPDATE
+	SET "Word" = word;
+
 $$;
 
 
 ALTER PROCEDURE public."AddAnagramIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 224 (class 1255 OID 16387)
+-- TOC entry 223 (class 1255 OID 16387)
 -- Name: AddContainerIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -74,14 +80,17 @@ CREATE PROCEDURE public."AddContainerIndicators"(IN word text, IN notes text)
     LANGUAGE sql
     AS $$
 INSERT INTO public."ContainerIndicators"("Word", "Notes")
-	VALUES (word, notes);
+	VALUES (word, notes)
+ON CONFLICT ("Word")
+	DO UPDATE
+	SET "Word" = word;
 $$;
 
 
 ALTER PROCEDURE public."AddContainerIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 225 (class 1255 OID 16388)
+-- TOC entry 227 (class 1255 OID 16388)
 -- Name: AddHomophoneIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -89,14 +98,18 @@ CREATE PROCEDURE public."AddHomophoneIndicators"(IN word text, IN notes text)
     LANGUAGE sql
     AS $$
 INSERT INTO public."HomophoneIndicators"("Word", "Notes")
-	VALUES (word, notes);
+	VALUES (word, notes) 	
+ON CONFLICT ("Word")
+	DO UPDATE
+	SET "Word" = word;
+
 $$;
 
 
 ALTER PROCEDURE public."AddHomophoneIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 226 (class 1255 OID 16389)
+-- TOC entry 228 (class 1255 OID 16389)
 -- Name: AddLetterSelectionIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -104,14 +117,18 @@ CREATE PROCEDURE public."AddLetterSelectionIndicators"(IN word text, IN notes te
     LANGUAGE sql
     AS $$
 INSERT INTO public."LetterSelectionIndicators"("Word", "Notes")
-	VALUES (word, notes);
+	VALUES (word, notes) 	
+ON CONFLICT ("Word")
+	DO UPDATE
+	SET "Word" = word;
+	
 $$;
 
 
 ALTER PROCEDURE public."AddLetterSelectionIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 227 (class 1255 OID 16390)
+-- TOC entry 229 (class 1255 OID 16390)
 -- Name: AddRemovalIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -119,14 +136,17 @@ CREATE PROCEDURE public."AddRemovalIndicators"(IN word text, IN notes text)
     LANGUAGE sql
     AS $$
 INSERT INTO public."RemovalIndicators"("Word", "Notes")
-	VALUES (word, notes);
+	VALUES (word, notes) 	
+ON CONFLICT ("Word")
+	DO UPDATE
+	SET "Word" = word;
 $$;
 
 
 ALTER PROCEDURE public."AddRemovalIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 228 (class 1255 OID 16391)
+-- TOC entry 230 (class 1255 OID 16391)
 -- Name: AddReversalIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -134,14 +154,17 @@ CREATE PROCEDURE public."AddReversalIndicators"(IN word text, IN notes text)
     LANGUAGE sql
     AS $$
 INSERT INTO public."ReversalIndicators"("Word", "Notes")
-	VALUES (word, notes);
+	VALUES (word, notes) 	
+ON CONFLICT ("Word")
+	DO UPDATE
+	SET "Word" = word;
 $$;
 
 
 ALTER PROCEDURE public."AddReversalIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 229 (class 1255 OID 16392)
+-- TOC entry 224 (class 1255 OID 16392)
 -- Name: AddUsualSuspect(text, text[], text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -161,7 +184,7 @@ $$;
 ALTER PROCEDURE public."AddUsualSuspect"(IN word text, IN replacements text[], IN notes text) OWNER TO "user";
 
 --
--- TOC entry 230 (class 1255 OID 16393)
+-- TOC entry 225 (class 1255 OID 16393)
 -- Name: GetAnagramIndicators(); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -224,7 +247,7 @@ CREATE FUNCTION public.arraytest(testarray text[]) RETURNS text[]
 ALTER FUNCTION public.arraytest(testarray text[]) OWNER TO "user";
 
 --
--- TOC entry 252 (class 1255 OID 16460)
+-- TOC entry 244 (class 1255 OID 16396)
 -- Name: checkcrosswordclue(text[]); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -269,7 +292,7 @@ $$;
 ALTER FUNCTION public.checkcrosswordclue(words text[]) OWNER TO "user";
 
 --
--- TOC entry 244 (class 1255 OID 16397)
+-- TOC entry 245 (class 1255 OID 16397)
 -- Name: getanagramindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -288,7 +311,7 @@ $_$;
 ALTER FUNCTION public.getanagramindicators() OWNER TO "user";
 
 --
--- TOC entry 245 (class 1255 OID 16398)
+-- TOC entry 246 (class 1255 OID 16398)
 -- Name: getcontainerindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -307,7 +330,7 @@ $_$;
 ALTER FUNCTION public.getcontainerindicators() OWNER TO "user";
 
 --
--- TOC entry 246 (class 1255 OID 16399)
+-- TOC entry 247 (class 1255 OID 16399)
 -- Name: gethomophoneindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -326,7 +349,7 @@ $_$;
 ALTER FUNCTION public.gethomophoneindicators() OWNER TO "user";
 
 --
--- TOC entry 247 (class 1255 OID 16400)
+-- TOC entry 248 (class 1255 OID 16400)
 -- Name: getletterselectionindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -345,7 +368,7 @@ $_$;
 ALTER FUNCTION public.getletterselectionindicators() OWNER TO "user";
 
 --
--- TOC entry 248 (class 1255 OID 16401)
+-- TOC entry 249 (class 1255 OID 16401)
 -- Name: getremovalindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -364,7 +387,7 @@ $_$;
 ALTER FUNCTION public.getremovalindicators() OWNER TO "user";
 
 --
--- TOC entry 249 (class 1255 OID 16402)
+-- TOC entry 250 (class 1255 OID 16402)
 -- Name: getreversalindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -383,7 +406,7 @@ $_$;
 ALTER FUNCTION public.getreversalindicators() OWNER TO "user";
 
 --
--- TOC entry 250 (class 1255 OID 16403)
+-- TOC entry 251 (class 1255 OID 16403)
 -- Name: getusualsuspects(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -402,7 +425,7 @@ $_$;
 ALTER FUNCTION public.getusualsuspects() OWNER TO "user";
 
 --
--- TOC entry 251 (class 1255 OID 16404)
+-- TOC entry 252 (class 1255 OID 16404)
 -- Name: getwordmatches(text); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -464,7 +487,7 @@ CREATE SEQUENCE public."AnagramIndicators_Id_seq"
 ALTER TABLE public."AnagramIndicators_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3385 (class 0 OID 0)
+-- TOC entry 3395 (class 0 OID 0)
 -- Dependencies: 210
 -- Name: AnagramIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
@@ -502,7 +525,7 @@ CREATE SEQUENCE public."ContainerIndicators_Id_seq"
 ALTER TABLE public."ContainerIndicators_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3386 (class 0 OID 0)
+-- TOC entry 3396 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: ContainerIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
@@ -598,7 +621,7 @@ CREATE SEQUENCE public."RemovalIndicators_Id_seq"
 ALTER TABLE public."RemovalIndicators_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3387 (class 0 OID 0)
+-- TOC entry 3397 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: RemovalIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
@@ -636,7 +659,7 @@ CREATE SEQUENCE public."ReversalIndicators_Id_seq"
 ALTER TABLE public."ReversalIndicators_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3388 (class 0 OID 0)
+-- TOC entry 3398 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: ReversalIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
@@ -675,7 +698,7 @@ CREATE SEQUENCE public."UsualSuspects_Id_seq"
 ALTER TABLE public."UsualSuspects_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3389 (class 0 OID 0)
+-- TOC entry 3399 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: UsualSuspects_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
@@ -724,7 +747,7 @@ ALTER TABLE ONLY public."UsualSuspects" ALTER COLUMN "Id" SET DEFAULT nextval('p
 
 
 --
--- TOC entry 3364 (class 0 OID 16405)
+-- TOC entry 3374 (class 0 OID 16405)
 -- Dependencies: 209
 -- Data for Name: AnagramIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
@@ -742,10 +765,8 @@ INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (12, 'diff
 INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (13, 'roundabout', NULL);
 INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (14, 'around', NULL);
 INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (15, 'transformed', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (16, 'broken', NULL);
 INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (17, 'changed', NULL);
 INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (18, 'twisted', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (19, 'upset', NULL);
 INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (23, 'intricate', 'testing');
 INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (24, 'broken', 'From dummies');
 INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (25, 'damaged', 'From dummies');
@@ -766,10 +787,11 @@ INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (39, 'vers
 INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (40, 'rearranged', 'From dummies');
 INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (41, 'smashed', 'From dummies');
 INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (42, 'askew', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (43, 'jumbled', '');
 
 
 --
--- TOC entry 3366 (class 0 OID 16411)
+-- TOC entry 3376 (class 0 OID 16411)
 -- Dependencies: 211
 -- Data for Name: ContainerIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
@@ -787,76 +809,83 @@ INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (10, 'ac
 
 
 --
--- TOC entry 3369 (class 0 OID 16418)
+-- TOC entry 3379 (class 0 OID 16418)
 -- Dependencies: 214
 -- Data for Name: HomophoneIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
 INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (1, 'air', 'as in, "on the air"');
+INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (2, 'broadcast', 'From dummies');
+INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (3, 'hear', 'From dummies');
+INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (4, 'said', 'From dummies');
+INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (5, 'declared', 'From dummies');
+INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (6, 'audibly', 'From dummies');
+INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (7, 'outspoken', 'From dummies');
+INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (8, 'reportedly', 'From dummies');
+INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (9, 'sounds', 'From dummies');
+INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (10, 'sounds like', 'From dummies');
+INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (11, 'vocal', 'From dummies');
 
 
 --
--- TOC entry 3371 (class 0 OID 16425)
+-- TOC entry 3381 (class 0 OID 16425)
 -- Dependencies: 216
 -- Data for Name: LetterSelectionIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (1, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (2, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (3, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (4, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (5, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (6, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (7, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (8, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (9, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (10, 'first', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (11, 'head', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (12, 'opener', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (13, 'tail', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (14, 'end', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (15, 'conclusion', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (16, 'half', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (17, 'middle', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (18, 'centre', 'From Dummies');
 
 
 --
--- TOC entry 3372 (class 0 OID 16431)
+-- TOC entry 3382 (class 0 OID 16431)
 -- Dependencies: 217
 -- Data for Name: RemovalIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (1, 'without', NULL);
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (2, 'without', NULL);
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (3, 'without', NULL);
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (4, 'without', NULL);
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (5, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (6, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (7, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (8, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (9, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (10, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (11, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (12, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (13, 'absent', 'From Dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (14, 'excluding', 'From Dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (15, 'losing', 'From Dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (16, 'not', 'From Dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (17, 'dropped', 'From Dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (18, 'cut', 'From Dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (19, 'without', 'From Dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (20, 'short', 'From Dummies');
 
 
 --
--- TOC entry 3374 (class 0 OID 16437)
+-- TOC entry 3384 (class 0 OID 16437)
 -- Dependencies: 219
 -- Data for Name: ReversalIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (1, 'back', NULL);
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (2, 'backward', NULL);
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (3, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (4, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (5, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (6, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (7, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (8, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (9, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (10, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (11, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (12, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (13, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (14, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (15, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (16, 'reversed', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (17, 'backward', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (18, 'around', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (19, 'backslide', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (20, 'brought about', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (21, 'come back', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (22, 'flipped over', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (23, 'going west', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (24, 'knocked over', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (25, 'reflected', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (26, 'rising', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (27, 'upwards', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (28, 'upward', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (29, 'held up', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (30, 'lifted', 'From Dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (31, 'skyward', 'From Dummies');
 
 
 --
--- TOC entry 3376 (class 0 OID 16443)
+-- TOC entry 3386 (class 0 OID 16443)
 -- Dependencies: 221
 -- Data for Name: UsualSuspects; Type: TABLE DATA; Schema: public; Owner: user
 --
@@ -941,6 +970,8 @@ INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUE
 INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1133, 'dictionary', '{"OED (Oxford English Dictionary),"}', '');
 INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1134, 'direction', '{N,S,E,"W,"}', '');
 INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1055, '50', '{"L,","L (fifty in Roman numerals),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1223, 'letter', '{EF,EM,"EL,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1224, 'Liberal', '{"L,"}', '');
 INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1135, 'doctor', '{"GP (General Practitioner)","MB (Medicinae Baccalaureus / Bachelor of Medicine)","MD (Medicinae Doctor / Doctor of Medicine)","MO (Medical Officer)","NO (Doctor No - movie)","VET (veterinary surgeon)","WHO (Doctor Who - TV program),",DR,MB,MD,"MO,"}', '');
 INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1137, 'doughboy', '{"GI (American soldier),"}', '');
 INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1138, 'dram', '{"DR,"}', '');
@@ -1023,8 +1054,6 @@ INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUE
 INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1220, 'large', '{"OS (out-size),"}', '');
 INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1221, 'lawyer', '{"BL (Bachelor of Law),"}', '');
 INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1222, 'learner', '{"L (from the L-plate carried by learner drivers),"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1223, 'letter', '{EF,EM,"EL,"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1224, 'Liberal', '{"L,"}', '');
 INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1225, 'line', '{"L (l looks like a line),"}', '');
 INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1226, 'local', '{BAR,INN,"PH (Public House)","PUB,"}', '');
 INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1227, 'police', '{"MET (Metropolitan Police Service),"}', '');
@@ -1178,16 +1207,16 @@ INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUE
 
 
 --
--- TOC entry 3390 (class 0 OID 0)
+-- TOC entry 3400 (class 0 OID 0)
 -- Dependencies: 210
 -- Name: AnagramIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public."AnagramIndicators_Id_seq"', 42, true);
+SELECT pg_catalog.setval('public."AnagramIndicators_Id_seq"', 47, true);
 
 
 --
--- TOC entry 3391 (class 0 OID 0)
+-- TOC entry 3401 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: ContainerIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
@@ -1196,43 +1225,43 @@ SELECT pg_catalog.setval('public."ContainerIndicators_Id_seq"', 10, true);
 
 
 --
--- TOC entry 3392 (class 0 OID 0)
+-- TOC entry 3402 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: HomophoneIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public."HomophoneIndicators_Id_seq"', 1, true);
+SELECT pg_catalog.setval('public."HomophoneIndicators_Id_seq"', 11, true);
 
 
 --
--- TOC entry 3393 (class 0 OID 0)
+-- TOC entry 3403 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: LetterSelectionIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public."LetterSelectionIndicators_Id_seq"', 9, true);
+SELECT pg_catalog.setval('public."LetterSelectionIndicators_Id_seq"', 18, true);
 
 
 --
--- TOC entry 3394 (class 0 OID 0)
+-- TOC entry 3404 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: RemovalIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public."RemovalIndicators_Id_seq"', 12, true);
+SELECT pg_catalog.setval('public."RemovalIndicators_Id_seq"', 20, true);
 
 
 --
--- TOC entry 3395 (class 0 OID 0)
+-- TOC entry 3405 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: ReversalIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public."ReversalIndicators_Id_seq"', 15, true);
+SELECT pg_catalog.setval('public."ReversalIndicators_Id_seq"', 31, true);
 
 
 --
--- TOC entry 3396 (class 0 OID 0)
+-- TOC entry 3406 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: UsualSuspects_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
@@ -1242,6 +1271,51 @@ SELECT pg_catalog.setval('public."UsualSuspects_Id_seq"', 1381, true);
 
 --
 -- TOC entry 3224 (class 2606 OID 16455)
+-- Name: AnagramIndicators anagram_uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
+--
+
+ALTER TABLE ONLY public."AnagramIndicators"
+    ADD CONSTRAINT anagram_uniquewrd_const UNIQUE ("Word");
+
+
+--
+-- TOC entry 3226 (class 2606 OID 16457)
+-- Name: HomophoneIndicators homophone_uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
+--
+
+ALTER TABLE ONLY public."HomophoneIndicators"
+    ADD CONSTRAINT homophone_uniquewrd_const UNIQUE ("Word");
+
+
+--
+-- TOC entry 3228 (class 2606 OID 16459)
+-- Name: LetterSelectionIndicators letter_uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
+--
+
+ALTER TABLE ONLY public."LetterSelectionIndicators"
+    ADD CONSTRAINT letter_uniquewrd_const UNIQUE ("Word");
+
+
+--
+-- TOC entry 3230 (class 2606 OID 16461)
+-- Name: RemovalIndicators removal_uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
+--
+
+ALTER TABLE ONLY public."RemovalIndicators"
+    ADD CONSTRAINT removal_uniquewrd_const UNIQUE ("Word");
+
+
+--
+-- TOC entry 3232 (class 2606 OID 16463)
+-- Name: ReversalIndicators reversal_uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
+--
+
+ALTER TABLE ONLY public."ReversalIndicators"
+    ADD CONSTRAINT reversal_uniquewrd_const UNIQUE ("Word");
+
+
+--
+-- TOC entry 3234 (class 2606 OID 16465)
 -- Name: UsualSuspects uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
@@ -1250,7 +1324,7 @@ ALTER TABLE ONLY public."UsualSuspects"
 
 
 --
--- TOC entry 3384 (class 0 OID 0)
+-- TOC entry 3394 (class 0 OID 0)
 -- Dependencies: 5
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: user
 --
@@ -1259,7 +1333,7 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2023-02-26 19:25:53
+-- Completed on 2023-03-01 22:37:33
 
 --
 -- PostgreSQL database dump complete

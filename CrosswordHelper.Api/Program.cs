@@ -16,6 +16,7 @@ builder.Services.AddScoped<ICrosswordHelperRepository, CrosswordHelperRepository
 builder.Services.AddScoped<ICrosswordHelperManagerService, CrosswordHelperManagementService>();
 builder.Services.AddScoped<ICrosswordHelperManagerRepository, CrosswordHelperManagerRepository>();
 builder.Services.AddTransient<IUsualSuspectDataImporter, UsualSuspectDataImporter>();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -25,7 +26,6 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI();
 //}
-
 app.UseCors(options =>
 {
     options.AllowAnyOrigin();
@@ -73,40 +73,41 @@ app.MapGet("/help/usual-suspects", ([FromServices] ICrosswordHelperService helpe
     return helperService.GetUsualSuspects();
 })
 .WithName("GetUsualSuspects");
-app.MapPost("/help/anagram-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
-{
-    var listOfWords = word.Split(',');
-    foreach(var w in listOfWords)
-    {
-        helperService.AddAnagramIndictor(w.Trim(), notes);
-    }
-   // helperService.AddAnagramIndictor(word, notes);
-});
-app.MapPost("/help/container-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
-{
-    helperService.AddContainerIndicator(word, notes);
-});
-app.MapPost("/help/reversal-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
-{
-    helperService.AddReversalIndicator(word, notes);
-});
-app.MapPost("/help/removal-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
-{
-    helperService.AddRemovalIndicator(word, notes);
-});
-app.MapPost("/help/homophone-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
-{
-    helperService.AddHomophoneIndicator(word, notes);
-});
-app.MapPost("/help/letter-selection-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
-{
-    helperService.AddLetterSelectionIndicator(word, notes);
-});
-app.MapPost("/import/usual-suspects", async (IFormFile file, [FromServices] IUsualSuspectDataImporter dataImporter) =>
-{
-    var stream = file.OpenReadStream();
-    StreamReader sReader = new StreamReader(stream);
-    var lines = sReader.ReadAllLines().ToArray();
-    dataImporter.Import(lines);
-});
+app.MapControllers();
+//app.MapPost("/help/anagram-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
+//{
+//    var listOfWords = word.Split(',');
+//    foreach(var w in listOfWords)
+//    {
+//        helperService.AddAnagramIndictor(w.Trim(), notes);
+//    }
+//   // helperService.AddAnagramIndictor(word, notes);
+//});
+//app.MapPost("/help/container-indicators/{word}", (string word, string? notes, [FromServices] ICrosswordHelperManagerService helperService) =>
+//{
+//    helperService.AddContainerIndicator(word, notes);
+//});
+//app.MapPost("/help/reversal-indicators/{word}", (string word, string? notes, [FromServices] ICrosswordHelperManagerService helperService) =>
+//{
+//    helperService.AddReversalIndicator(word, notes);
+//});
+//app.MapPost("/help/removal-indicators/{word}", (string word, string? notes, [FromServices] ICrosswordHelperManagerService helperService) =>
+//{
+//    helperService.AddRemovalIndicator(word, notes);
+//});
+//app.MapPost("/help/homophone-indicators/{word}", (string word, string? notes, [FromServices] ICrosswordHelperManagerService helperService) =>
+//{
+//    helperService.AddHomophoneIndicator(word, notes);
+//});
+//app.MapPost("/help/letter-selection-indicators/{word}", (string word, string? notes, [FromServices] ICrosswordHelperManagerService helperService) =>
+//{
+//    helperService.AddLetterSelectionIndicator(word, notes);
+//});
+//app.MapPost("/import/usual-suspects", async (IFormFile file, [FromServices] IUsualSuspectDataImporter dataImporter) =>
+//{
+//    var stream = file.OpenReadStream();
+//    StreamReader sReader = new StreamReader(stream);
+//    var lines = sReader.ReadAllLines().ToArray();
+//    dataImporter.Import(lines);
+//});
 app.Run();

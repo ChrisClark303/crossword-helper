@@ -11,24 +11,32 @@ namespace CrosswordHelper.Api
             _helperManagerRepository = helperManagerRepository;
         }
 
+        private void SplitWordsAndExecute(string word, string notes, Action<string,string> executor)
+        {
+            foreach (var w in word.Split(','))
+            {
+                executor(w.Trim(), notes);
+            }
+        }
+
         public void AddAnagramIndictor(string word, string notes)
         {
-            _helperManagerRepository.AddAnagramIndictor(word, notes);
+            SplitWordsAndExecute(word, notes, _helperManagerRepository.AddAnagramIndictor);
         }
 
         public void AddContainerIndicator(string word, string notes)
         {
-            _helperManagerRepository.AddContainerIndicator(word, notes);
+            SplitWordsAndExecute(word, notes, _helperManagerRepository.AddContainerIndicator);
         }
 
         public void AddReversalIndicator(string word, string notes)
         {
-            _helperManagerRepository.AddReversalIndicator(word, notes);
+            SplitWordsAndExecute(word, notes, _helperManagerRepository.AddReversalIndicator);
         }
 
         public void AddRemovalIndicator(string word, string notes)
         {
-            _helperManagerRepository.AddRemovalIndicator(word, notes);
+            SplitWordsAndExecute(word, notes, _helperManagerRepository.AddRemovalIndicator);
         }
 
         public void AddSeparator(string word, string notes)
@@ -43,12 +51,12 @@ namespace CrosswordHelper.Api
 
         public void AddLetterSelectionIndicator(string word, string notes)
         {
-            _helperManagerRepository.AddLetterSelectionIndicator(word, notes);
+            SplitWordsAndExecute(word, notes, _helperManagerRepository.AddLetterSelectionIndicator);
         }
 
         public void AddHomophoneIndicator(string word, string notes)
         {
-            _helperManagerRepository.AddHomophoneIndicator(word, notes);
+            SplitWordsAndExecute(word, notes, _helperManagerRepository.AddHomophoneIndicator);
         }
     }
 }

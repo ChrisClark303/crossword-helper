@@ -24,5 +24,7 @@ export class WordDetails {
     couldBeAnagramIndicator: boolean;
     couldBeContainerIndicator: boolean;
     couldBeReversalIndicator: boolean;
+    couldBeHomophoneIndicator: boolean;
+    couldBeLetterSelectionIndicator: boolean;
     couldBeSeparator: boolean;
 }

@@ -3,9 +3,9 @@
 --
 
 -- Dumped from database version 14.5 (Debian 14.5-1.pgdg110+1)
--- Dumped by pg_dump version 14.4
+-- Dumped by pg_dump version 15.1
 
--- Started on 2023-02-01 19:31:51
+-- Started on 2023-02-26 19:25:53
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -18,16 +18,14 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE crossword_helper;
 --
--- TOC entry 3363 (class 1262 OID 16384)
--- Name: crossword_helper; Type: DATABASE; Schema: -; Owner: postgres
+-- TOC entry 3383 (class 1262 OID 16385)
+-- Name: crossword_helper; Type: DATABASE; Schema: -; Owner: user
 --
 
--- *not* creating schema, since initdb creates it
+CREATE DATABASE crossword_helper WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'en_US.utf8';
 
-
-ALTER DATABASE crossword_helper OWNER TO postgres;
+ALTER DATABASE crossword_helper OWNER TO "user";
 
 \connect crossword_helper
 
@@ -43,8 +41,18 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 220 (class 1255 OID 24580)
--- Name: AddAnagramIndicators(text); Type: PROCEDURE; Schema: public; Owner: postgres
+-- TOC entry 5 (class 2615 OID 2200)
+-- Name: public; Type: SCHEMA; Schema: -; Owner: user
+--
+
+-- *not* creating schema, since initdb creates it
+
+
+ALTER SCHEMA public OWNER TO "user";
+
+--
+-- TOC entry 223 (class 1255 OID 16386)
+-- Name: AddAnagramIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
 CREATE PROCEDURE public."AddAnagramIndicators"(IN word text, IN notes text)
@@ -55,11 +63,11 @@ INSERT INTO public."AnagramIndicators"("Word", "Notes")
 $$;
 
 
-ALTER PROCEDURE public."AddAnagramIndicators"(IN word text) OWNER TO postgres;
+ALTER PROCEDURE public."AddAnagramIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 221 (class 1255 OID 32780)
--- Name: AddContainerIndicators(text); Type: PROCEDURE; Schema: public; Owner: postgres
+-- TOC entry 224 (class 1255 OID 16387)
+-- Name: AddContainerIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
 CREATE PROCEDURE public."AddContainerIndicators"(IN word text, IN notes text)
@@ -70,11 +78,41 @@ INSERT INTO public."ContainerIndicators"("Word", "Notes")
 $$;
 
 
-ALTER PROCEDURE public."AddContainerIndicators"(IN word text) OWNER TO postgres;
+ALTER PROCEDURE public."AddContainerIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 219 (class 1255 OID 41021)
--- Name: AddRemovalIndicators(text); Type: PROCEDURE; Schema: public; Owner: postgres
+-- TOC entry 225 (class 1255 OID 16388)
+-- Name: AddHomophoneIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
+--
+
+CREATE PROCEDURE public."AddHomophoneIndicators"(IN word text, IN notes text)
+    LANGUAGE sql
+    AS $$
+INSERT INTO public."HomophoneIndicators"("Word", "Notes")
+	VALUES (word, notes);
+$$;
+
+
+ALTER PROCEDURE public."AddHomophoneIndicators"(IN word text, IN notes text) OWNER TO "user";
+
+--
+-- TOC entry 226 (class 1255 OID 16389)
+-- Name: AddLetterSelectionIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
+--
+
+CREATE PROCEDURE public."AddLetterSelectionIndicators"(IN word text, IN notes text)
+    LANGUAGE sql
+    AS $$
+INSERT INTO public."LetterSelectionIndicators"("Word", "Notes")
+	VALUES (word, notes);
+$$;
+
+
+ALTER PROCEDURE public."AddLetterSelectionIndicators"(IN word text, IN notes text) OWNER TO "user";
+
+--
+-- TOC entry 227 (class 1255 OID 16390)
+-- Name: AddRemovalIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
 CREATE PROCEDURE public."AddRemovalIndicators"(IN word text, IN notes text)
@@ -85,11 +123,11 @@ INSERT INTO public."RemovalIndicators"("Word", "Notes")
 $$;
 
 
-ALTER PROCEDURE public."AddRemovalIndicators"(IN word text) OWNER TO postgres;
+ALTER PROCEDURE public."AddRemovalIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 222 (class 1255 OID 32788)
--- Name: AddReversalIndicators(text); Type: PROCEDURE; Schema: public; Owner: postgres
+-- TOC entry 228 (class 1255 OID 16391)
+-- Name: AddReversalIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
 CREATE PROCEDURE public."AddReversalIndicators"(IN word text, IN notes text)
@@ -100,11 +138,11 @@ INSERT INTO public."ReversalIndicators"("Word", "Notes")
 $$;
 
 
-ALTER PROCEDURE public."AddReversalIndicators"(IN word text) OWNER TO postgres;
+ALTER PROCEDURE public."AddReversalIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 228 (class 1255 OID 49218)
--- Name: AddUsualSuspect(text, text[]); Type: PROCEDURE; Schema: public; Owner: postgres
+-- TOC entry 229 (class 1255 OID 16392)
+-- Name: AddUsualSuspect(text, text[], text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
 CREATE PROCEDURE public."AddUsualSuspect"(IN word text, IN replacements text[], IN notes text)
@@ -120,11 +158,11 @@ DO
 $$;
 
 
-ALTER PROCEDURE public."AddUsualSuspect"(IN word text, IN replacements text[]) OWNER TO postgres;
+ALTER PROCEDURE public."AddUsualSuspect"(IN word text, IN replacements text[], IN notes text) OWNER TO "user";
 
 --
--- TOC entry 223 (class 1255 OID 41023)
--- Name: GetAnagramIndicators(); Type: PROCEDURE; Schema: public; Owner: postgres
+-- TOC entry 230 (class 1255 OID 16393)
+-- Name: GetAnagramIndicators(); Type: PROCEDURE; Schema: public; Owner: user
 --
 
 CREATE PROCEDURE public."GetAnagramIndicators"()
@@ -139,11 +177,11 @@ SELECT "Id", "Word"
 $_$;
 
 
-ALTER PROCEDURE public."GetAnagramIndicators"() OWNER TO postgres;
+ALTER PROCEDURE public."GetAnagramIndicators"() OWNER TO "user";
 
 --
--- TOC entry 241 (class 1255 OID 32804)
--- Name: GetWordMatches(text); Type: PROCEDURE; Schema: public; Owner: postgres
+-- TOC entry 231 (class 1255 OID 16394)
+-- Name: GetWordMatches(text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
 CREATE PROCEDURE public."GetWordMatches"(IN word text)
@@ -171,11 +209,11 @@ Select
 $_$;
 
 
-ALTER PROCEDURE public."GetWordMatches"(IN word text) OWNER TO postgres;
+ALTER PROCEDURE public."GetWordMatches"(IN word text) OWNER TO "user";
 
 --
--- TOC entry 242 (class 1255 OID 32817)
--- Name: arraytest(text[]); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 235 (class 1255 OID 16395)
+-- Name: arraytest(text[]); Type: FUNCTION; Schema: public; Owner: user
 --
 
 CREATE FUNCTION public.arraytest(testarray text[]) RETURNS text[]
@@ -183,42 +221,56 @@ CREATE FUNCTION public.arraytest(testarray text[]) RETURNS text[]
     RETURN testarray;
 
 
-ALTER FUNCTION public.arraytest(testarray text[]) OWNER TO postgres;
+ALTER FUNCTION public.arraytest(testarray text[]) OWNER TO "user";
 
 --
--- TOC entry 244 (class 1255 OID 41020)
--- Name: checkcrosswordclue(text[]); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 252 (class 1255 OID 16460)
+-- Name: checkcrosswordclue(text[]); Type: FUNCTION; Schema: public; Owner: user
 --
 
-CREATE FUNCTION public.checkcrosswordclue(words text[]) RETURNS TABLE(word text, replacements text[], isanagram boolean, iscontainer boolean, isreversal boolean, isremoval boolean)
+CREATE FUNCTION public.checkcrosswordclue(words text[]) RETURNS TABLE(word text, id integer, replacements text[], isanagram boolean, iscontainer boolean, isreversal boolean, isremoval boolean, ishomophone boolean, isletterselection boolean)
     LANGUAGE plpgsql
     AS $$
 DECLARE 
+    ordinals int[];
+	counter int;
 	replacements text[];
 BEGIN
 
+	counter := 0;
+	while counter < array_length(words, 1) loop
+		counter := counter + 1;
+		ordinals := array_append(ordinals, counter);
+	end loop;
+
 	Return Query Select 
-	w.*, 
+	w.word, 
+	w.ord,
 	us."Replacements",
-	Case WHEN ai."Word" is null THEN false ELSE true END isAnagram,
-	Case WHEN ci."Word" is null THEN false ELSE true END isContainer,
-	Case WHEN ri."Word" is null THEN false ELSE true END isReversal,
-	Case WHEN ri2."Word" is null THEN false ELSE true END isRemoval
-	from unnest(words) w
-	left outer Join public."UsualSuspects" us on us."Word" = w.*
-	left outer Join  public."AnagramIndicators" ai on ai."Word" ILIKE w.*
-	left outer Join  public."ContainerIndicators" ci on ci."Word" ILIKE w.*
-	left outer Join  public."ReversalIndicators" ri on ri."Word" ILIKE w.*
-	left outer Join  public."RemovalIndicators" ri2 on ri2."Word" ILIKE w.*;
+	ai."Word" is not null isAnagram,
+	ci."Word" is not null isContainer,
+	ri."Word" is not null isReversal,
+	ri2."Word" is not null isRemoval,
+	hi."Word" is not null isHomophone,
+	lsi."Word" is not null isLetterSelection
+	from unnest(words,ordinals) w(word,ord)
+	left outer Join public."UsualSuspects" us on us."Word" = w.word
+	left outer Join public."AnagramIndicators" ai on ai."Word" ILIKE w.word
+	left outer Join public."ContainerIndicators" ci on ci."Word" ILIKE w.word
+	left outer Join public."ReversalIndicators" ri on ri."Word" ILIKE w.word
+	left outer Join public."RemovalIndicators" ri2 on ri2."Word" ILIKE w.word
+	left outer Join public."HomophoneIndicators" hi on hi."Word" ILIKE w.word
+	left outer Join public."LetterSelectionIndicators" lsi on lsi."Word" ILIKE w.word
+	ORDER by 2;
 END; 
 $$;
 
 
-ALTER FUNCTION public.checkcrosswordclue(words text[]) OWNER TO postgres;
+ALTER FUNCTION public.checkcrosswordclue(words text[]) OWNER TO "user";
 
 --
--- TOC entry 224 (class 1255 OID 41024)
--- Name: getanagramindicators(); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 244 (class 1255 OID 16397)
+-- Name: getanagramindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
 CREATE FUNCTION public.getanagramindicators() RETURNS TABLE(id integer, word text, notes text)
@@ -233,11 +285,11 @@ SELECT "Id", "Word", "Notes"
 $_$;
 
 
-ALTER FUNCTION public.getanagramindicators() OWNER TO postgres;
+ALTER FUNCTION public.getanagramindicators() OWNER TO "user";
 
 --
--- TOC entry 225 (class 1255 OID 41025)
--- Name: getcontainerindicators(); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 245 (class 1255 OID 16398)
+-- Name: getcontainerindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
 CREATE FUNCTION public.getcontainerindicators() RETURNS TABLE(id integer, word text, notes text)
@@ -252,11 +304,49 @@ SELECT "Id", "Word", "Notes"
 $_$;
 
 
-ALTER FUNCTION public.getcontainerindicators() OWNER TO postgres;
+ALTER FUNCTION public.getcontainerindicators() OWNER TO "user";
 
 --
--- TOC entry 226 (class 1255 OID 41026)
--- Name: getremovalindicators(); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 246 (class 1255 OID 16399)
+-- Name: gethomophoneindicators(); Type: FUNCTION; Schema: public; Owner: user
+--
+
+CREATE FUNCTION public.gethomophoneindicators() RETURNS TABLE(id integer, word text, notes text)
+    LANGUAGE sql
+    AS $_$
+
+SELECT "Id", "Word", "Notes"
+	FROM public."HomophoneIndicators";
+
+/*END $$;*/
+
+$_$;
+
+
+ALTER FUNCTION public.gethomophoneindicators() OWNER TO "user";
+
+--
+-- TOC entry 247 (class 1255 OID 16400)
+-- Name: getletterselectionindicators(); Type: FUNCTION; Schema: public; Owner: user
+--
+
+CREATE FUNCTION public.getletterselectionindicators() RETURNS TABLE(id integer, word text, notes text)
+    LANGUAGE sql
+    AS $_$
+
+SELECT "Id", "Word", "Notes"
+	FROM public."LetterSelectionIndicators";
+
+/*END $$;*/
+
+$_$;
+
+
+ALTER FUNCTION public.getletterselectionindicators() OWNER TO "user";
+
+--
+-- TOC entry 248 (class 1255 OID 16401)
+-- Name: getremovalindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
 CREATE FUNCTION public.getremovalindicators() RETURNS TABLE(id integer, word text, notes text)
@@ -271,11 +361,11 @@ SELECT "Id", "Word", "Notes"
 $_$;
 
 
-ALTER FUNCTION public.getremovalindicators() OWNER TO postgres;
+ALTER FUNCTION public.getremovalindicators() OWNER TO "user";
 
 --
--- TOC entry 227 (class 1255 OID 41027)
--- Name: getreversalindicators(); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 249 (class 1255 OID 16402)
+-- Name: getreversalindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
 CREATE FUNCTION public.getreversalindicators() RETURNS TABLE(id integer, word text, notes text)
@@ -290,11 +380,11 @@ SELECT "Id", "Word", "Notes"
 $_$;
 
 
-ALTER FUNCTION public.getreversalindicators() OWNER TO postgres;
+ALTER FUNCTION public.getreversalindicators() OWNER TO "user";
 
 --
--- TOC entry 229 (class 1255 OID 49221)
--- Name: getusualsuspects(); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 250 (class 1255 OID 16403)
+-- Name: getusualsuspects(); Type: FUNCTION; Schema: public; Owner: user
 --
 
 CREATE FUNCTION public.getusualsuspects() RETURNS TABLE(id integer, word text, replacements text[], notes text)
@@ -309,11 +399,11 @@ SELECT "Id", "Word", "Replacements", "Notes"
 $_$;
 
 
-ALTER FUNCTION public.getusualsuspects() OWNER TO postgres;
+ALTER FUNCTION public.getusualsuspects() OWNER TO "user";
 
 --
--- TOC entry 243 (class 1255 OID 41007)
--- Name: getwordmatches(text); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 251 (class 1255 OID 16404)
+-- Name: getwordmatches(text); Type: FUNCTION; Schema: public; Owner: user
 --
 
 CREATE FUNCTION public.getwordmatches(word text) RETURNS TABLE(isanagram boolean, iscontainer boolean, isreversal boolean, replacements text[])
@@ -337,29 +427,29 @@ END;
 $$;
 
 
-ALTER FUNCTION public.getwordmatches(word text) OWNER TO postgres;
+ALTER FUNCTION public.getwordmatches(word text) OWNER TO "user";
 
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- TOC entry 210 (class 1259 OID 16386)
--- Name: AnagramIndicators; Type: TABLE; Schema: public; Owner: postgres
+-- TOC entry 209 (class 1259 OID 16405)
+-- Name: AnagramIndicators; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public."AnagramIndicators" (
     "Id" smallint NOT NULL,
     "Word" text,
-	"Notes" text
+    "Notes" text
 );
 
 
-ALTER TABLE public."AnagramIndicators" OWNER TO postgres;
+ALTER TABLE public."AnagramIndicators" OWNER TO "user";
 
 --
--- TOC entry 209 (class 1259 OID 16385)
--- Name: AnagramIndicators_Id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- TOC entry 210 (class 1259 OID 16410)
+-- Name: AnagramIndicators_Id_seq; Type: SEQUENCE; Schema: public; Owner: user
 --
 
 CREATE SEQUENCE public."AnagramIndicators_Id_seq"
@@ -371,34 +461,34 @@ CREATE SEQUENCE public."AnagramIndicators_Id_seq"
     CACHE 1;
 
 
-ALTER TABLE public."AnagramIndicators_Id_seq" OWNER TO postgres;
+ALTER TABLE public."AnagramIndicators_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3364 (class 0 OID 0)
--- Dependencies: 209
--- Name: AnagramIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- TOC entry 3385 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: AnagramIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
 
 ALTER SEQUENCE public."AnagramIndicators_Id_seq" OWNED BY public."AnagramIndicators"."Id";
 
 
 --
--- TOC entry 212 (class 1259 OID 32774)
--- Name: ContainerIndicators; Type: TABLE; Schema: public; Owner: postgres
+-- TOC entry 211 (class 1259 OID 16411)
+-- Name: ContainerIndicators; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public."ContainerIndicators" (
     "Id" smallint NOT NULL,
     "Word" text,
-	"Notes" text
+    "Notes" text
 );
 
 
-ALTER TABLE public."ContainerIndicators" OWNER TO postgres;
+ALTER TABLE public."ContainerIndicators" OWNER TO "user";
 
 --
--- TOC entry 211 (class 1259 OID 32773)
--- Name: ContainerIndicators_Id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- TOC entry 212 (class 1259 OID 16416)
+-- Name: ContainerIndicators_Id_seq; Type: SEQUENCE; Schema: public; Owner: user
 --
 
 CREATE SEQUENCE public."ContainerIndicators_Id_seq"
@@ -409,34 +499,92 @@ CREATE SEQUENCE public."ContainerIndicators_Id_seq"
     CACHE 1;
 
 
-ALTER TABLE public."ContainerIndicators_Id_seq" OWNER TO postgres;
+ALTER TABLE public."ContainerIndicators_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3365 (class 0 OID 0)
--- Dependencies: 211
--- Name: ContainerIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- TOC entry 3386 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: ContainerIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
 
 ALTER SEQUENCE public."ContainerIndicators_Id_seq" OWNED BY public."ContainerIndicators"."Id";
 
 
 --
--- TOC entry 218 (class 1259 OID 41014)
--- Name: RemovalIndicators; Type: TABLE; Schema: public; Owner: postgres
+-- TOC entry 213 (class 1259 OID 16417)
+-- Name: HomophoneIndicators_Id_seq; Type: SEQUENCE; Schema: public; Owner: user
+--
+
+CREATE SEQUENCE public."HomophoneIndicators_Id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 32767
+    CACHE 1;
+
+
+ALTER TABLE public."HomophoneIndicators_Id_seq" OWNER TO "user";
+
+--
+-- TOC entry 214 (class 1259 OID 16418)
+-- Name: HomophoneIndicators; Type: TABLE; Schema: public; Owner: user
+--
+
+CREATE TABLE public."HomophoneIndicators" (
+    "Id" smallint DEFAULT nextval('public."HomophoneIndicators_Id_seq"'::regclass) NOT NULL,
+    "Word" text,
+    "Notes" text
+);
+
+
+ALTER TABLE public."HomophoneIndicators" OWNER TO "user";
+
+--
+-- TOC entry 215 (class 1259 OID 16424)
+-- Name: LetterSelectionIndicators_Id_seq; Type: SEQUENCE; Schema: public; Owner: user
+--
+
+CREATE SEQUENCE public."LetterSelectionIndicators_Id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 32767
+    CACHE 1;
+
+
+ALTER TABLE public."LetterSelectionIndicators_Id_seq" OWNER TO "user";
+
+--
+-- TOC entry 216 (class 1259 OID 16425)
+-- Name: LetterSelectionIndicators; Type: TABLE; Schema: public; Owner: user
+--
+
+CREATE TABLE public."LetterSelectionIndicators" (
+    "Id" smallint DEFAULT nextval('public."LetterSelectionIndicators_Id_seq"'::regclass) NOT NULL,
+    "Word" text,
+    "Notes" text
+);
+
+
+ALTER TABLE public."LetterSelectionIndicators" OWNER TO "user";
+
+--
+-- TOC entry 217 (class 1259 OID 16431)
+-- Name: RemovalIndicators; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public."RemovalIndicators" (
     "Id" smallint NOT NULL,
     "Word" text,
-	"Notes" text
+    "Notes" text
 );
 
 
-ALTER TABLE public."RemovalIndicators" OWNER TO postgres;
+ALTER TABLE public."RemovalIndicators" OWNER TO "user";
 
 --
--- TOC entry 217 (class 1259 OID 41013)
--- Name: RemovalIndicators_Id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- TOC entry 218 (class 1259 OID 16436)
+-- Name: RemovalIndicators_Id_seq; Type: SEQUENCE; Schema: public; Owner: user
 --
 
 CREATE SEQUENCE public."RemovalIndicators_Id_seq"
@@ -447,34 +595,34 @@ CREATE SEQUENCE public."RemovalIndicators_Id_seq"
     CACHE 1;
 
 
-ALTER TABLE public."RemovalIndicators_Id_seq" OWNER TO postgres;
+ALTER TABLE public."RemovalIndicators_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3366 (class 0 OID 0)
--- Dependencies: 217
--- Name: RemovalIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- TOC entry 3387 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: RemovalIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
 
 ALTER SEQUENCE public."RemovalIndicators_Id_seq" OWNED BY public."RemovalIndicators"."Id";
 
 
 --
--- TOC entry 214 (class 1259 OID 32782)
--- Name: ReversalIndicators; Type: TABLE; Schema: public; Owner: postgres
+-- TOC entry 219 (class 1259 OID 16437)
+-- Name: ReversalIndicators; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public."ReversalIndicators" (
     "Id" smallint NOT NULL,
     "Word" text,
-	"Notes" text
+    "Notes" text
 );
 
 
-ALTER TABLE public."ReversalIndicators" OWNER TO postgres;
+ALTER TABLE public."ReversalIndicators" OWNER TO "user";
 
 --
--- TOC entry 213 (class 1259 OID 32781)
--- Name: ReversalIndicators_Id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- TOC entry 220 (class 1259 OID 16442)
+-- Name: ReversalIndicators_Id_seq; Type: SEQUENCE; Schema: public; Owner: user
 --
 
 CREATE SEQUENCE public."ReversalIndicators_Id_seq"
@@ -485,35 +633,35 @@ CREATE SEQUENCE public."ReversalIndicators_Id_seq"
     CACHE 1;
 
 
-ALTER TABLE public."ReversalIndicators_Id_seq" OWNER TO postgres;
+ALTER TABLE public."ReversalIndicators_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3367 (class 0 OID 0)
--- Dependencies: 213
--- Name: ReversalIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- TOC entry 3388 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: ReversalIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
 
 ALTER SEQUENCE public."ReversalIndicators_Id_seq" OWNED BY public."ReversalIndicators"."Id";
 
 
 --
--- TOC entry 216 (class 1259 OID 32797)
--- Name: UsualSuspects; Type: TABLE; Schema: public; Owner: postgres
+-- TOC entry 221 (class 1259 OID 16443)
+-- Name: UsualSuspects; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public."UsualSuspects" (
     "Id" smallint NOT NULL,
     "Word" text,
     "Replacements" text[],
-	"Notes" text
+    "Notes" text
 );
 
 
-ALTER TABLE public."UsualSuspects" OWNER TO postgres;
+ALTER TABLE public."UsualSuspects" OWNER TO "user";
 
 --
--- TOC entry 215 (class 1259 OID 32796)
--- Name: UsualSuspects_Id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- TOC entry 222 (class 1259 OID 16448)
+-- Name: UsualSuspects_Id_seq; Type: SEQUENCE; Schema: public; Owner: user
 --
 
 CREATE SEQUENCE public."UsualSuspects_Id_seq"
@@ -524,179 +672,594 @@ CREATE SEQUENCE public."UsualSuspects_Id_seq"
     CACHE 1;
 
 
-ALTER TABLE public."UsualSuspects_Id_seq" OWNER TO postgres;
+ALTER TABLE public."UsualSuspects_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3368 (class 0 OID 0)
--- Dependencies: 215
--- Name: UsualSuspects_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- TOC entry 3389 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: UsualSuspects_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
 
 ALTER SEQUENCE public."UsualSuspects_Id_seq" OWNED BY public."UsualSuspects"."Id";
 
 
 --
--- TOC entry 3202 (class 2604 OID 16389)
--- Name: AnagramIndicators Id; Type: DEFAULT; Schema: public; Owner: postgres
+-- TOC entry 3216 (class 2604 OID 16449)
+-- Name: AnagramIndicators Id; Type: DEFAULT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public."AnagramIndicators" ALTER COLUMN "Id" SET DEFAULT nextval('public."AnagramIndicators_Id_seq"'::regclass);
 
 
 --
--- TOC entry 3203 (class 2604 OID 32777)
--- Name: ContainerIndicators Id; Type: DEFAULT; Schema: public; Owner: postgres
+-- TOC entry 3217 (class 2604 OID 16450)
+-- Name: ContainerIndicators Id; Type: DEFAULT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public."ContainerIndicators" ALTER COLUMN "Id" SET DEFAULT nextval('public."ContainerIndicators_Id_seq"'::regclass);
 
 
 --
--- TOC entry 3206 (class 2604 OID 41017)
--- Name: RemovalIndicators Id; Type: DEFAULT; Schema: public; Owner: postgres
+-- TOC entry 3220 (class 2604 OID 16451)
+-- Name: RemovalIndicators Id; Type: DEFAULT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public."RemovalIndicators" ALTER COLUMN "Id" SET DEFAULT nextval('public."RemovalIndicators_Id_seq"'::regclass);
 
 
 --
--- TOC entry 3204 (class 2604 OID 32785)
--- Name: ReversalIndicators Id; Type: DEFAULT; Schema: public; Owner: postgres
+-- TOC entry 3221 (class 2604 OID 16452)
+-- Name: ReversalIndicators Id; Type: DEFAULT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public."ReversalIndicators" ALTER COLUMN "Id" SET DEFAULT nextval('public."ReversalIndicators_Id_seq"'::regclass);
 
 
 --
--- TOC entry 3205 (class 2604 OID 32800)
--- Name: UsualSuspects Id; Type: DEFAULT; Schema: public; Owner: postgres
+-- TOC entry 3222 (class 2604 OID 16453)
+-- Name: UsualSuspects Id; Type: DEFAULT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public."UsualSuspects" ALTER COLUMN "Id" SET DEFAULT nextval('public."UsualSuspects_Id_seq"'::regclass);
 
 
 --
--- TOC entry 3349 (class 0 OID 16386)
--- Dependencies: 210
--- Data for Name: AnagramIndicators; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (1, 'Mixed');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (3, 'drunken');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (5, 'worked-up');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (6, 'mixed-up');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (7, 'inebriated');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (8, 'dizzy');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (9, 'muddled');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (10, 'murky');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (11, 'twizzled');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (12, 'diffused');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (13, 'roundabout');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (14, 'around');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (15, 'transformed');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (16, 'broken');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (17, 'changed');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (18, 'twisted');
-INSERT INTO public."AnagramIndicators" ("Id", "Word") VALUES (19, 'upset');
-
-
---
--- TOC entry 3351 (class 0 OID 32774)
--- Dependencies: 212
--- Data for Name: ContainerIndicators; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-INSERT INTO public."ContainerIndicators" ("Id", "Word") VALUES (1, 'jailed');
-INSERT INTO public."ContainerIndicators" ("Id", "Word") VALUES (2, 'contains');
-INSERT INTO public."ContainerIndicators" ("Id", "Word") VALUES (3, 'within');
-
-
---
--- TOC entry 3357 (class 0 OID 41014)
--- Dependencies: 218
--- Data for Name: RemovalIndicators; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-INSERT INTO public."RemovalIndicators" ("Id", "Word") VALUES (1, 'without');
-INSERT INTO public."RemovalIndicators" ("Id", "Word") VALUES (2, 'without');
-INSERT INTO public."RemovalIndicators" ("Id", "Word") VALUES (3, 'without');
-INSERT INTO public."RemovalIndicators" ("Id", "Word") VALUES (4, 'without');
-
-
---
--- TOC entry 3353 (class 0 OID 32782)
--- Dependencies: 214
--- Data for Name: ReversalIndicators; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-INSERT INTO public."ReversalIndicators" ("Id", "Word") VALUES (1, 'back');
-INSERT INTO public."ReversalIndicators" ("Id", "Word") VALUES (2, 'backward');
-
-
---
--- TOC entry 3355 (class 0 OID 32797)
--- Dependencies: 216
--- Data for Name: UsualSuspects; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements") VALUES (1, 'Soldier', '{GI,ANT,RA}');
-
-
---
--- TOC entry 3369 (class 0 OID 0)
+-- TOC entry 3364 (class 0 OID 16405)
 -- Dependencies: 209
--- Name: AnagramIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Data for Name: AnagramIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public."AnagramIndicators_Id_seq"', 22, true);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (1, 'Mixed', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (3, 'drunken', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (5, 'worked-up', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (6, 'mixed-up', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (7, 'inebriated', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (8, 'dizzy', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (9, 'muddled', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (10, 'murky', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (11, 'twizzled', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (12, 'diffused', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (13, 'roundabout', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (14, 'around', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (15, 'transformed', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (16, 'broken', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (17, 'changed', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (18, 'twisted', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (19, 'upset', NULL);
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (23, 'intricate', 'testing');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (24, 'broken', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (25, 'damaged', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (26, 'cooked', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (27, 'confused', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (28, 'upset', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (29, 'edited', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (30, 'ugly', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (31, 'insane', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (32, 'invented', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (33, 'engineered', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (34, 'out of sorts', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (35, 'designed', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (36, 'mishandled', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (37, 'drunk', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (38, 'built', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (39, 'versatile', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (40, 'rearranged', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (41, 'smashed', 'From dummies');
+INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (42, 'askew', 'From dummies');
 
 
 --
--- TOC entry 3370 (class 0 OID 0)
+-- TOC entry 3366 (class 0 OID 16411)
 -- Dependencies: 211
--- Name: ContainerIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Data for Name: ContainerIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public."ContainerIndicators_Id_seq"', 3, true);
+INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (1, 'jailed', NULL);
+INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (2, 'contains', NULL);
+INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (3, 'within', NULL);
+INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (4, 'acquiring, keeping, possessing, devouring, hugging, amidst, occupying', 'From dummies');
+INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (5, 'acquiring, keeping, possessing, devouring, hugging, amidst, occupying', 'From dummies');
+INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (6, 'acquiring, keeping, possessing, devouring, hugging, amidst, occupying', 'From dummies');
+INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (7, 'acquiring, keeping, possessing, devouring, hugging, amidst, occupying', 'From dummies');
+INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (8, 'acquiring, keeping, possessing, devouring, hugging, amidst, occupying', 'From dummies');
+INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (9, 'acquiring, keeping, possessing, devouring, hugging, amidst, occupying', 'From dummies');
+INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (10, 'acquiring, keeping, possessing, devouring, hugging, amidst, occupying', 'From dummies');
 
 
 --
--- TOC entry 3371 (class 0 OID 0)
+-- TOC entry 3369 (class 0 OID 16418)
+-- Dependencies: 214
+-- Data for Name: HomophoneIndicators; Type: TABLE DATA; Schema: public; Owner: user
+--
+
+INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (1, 'air', 'as in, "on the air"');
+
+
+--
+-- TOC entry 3371 (class 0 OID 16425)
+-- Dependencies: 216
+-- Data for Name: LetterSelectionIndicators; Type: TABLE DATA; Schema: public; Owner: user
+--
+
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (1, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (2, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (3, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (4, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (5, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (6, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (7, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (8, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
+INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (9, 'first, head, opener, tail, end, conclusion, half, middle, centre', 'From dummies');
+
+
+--
+-- TOC entry 3372 (class 0 OID 16431)
 -- Dependencies: 217
--- Name: RemovalIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Data for Name: RemovalIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public."RemovalIndicators_Id_seq"', 4, true);
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (1, 'without', NULL);
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (2, 'without', NULL);
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (3, 'without', NULL);
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (4, 'without', NULL);
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (5, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (6, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (7, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (8, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (9, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (10, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (11, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
+INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (12, 'absent, excluding, losing, not, dropped, cut, without, short', 'From dummies');
 
 
 --
--- TOC entry 3372 (class 0 OID 0)
+-- TOC entry 3374 (class 0 OID 16437)
+-- Dependencies: 219
+-- Data for Name: ReversalIndicators; Type: TABLE DATA; Schema: public; Owner: user
+--
+
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (1, 'back', NULL);
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (2, 'backward', NULL);
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (3, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (4, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (5, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (6, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (7, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (8, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (9, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (10, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (11, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (12, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (13, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (14, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
+INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (15, 'around, backslide, brought about, come back, flipped over, going west, knocked over, reflected, rising, upwards, held up, lifted, skyward', 'From dummies');
+
+
+--
+-- TOC entry 3376 (class 0 OID 16443)
+-- Dependencies: 221
+-- Data for Name: UsualSuspects; Type: TABLE DATA; Schema: public; Owner: user
+--
+
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1053, '5', '{"V,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1054, '10', '{"X,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1056, '100', '{"C,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1057, '1000', '{"M,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1058, 'a', '{"PER (as in tuppence a/per pound, penny an/per ounce)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1059, 'an', '{"PER (as in tuppence a/per pound, penny an/per ounce)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1060, 'about', '{C,CE,"RE,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1061, 'abstainer', '{"TT (Teetotaller),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1062, 'actors', '{"CAST,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1063, 'against', '{"V (versus),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1064, 'airman', '{"AC (aircraftsman)","LAC (leading aircraftsman)","PO (pilot Officer),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1065, 'airmen', '{"RAF (Royal Air Force),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1066, 'alien', '{"ET (Extra-Terrestrial - movie),","ET,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1068, 'ambassador', '{"HE (His Excellency),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1069, 'Anglican', '{"CE (Church of England),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1070, 'Anglicans', '{"CE (Church of England),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1071, 'Anglo-Saxon', '{"AS,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1072, 'Arabic', '{"AR,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1073, 'article', '{"A, AN (indefinite articles)","THE (definite article)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1074, 'artist', '{"RA (Royal Academy),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1075, 'Asian', '{"E (Eastern),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1076, 'banker', '{"name of a river, e.g. CAM, DEE, DON, PO","see also flower and runner\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1077, 'bearing', '{"E, N, S, W (compass bearings)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1078, 'beer', '{"ALE,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1079, 'bible', '{"AV (Authorised Version aka the King James Bible)","RV (Revised Version),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1080, 'bill', '{"A/C (account)","ACT (legal)","TAB (tabulation),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1081, 'bird', '{"any one of the many species of bird, including, but not limited to, AUK, EMU, JAY, OWL, TIT, CROW, DOVE, ERNE, GULL. HAWK, KIWI, KNOT, LARK, MINA, MYNA, RAIL, RHEA, ROOK, RUFF, SKUA, SWAN, TERN & WREN","TIME (in prison / Cockney rhyming slang bird lime)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1082, 'bishop', '{"B (chess notation)","RR (Right Reverend),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1083, 'book', '{B,"ACTS (book in the New Testament)","EDDA (Scandinavian book)","NT (New Testament)","OT (Old Testament)","VEDA (Hindu scripture),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1084, 'books', '{B,"ACTS (book in the New Testament)","EDDA (Scandinavian book)","NT (New Testament)","OT (Old Testament)","VEDA (Hindu scripture),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1085, 'boozer', '{"PH (public house),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1086, 'British', '{B,"BR,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1087, 'broadcaster', '{"BBC (British Broadcasting Corporation)","RTE (Radio Telefis Éireann)","SKY,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1088, 'bury', '{"INTER,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1089, 'by', '{"X (as in 2 by 3 ≡ 2 x 3),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1090, 'Capone', '{"AL,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1091, 'cardinal', '{"HE (His Eminence),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1092, 'castle', '{"R (rook),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1093, 'century', '{"C (one hundred in Roman numerals)","TON,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1094, 'chapter', '{C,"CH,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1095, 'chessman', '{"B (bishop)","K (king)","N (knight)","P (pawn)","Q (queen)","R (rook),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1096, 'chief', '{"CH,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1097, 'chimney', '{"LUM,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1098, 'china', '{"MATE (Cockney rhyming slang china plate)","PAL,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1099, 'church', '{"CE (Church of England)","RC (Roman Catholic church),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1100, 'cigarette', '{FAG,"TAB,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1101, 'city', '{"EC (postcode of the City of London)","ELY,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1102, 'cleaner', '{"CHAR (charlady, charwoman)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1103, 'closed', '{"TO (as in \"\"he pulled the door to behind him\"\")\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1104, 'club', '{"BAT,","C (cards),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1106, 'clubs', '{"C (cards),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1107, 'college', '{"POLY,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1108, 'colourless', '{"WAN,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1109, 'communist', '{"RED,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1110, 'companion', '{"CH (Companion of Honour),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1111, 'concerning', '{"RE,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1112, 'conservationist', '{"NT (National Trust),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1113, 'conservationists', '{"NT (National Trust),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1114, 'constant', '{"C (mathematical constant)","G (gravitational constant)","K (Boltzmann constant),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1115, 'copper', '{"PC (Police Constable),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1116, 'corporation', '{"TUM (stomach),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1117, 'court', '{"CT,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1118, 'criminal', '{"CON (convict)","LAG,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1119, 'cross', '{"X,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1120, 'currency', '{"name of a river, e.g. CAM, DEE, PO\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1121, 'current', '{"I (symbol for electric current)","AC (alternating current)","DC (direct current),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1122, 'Cyprus', '{"CY,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1123, 'daughter', '{"D,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1124, 'debt', '{"IOU(S),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1125, 'debts', '{"IOU(S),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1126, 'degree', '{D,BA,"MA,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1127, 'deliveries', '{"OVER (cricket),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1128, 'detective', '{"DC (Detective Constable)","DI (Detective Inspector)","DS (Detective Sergeant)","PI (Private Investigator),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1129, 'detectives', '{"CID (Criminal Investigation Department),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1130, 'diamond', '{"D (cards),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1131, 'diamonds', '{"D (cards),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1132, 'Diana', '{"DI,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1133, 'dictionary', '{"OED (Oxford English Dictionary),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1134, 'direction', '{N,S,E,"W,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1055, '50', '{"L,","L (fifty in Roman numerals),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1135, 'doctor', '{"GP (General Practitioner)","MB (Medicinae Baccalaureus / Bachelor of Medicine)","MD (Medicinae Doctor / Doctor of Medicine)","MO (Medical Officer)","NO (Doctor No - movie)","VET (veterinary surgeon)","WHO (Doctor Who - TV program),",DR,MB,MD,"MO,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1137, 'doughboy', '{"GI (American soldier),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1138, 'dram', '{"DR,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1139, 'drug', '{"E (ecstasy)","C (cocaine)","H (heroin),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1140, 'duck', '{"O (cricketing),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1141, 'economists', '{"LSE (London School of Economics),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1142, 'Edward', '{"ER (Edwardus Rex or King Edward)","ERI (Edwardus Rex Imperator or Edward King and Emperor),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1143, 'Elizabeth', '{"E,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1144, 'Queen', '{"ER (Elizabeth Regina, Queen Elizabeth)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1145, 'employ', '{"USE,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1146, 'engineer', '{"RE (Royal Engineers)","REME (Royal Electrical and Mechanical Engineers),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1147, 'engineers', '{"RE (Royal Engineers)","REME (Royal Electrical and Mechanical Engineers),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1148, 'English', '{"E,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1149, 'exercise', '{"PE (Physical Exercise)","PT (Physical Training),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1150, 'exist', '{"BE,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1151, 'expert', '{"ACE, DAB, PRO\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1152, 'fashion', '{CUT,FAD,"TON,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1154, 'favourite', '{"PET (as in teacher''s pet),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1155, 'feathers', '{"DOWN,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1156, 'fifty', '{"L (fifty in Roman numerals),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1158, 'fighter', '{"MIG (Soviet Russian fighter aircraft),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1159, 'fine', '{"F (pencil)","OK,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1160, 'first', '{"IST (1st),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1161, 'fish', '{"ID, LING etc.\",",ID,LING,EEL,"COD etc.,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1163, 'five', '{"V (five in roman numerals),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1164, 'flag', '{"IRIS (plant),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1165, 'flier', '{"name of a bird, e.g. TIT, WREN\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1166, 'flyer', '{"name of a bird, e.g. TIT, WREN\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1167, 'fliers', '{"RAF (Royal Air Force),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1168, 'flower', '{"name of a river","see also banker,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1169, 'fool', '{ASS,CLOT,NIT,"TWIT,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1170, 'footballers', '{"FA (Football Association),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1171, 'force', '{"F,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1172, 'France', '{"F,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1173, 'Frenchman', '{EMIL,FROG,"RENÉ,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1174, 'front', '{"VAN,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1175, 'gallery', '{"TATE (Tate Modern, Tate Britain, Tate Liverpool and Tate St Ives)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1176, 'game', '{"see sport,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1177, 'gangster', '{"AL (Al Capone),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1178, 'gas', '{"H (hydrogen)","CO (carbon monoxide)",","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1179, 'George', '{"G,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1180, 'Georgia', '{"GA (state)","GE (country),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1181, 'German', '{"G,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1182, 'gold', '{AU,"OR (heraldry),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1183, 'good', '{"G,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1184, 'graduate', '{"BA (Bachelor of Arts)","BSC (Bachelor of Science)","MA (Master of Arts)","MB,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1185, 'grunt', '{"GI (American soldier),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1186, 'Guevara', '{"CHE,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1187, 'gunner', '{"RA (Royal Artillery),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1188, 'gunners', '{"RA (Royal Artillery),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1189, 'hand', '{"L (left) and/or R (right)","E (East) or N (North) or S (South) or W (West) - (bridge hands)",","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1190, 'hands', '{"L (left) and/or R (right)","E (East) or N (North) or S (South) or W (West) - (bridge hands)",","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1191, 'hard', '{"H (pencil),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1192, 'hat', '{"TILE,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1193, 'heart', '{"H (cards),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1194, 'hearts', '{"H (cards),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1195, 'heather', '{"LING,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1196, 'hexadecimal', '{"HEX,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1197, 'home', '{"IN,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1198, 'honour', '{"A, J, K, Q (honours in bridge)","CBE, CH, MBE, OBE (honours / awards)\",","OBE,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1200, 'hooligan', '{"TED (Teddy boy),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1201, 'hospital', '{"SAN (sanatorium),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1202, 'hour', '{"HR,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1203, 'hug', '{"O,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1204, 'hundred', '{"C (one hundred in Roman numerals)","TON,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1205, 'husband', '{"H,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1206, 'hush', '{"SH,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1207, 'information', '{DATA,DOPE,"GEN,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1208, 'info', '{DATA,DOPE,"GEN,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1209, 'island', '{"CAY, IONA","IOW (Isle of Wight)","KEY, MAN (Isle of Man)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1210, 'isle', '{"CAY, IONA","IOW (Isle of Wight)","KEY, MAN (Isle of Man)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1211, 'jolly', '{"RM (Royal Marine),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1212, 'journalist', '{"ED (editor)","HACK,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1213, 'judge', '{"REF (referee),","J,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1215, 'key', '{"A-G (musical keys)",ALT,DEL(ete),ESC(ape),INS,"TAB,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1216, 'king', '{"HM (His Majesty)","LEAR (King Lear - Shakespeare)","see also \"\"Edward - King\"\", \"\"Edward - King and Emperor\"\", \"\"George – King\"\" and \"\"George - King and Emperor\"\"\",",K,"ER,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1218, 'kiss', '{"X,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1219, 'lake', '{"L,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1153, 'fashionable', '{IN,"HIP,","IN,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1220, 'large', '{"OS (out-size),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1221, 'lawyer', '{"BL (Bachelor of Law),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1222, 'learner', '{"L (from the L-plate carried by learner drivers),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1223, 'letter', '{EF,EM,"EL,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1224, 'Liberal', '{"L,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1225, 'line', '{"L (l looks like a line),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1226, 'local', '{BAR,INN,"PH (Public House)","PUB,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1227, 'police', '{"MET (Metropolitan Police Service),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1228, 'loud', '{"F (forte),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1229, 'love', '{"O (a score of zero in tennis),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1230, 'low', '{"MOO (sound made by cattle),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1231, 'many', '{"C (one hundred in roman numerals)","D (five hundred in roman numerals)","K (Kilo - metric prefix for a thousand)","L (fifty in roman numerals)","M (one thousand in roman numerals),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1232, 'measure', '{"EM or EN (a unit of measurement equal to the width of the lower-case letter ‘m’ or ‘n’ in 12-point),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1234, 'medic', '{"MD (Medicinae Doctor / Doctor of Medicine)","MO (Medical Officer),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1235, 'member', '{ARM,LEG,"MP (Member of Parliament),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1236, 'men', '{"see soldiers,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1237, 'midday', '{"N (noon),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1238, 'miners', '{"NUM (National Union of Mineworkers),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1239, 'model', '{"T (Model T Ford),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1240, 'moment', '{"MO,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1241, 'monsieur', '{"M,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1242, 'months', '{"MOS,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1243, 'motorists', '{"AA (Automobile Association)","RAC (Royal Automobile Club),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1244, 'motorway', '{"MI,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1245, 'new', '{"N,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1246, 'news', '{"NN (N[ew] + N[ew]),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1247, 'newspaper', '{"FT (Financial Times","RAG (low quality newspaper),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1248, 'newton', '{"N (unit),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1249, 'nil', '{"O (a score of zero in football),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1250, 'noon', '{"N,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1251, 'note', '{"A - G (notes of the diatonic scale)","DO, DOH, FA, FAH, LA, LAH, ME, MI, RAY, RE, SI, SO, SOH, SOL, TE, TI, UT (notes of the scale in sol-fa notation)",MEMO,"PS (PostScript)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1252, 'nothing', '{"O,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1253, 'notice', '{"AD (advertisement),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1254, 'number', '{"N (used in mathematical formulae),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1255, 'nurse', '{"EN (Enrolled Nurse)","SEN (State Enrolled Nurse - obsolescent)","SRN (State Registered Nurse - obsolescent)",","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1256, 'ocean', '{"O,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1257, 'old', '{EX,"O,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1258, 'one', '{A,AN,"I (1),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1259, 'operation', '{"OP,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1260, 'opponents', '{"bridge opponents: EN, ES, NE, NW, SE, SW, WN or WS (combinations of east, north, south and west)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1261, 'oriental', '{"E (from the East),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1262, 'partners', '{"bridge partners: EW, NS, SN, WE (combinations of east, north, south and west)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1263, 'party', '{BASH,"CON (Conservative)",DO,"LAB (Labour)","LIB (Liberal)","RAVE,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1264, 'pass', '{"COL,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1265, 'peacekeeper', '{"UN (United Nations) or UNO (United Nations Organization),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1266, 'peacekeepers', '{"UN (United Nations) or UNO (United Nations Organization),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1267, 'penny', '{"P,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1268, 'pet', '{CAT,DOG,SULK,"TIFF,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1269, 'physicists', '{"CERN (Conseil Européen pour la Recherche Nucléaire (French), European Organization for Nuclear Research)","NPL (National Physical Laboratory)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1270, 'piece', '{MAN,"see also chessman,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1271, 'playing', '{"ON,","ON (stage),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1273, 'point', '{"E, N, S, W (compass points)\",",N,S,E,"W,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1275, 'pole', '{"N, S, NS, SN (North and South poles)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1276, 'poles', '{"N, S, NS, SN (North and South poles)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1277, 'policeman', '{"COP (copper)","DI (Detective Inspector),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1278, 'politician', '{"MP (Member of Parliament),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1279, 'popular', '{"IN,","IN,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1282, 'posh', '{"U (upper-class),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1283, 'power', '{"P,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1284, 'presenter', '{"DJ (Disk Jockey)","MC (Master of Ceremonies),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1285, 'priest', '{"ELI (Old Testament),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1286, 'princess', '{"DI,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1287, 'prison', '{CAN,JUG,NICK,"PEN (penitentiary)","STIR,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1288, 'prisoner', '{"CON (convict)","LAG,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1289, 'promotion', '{"AD (advertisement),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1290, 'prophet', '{AMOS,"ELI,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1291, 'provided', '{"IF,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1292, 'province', '{"NI (Province of Northern Ireland),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1293, 'quarter', '{N,NE,NW,"E,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1294, 'queen', '{"CAT (female cat)","HM (Her Majesty)","see also \"\"Elizabeth - Queen\"\", \"\"Victoria - Queen\"\" and \"\"Victoria - Queen and Empress\"\"\",",R,Q,"ER,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1296, 'quiet', '{"P (piano),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1297, 'record', '{"EP (extended play record)","LP (long play record),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1298, 'religious', '{"PI (shortened form of pious),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1299, 'resistance', '{"R (unit),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1233, 'space', '{"EM or EN (a unit of measurement equal to the width of the lower-case letter ‘m’ or ‘n’ in 12-point),","see measure,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1300, 'revolutionary', '{"CHE (Guevara)","RED,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1301, 'right', '{"LIEN (legal right),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1302, 'ring', '{"O,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1303, 'river', '{R,EXE,DEE,PO,","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1304, 'roughly', '{"CA (circa),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1305, 'round', '{"O,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1306, 'runner', '{"name of a river","see also banker,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1307, 'sailor', '{"AB (Able-Bodied seaman)","OS (Ordinary Seaman)","PO (Petty Officer)",SALT,"TAR,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1308, 'salt', '{"AB (Able-Bodied seaman)","OS (Ordinary Seaman)","PO (Petty Officer)",SALT,"TAR,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1309, 'sailors', '{"RN (Royal Navy),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1310, 'salesman', '{"REP (representative)","TOUT,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1311, 'sapper', '{"RE (Royal Engineers),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1312, 'sappers', '{"RE (Royal Engineers),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1313, 'scientists', '{"RS (Royal Society, a body of eminent scientists)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1314, 'Scotsman', '{IAN,"MAC,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1315, 'second', '{"S,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1316, 'second-class', '{"B,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1317, 'see', '{"ELY (diocese),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1318, 'service', '{"RAF (Royal Air Force)","RN (Royal Navy)","TREE (a Eurasian tree),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1319, 'sheep', '{EWE,LAMB,RAM,"TEG/TEGG (in second year)","TUP (ram),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1320, 'ship', '{"SS (steamship),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1321, 'ships', '{"SS (steamship),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1322, 'single', '{"I (1),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1323, 'smooth', '{"IRON,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1324, 'socialite', '{"DEB (debutante),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1325, 'society', '{"S,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1326, 'soft', '{"P (music)","B (pencil),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1327, 'soldier', '{"ANT (soldier ant)","GI (American soldier)",MAN,"PARA (paratrooper)","RA (Royal Artillery)","RE (Royal Engineers)",","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1328, 'soldiers', '{MEN,"OR (Other Ranks)","RA (Royal Artillery)","RE (Royal Engineers)","plurals such as ANTS, GIS\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1329, 'son', '{"S,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1331, 'spade', '{"S (cards),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1332, 'spades', '{"S (cards),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1333, 'spies', '{"CIA (Central Intelligence Agency)","MI (Military Intelligence),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1334, 'sport', '{"RL (Rugby League)","RU (Rugby Union),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1335, 'spy', '{"MOLE,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1336, 'square', '{"S,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1337, 'state', '{"one (or more) of the two-letter codes for US States,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1338, 'states', '{"one (or more) of the two-letter codes for US States,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1339, 'students', '{"NUS (National Union of Students),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1340, 'support', '{"TEE (a support for a golf ball),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1341, 'supporter', '{"BRA (brassiere),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1342, 'take', '{"R (℞ ≡ recipe [Latin for take]),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1343, 'tantrum', '{"PET,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1344, 'tax', '{SCOT,"VAT (Value Added Tax),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1345, 'taxman', '{"IR (Inland Revenue),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1346, 'teachers', '{"NUT (National Union of Teachers),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1347, 'teetotal', '{"TT,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1348, 'teetotaller', '{"TT,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1349, 'temperature', '{"T,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1350, 'ten', '{"IO (visual representation of 10)","X (ten in roman numerals),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1351, 'test', '{"MOT (A compulsory annual check made by order of the Ministry of Transport - now Department for Transport),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1352, 'thanks', '{"TA,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1353, 'theologian', '{"DD (Divinitatis Doctor/Doctor of Divinity),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1354, 'thousand', '{"K (Kilo - metric prefix for a thousand)","M (one thousand in Roman numerals),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1355, 'tile', '{"HAT,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1356, 'times', '{"BY (as in 2 times 3 ≡ 2 by 3)","TT (T[ime] + T[ime])","X (as in 2 times 3 ≡ 2 x 3),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1357, 'tom', '{"CAT (male cat),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1358, 'training', '{"PE (Physical Exercise)","PT (Physical Training),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1359, 'translator', '{"TR,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1360, 'trendy', '{"HIP,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1361, 'unknown', '{X,"Y,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1362, 'variable', '{X,Y,"Z (mathematical variables),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1363, 'vase', '{"MING,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1364, 'versus', '{V,"VS,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1365, 'Victoria', '{"VR (Victoria Regina, Queen Victoria)\",","VIR (Victoria Imperatrix Regina, Victoria, Empress and Queen)","VRI (Victoria Regina et Imperatrix, Victoria, Queen and Empress)\","}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1367, 'vitamin', '{A,B,"BI (B1)",C,"etc.,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1368, 'volunteer', '{"TA (Territorial Army),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1369, 'volunteers', '{"TA (Territorial Army),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1370, 'vote', '{"X,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1371, 'whistler', '{"REF (referee),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1372, 'wife', '{"RIB (from Bible Genesis 2.21–23)","W,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1373, 'will', '{"LL (contraction),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1374, 'wine', '{ASTI,CAVA,HOCK,RED,ROSÉ,SACK,SEC,TENT,VIN,"VINO,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1375, 'work', '{OP,"OPUS (a work,especially a musical composition)"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1376, 'worker', '{"ANT (worker ant)","BEE (worker bee),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1377, 'workers', '{"TU (Trade Union),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1378, 'working', '{"ON,"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1379, 'writing', '{"MS (manuscript)","MSS (manuscripts),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1380, 'writings', '{"MS (manuscript)","MSS (manuscripts),"}', '');
+INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1381, 'year', '{"Y,"}', '');
+
+
+--
+-- TOC entry 3390 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: AnagramIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
+--
+
+SELECT pg_catalog.setval('public."AnagramIndicators_Id_seq"', 42, true);
+
+
+--
+-- TOC entry 3391 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: ContainerIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
+--
+
+SELECT pg_catalog.setval('public."ContainerIndicators_Id_seq"', 10, true);
+
+
+--
+-- TOC entry 3392 (class 0 OID 0)
 -- Dependencies: 213
--- Name: ReversalIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: HomophoneIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public."ReversalIndicators_Id_seq"', 2, true);
+SELECT pg_catalog.setval('public."HomophoneIndicators_Id_seq"', 1, true);
 
 
 --
--- TOC entry 3373 (class 0 OID 0)
+-- TOC entry 3393 (class 0 OID 0)
 -- Dependencies: 215
--- Name: UsualSuspects_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: LetterSelectionIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public."UsualSuspects_Id_seq"', 2, true);
+SELECT pg_catalog.setval('public."LetterSelectionIndicators_Id_seq"', 9, true);
 
 
 --
--- TOC entry 3208 (class 2606 OID 49220)
--- Name: UsualSuspects uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3394 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: RemovalIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
+--
+
+SELECT pg_catalog.setval('public."RemovalIndicators_Id_seq"', 12, true);
+
+
+--
+-- TOC entry 3395 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: ReversalIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
+--
+
+SELECT pg_catalog.setval('public."ReversalIndicators_Id_seq"', 15, true);
+
+
+--
+-- TOC entry 3396 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: UsualSuspects_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
+--
+
+SELECT pg_catalog.setval('public."UsualSuspects_Id_seq"', 1381, true);
+
+
+--
+-- TOC entry 3224 (class 2606 OID 16455)
+-- Name: UsualSuspects uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public."UsualSuspects"
     ADD CONSTRAINT uniquewrd_const UNIQUE ("Word");
 
 
--- Completed on 2023-02-01 19:31:51
+--
+-- TOC entry 3384 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: user
+--
+
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2023-02-26 19:25:53
 
 --
 -- PostgreSQL database dump complete

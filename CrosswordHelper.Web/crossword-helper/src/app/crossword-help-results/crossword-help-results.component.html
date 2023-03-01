@@ -12,6 +12,12 @@
             <span *ngIf="word.couldBeReversalIndicator" class="crossword-help-item reversal">
               reversal
             </span>
+            <span *ngIf="word.couldBeHomophoneIndicator" class="crossword-help-item homophone">
+              homophone
+            </span>
+            <span *ngIf="word.couldBeLetterSelectionIndicator" class="crossword-help-item letter-selection">
+              letter selection
+            </span>
             <span *ngIf="word.couldBeSeparator" class="crossword-help-item separator">
               separator
             </span>

@@ -53,6 +53,8 @@ namespace CrosswordHelper.Data.Postgres
                     CouldBeAnagramIndicator = reader.GetBoolean("isanagram"),
                     CouldBeContainerIndicator = reader.GetBoolean("iscontainer"),
                     CouldBeReversalIndicator = reader.GetBoolean("isreversal"),
+                    CouldBeHomophoneIndicator = reader.GetBoolean("ishomophone"),
+                    CouldBeLetterSelectionIndicator = reader.GetBoolean("isletterselection"),
                     PotentialReplacements = reader["replacements"] as string[]
                 };
                 return wordDetails;
@@ -63,8 +65,7 @@ namespace CrosswordHelper.Data.Postgres
         {
             return Query<UsualSuspect>("getUsualSuspects", (reader) =>
             {
-                var usualSuspect = new UsualSuspect(reader.GetString("word"), (reader["replacements"] as string[])!);
-                return usualSuspect;
+                return new UsualSuspect(reader.GetString("word"), (reader["replacements"] as string[])!);
             });
         }
 
@@ -77,26 +78,5 @@ namespace CrosswordHelper.Data.Postgres
         {
             return GetIndicatorWords("Homophone");
         }
-
-        //TODO : Builder for the query - Connect().WithProc(name).WithParams().Reader()/NonReader();
-        //private IEnumerable<T> Query<T>(string cmdText, Func<NpgsqlDataReader, T> resultAction, params NpgsqlParameter[]? parameters)
-        //{
-        //    using (var conn = Connect())
-        //    {
-        //        NpgsqlCommand cmd = new(cmdText, conn)
-        //        {
-        //            CommandType = CommandType.StoredProcedure
-        //        };
-        //        if (parameters != null)
-        //        {
-        //            cmd.Parameters.AddRange(parameters);
-        //        }
-        //        NpgsqlDataReader reader = cmd.ExecuteReader();
-        //        while (reader.Read())
-        //        {
-        //            yield return resultAction(reader);
-        //        }
-        //    }
-        //}
     }
 }

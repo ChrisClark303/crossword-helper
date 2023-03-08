@@ -13,6 +13,7 @@ import { ContainersComponent } from './containers/containers.component';
 import { RemovalsComponent } from './removals/removals.component';
 import { ReversalsComponent } from './reversals/reversals.component';
 import { CrosswordHelpResultsComponent } from './crossword-help-results/crossword-help-results.component';
+import { LetterSelectionComponent } from './letter-selection/letter-selection.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { CrosswordHelpResultsComponent } from './crossword-help-results/crosswor
     ContainersComponent,
     RemovalsComponent,
     ReversalsComponent,
-    CrosswordHelpResultsComponent
+    CrosswordHelpResultsComponent,
+    LetterSelectionComponent
   ],
   imports: [
     BrowserModule,

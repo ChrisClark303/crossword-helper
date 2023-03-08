@@ -68,46 +68,16 @@ app.MapGet("/help/homophone-indicators", ([FromServices] ICrosswordHelperService
     return helperService.GetHomophoneIndicators();
 })
 .WithName("GetHomophoneIndicators");
+app.MapGet("/help/substitution-indicators", ([FromServices] ICrosswordHelperService helperService) =>
+{
+    return helperService.GetSubstitutionIndicators();
+})
+.WithName("GetSubstitutionIndicators");
 app.MapGet("/help/usual-suspects", ([FromServices] ICrosswordHelperService helperService) =>
 {
     return helperService.GetUsualSuspects();
 })
 .WithName("GetUsualSuspects");
 app.MapControllers();
-//app.MapPost("/help/anagram-indicators/{word}", (string word, string notes, [FromServices] ICrosswordHelperManagerService helperService) =>
-//{
-//    var listOfWords = word.Split(',');
-//    foreach(var w in listOfWords)
-//    {
-//        helperService.AddAnagramIndictor(w.Trim(), notes);
-//    }
-//   // helperService.AddAnagramIndictor(word, notes);
-//});
-//app.MapPost("/help/container-indicators/{word}", (string word, string? notes, [FromServices] ICrosswordHelperManagerService helperService) =>
-//{
-//    helperService.AddContainerIndicator(word, notes);
-//});
-//app.MapPost("/help/reversal-indicators/{word}", (string word, string? notes, [FromServices] ICrosswordHelperManagerService helperService) =>
-//{
-//    helperService.AddReversalIndicator(word, notes);
-//});
-//app.MapPost("/help/removal-indicators/{word}", (string word, string? notes, [FromServices] ICrosswordHelperManagerService helperService) =>
-//{
-//    helperService.AddRemovalIndicator(word, notes);
-//});
-//app.MapPost("/help/homophone-indicators/{word}", (string word, string? notes, [FromServices] ICrosswordHelperManagerService helperService) =>
-//{
-//    helperService.AddHomophoneIndicator(word, notes);
-//});
-//app.MapPost("/help/letter-selection-indicators/{word}", (string word, string? notes, [FromServices] ICrosswordHelperManagerService helperService) =>
-//{
-//    helperService.AddLetterSelectionIndicator(word, notes);
-//});
-//app.MapPost("/import/usual-suspects", async (IFormFile file, [FromServices] IUsualSuspectDataImporter dataImporter) =>
-//{
-//    var stream = file.OpenReadStream();
-//    StreamReader sReader = new StreamReader(stream);
-//    var lines = sReader.ReadAllLines().ToArray();
-//    dataImporter.Import(lines);
-//});
+
 app.Run();

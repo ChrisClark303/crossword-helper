@@ -18,14 +18,6 @@ namespace CrosswordHelper.Data.Postgres
                 new NpgsqlParameter("word", word),
                 new NpgsqlParameter("notes", notes)
             });
-            //using (var conn = Connect())
-            //{
-            //    var cmdText = $"CALL public.\"{procName}\"(:word)";
-            //    NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
-            //    cmd.Parameters.AddWithValue("word", word);
-            //    cmd.Parameters.AddWithValue("notes", notes);
-            //    cmd.ExecuteNonQuery();
-            //}
         }
 
         public void AddContainerIndicator(string word, string notes)
@@ -57,22 +49,6 @@ namespace CrosswordHelper.Data.Postgres
                 new NpgsqlParameter("replacements", replacements),
                 new NpgsqlParameter("notes", "")
             });
-
-            //using (var conn = Connect())
-            //{
-            //    var cmdText = $"CALL public.\"AddUsualSuspect\"(:word,:replacements, :notes)";
-            //    NpgsqlCommand cmd = new NpgsqlCommand(cmdText, conn);
-            //    //cmd.Parameters.AddWithValue("word", original);
-            //    //cmd.Parameters.AddWithValue("replacements", replacements);
-            //    //cmd.Parameters.AddWithValue("notes", "");
-            //    cmd.Parameters.AddRange(new[]
-            //{
-            //    new NpgsqlParameter("word", original),
-            //    new NpgsqlParameter("replacements", replacements),
-            //    new NpgsqlParameter("notes", "")
-            //});
-            //    cmd.ExecuteNonQuery();
-            //}
         }
 
         public void AddLetterSelectionIndicator(string word, string notes)
@@ -83,6 +59,11 @@ namespace CrosswordHelper.Data.Postgres
         public void AddHomophoneIndicator(string word, string notes)
         {
             CallAddWordStoredProc("AddHomophoneIndicators", word, notes);
+        }
+
+        public void AddSubstitutionIndicator(string word, string notes)
+        {
+            CallAddWordStoredProc("AddSubstitutionIndicators", word, notes);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace CrosswordHelper.Api
         UsualSuspect[] GetUsualSuspects();
         IndicatorWord[] GetLetterSelectionIndicators();
         IndicatorWord[] GetHomophoneIndicators();
+        IndicatorWord[] GetSubstitutionIndicators();
         CrosswordHelperResult Help(string crosswordClue);
     }
 
@@ -23,6 +24,7 @@ namespace CrosswordHelper.Api
         void AddRemovalIndicator(string word, string notes);
         void AddLetterSelectionIndicator(string word, string notes);
         void AddHomophoneIndicator(string word, string notes);
+        void AddSubstitutionIndicator(string word, string notes);
         void AddUsualSuspect(string word, string replacement);
     }
 }

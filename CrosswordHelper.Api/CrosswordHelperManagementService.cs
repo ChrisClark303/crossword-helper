@@ -58,5 +58,10 @@ namespace CrosswordHelper.Api
         {
             SplitWordsAndExecute(word, notes, _helperManagerRepository.AddHomophoneIndicator);
         }
+
+        public void AddSubstitutionIndicator(string word, string notes)
+        {
+            SplitWordsAndExecute(word, notes, _helperManagerRepository.AddSubstitutionIndicator);
+        }
     }
 }

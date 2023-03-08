@@ -2,5 +2,6 @@ export enum WordType {
   Anagram,
   Container,
   Removal,
-  Reversal
+  Reversal,
+  LetterSelections
 }

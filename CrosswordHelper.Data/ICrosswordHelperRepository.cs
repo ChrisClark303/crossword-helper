@@ -11,6 +11,7 @@ namespace CrosswordHelper.Data
         IEnumerable<IndicatorWord> GetContainerIndicators();
         IEnumerable<IndicatorWord> GetLetterSelectionIndicators();
         IEnumerable<IndicatorWord> GetHomophoneIndicators();
+        IEnumerable<IndicatorWord> GetSubstitutionIndicators();
         IEnumerable<UsualSuspect> GetUsualSuspects();
     }
 }

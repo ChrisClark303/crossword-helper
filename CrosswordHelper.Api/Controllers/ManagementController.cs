@@ -56,6 +56,13 @@ namespace CrosswordHelper.Api.Controllers
             _helperService.AddLetterSelectionIndicator(word, notes);
             return Ok();
         }
+
+        [HttpPost("/help/substitution-indicators/{word}")]
+        public IActionResult AddSubstitutionIndicator(string word, string notes = "")
+        {
+            _helperService.AddSubstitutionIndicator(word, notes);
+            return Ok();
+        }
     }
 
     [ApiController]

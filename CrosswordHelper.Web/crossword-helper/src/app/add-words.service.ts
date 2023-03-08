@@ -33,4 +33,9 @@ export class AddWordsService extends ServiceBase {
   {
       await this.addIndicator(word, "removal");
   }
+
+  async addLetterSelectionIndicator(word: string)
+  {
+      await this.addIndicator(word, "letter-selection");
+  }
 }

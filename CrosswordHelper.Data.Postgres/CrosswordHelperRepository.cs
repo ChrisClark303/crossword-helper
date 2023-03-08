@@ -78,5 +78,10 @@ namespace CrosswordHelper.Data.Postgres
         {
             return GetIndicatorWords("Homophone");
         }
+
+        public IEnumerable<IndicatorWord> GetSubstitutionIndicators()
+        {
+            return GetIndicatorWords("Substitution");
+        }
     }
 }

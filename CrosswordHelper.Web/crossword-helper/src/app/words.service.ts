@@ -27,4 +27,8 @@ export class WordsService extends ServiceBase {
   getRemovals(): Observable<IndicatorWord[]> {
     return this.getMany<IndicatorWord>(`/help/removal-indicators`);
   }
+
+  getLetterSelections(): Observable<IndicatorWord[]> {
+    return this.getMany<IndicatorWord>(`/help/letter-selection-indicators`);
+  }
 }

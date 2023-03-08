@@ -53,6 +53,11 @@ namespace CrosswordHelper.Api
         {
             return _helperRepository.GetHomophoneIndicators().ToArray();
         }
+
+        public IndicatorWord[] GetSubstitutionIndicators()
+        {
+            return _helperRepository.GetSubstitutionIndicators().ToArray();
+        }
     }
 
     public class CrosswordHelperResult

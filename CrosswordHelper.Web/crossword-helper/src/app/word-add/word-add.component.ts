@@ -38,6 +38,9 @@ export class WordAddComponent implements OnInit {
         case WordType.Reversal:
           await this.addWordsService.addReversalIndicator(word);
           break;
+        case WordType.LetterSelections:
+          await this.addWordsService.addLetterSelectionIndicator(word);
+          break;
     }
     this.wordAdded.emit(true);
   }

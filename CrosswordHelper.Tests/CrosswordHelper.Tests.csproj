@@ -21,4 +21,10 @@
     <ProjectReference Include="..\CrosswordHelper.Data.Import\CrosswordHelper.Data.Import.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="TestData.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

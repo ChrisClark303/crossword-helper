@@ -73,4 +73,56 @@ namespace CrosswordHelper.Tests
             mockedRepo.Verify(repo => repo.AddAUsualSuspect("communist", "RED"));
         }
     }
+
+    public class BestForPuzzlesUsualSuspectDataScraperTests
+    {
+        [Test]
+        public async Task Scrape_Correctly_Extracts_AnagramIndicators()
+        {
+            var mockRepository = new Mock<ICrosswordHelperManagerRepository>();
+
+            var stubMessageHandler = new StubMessageHandler(File.ReadAllText("TestData.html"));
+            var httpClient = new HttpClient(stubMessageHandler)
+            {
+                BaseAddress = new Uri("http://127.0.0.1")
+            };
+            var scraper = new BestForPuzzlesUsualSuspectDataScraper(httpClient, mockRepository.Object);
+            await scraper.Scrape();
+
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("wander", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("wandering", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("warped", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("wayward", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("weave", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("weaving", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("weird", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("wild", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("wildly", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("wilder", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("worked", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("working", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("worried", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("wound", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("woven", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("wrecked", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("writhing", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("wrong", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAnagramIndictor("wrongly", It.IsAny<string>()));
+        }
+    }
+
+    public class StubMessageHandler : DelegatingHandler
+    {
+        private readonly string _content;
+
+        public StubMessageHandler(string content)
+        {
+            _content = content;
+        }
+
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(new HttpResponseMessage() { Content = new StringContent(_content) });
+        }
+    }
 }

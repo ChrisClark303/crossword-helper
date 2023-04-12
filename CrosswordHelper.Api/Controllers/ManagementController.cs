@@ -85,5 +85,16 @@ namespace CrosswordHelper.Api.Controllers
 
             return Ok();
         }
+
+        [HttpPatch("/import/best-for-puzzles")]
+        public async Task<IActionResult> ImportFromBestForPuzzles() 
+        {
+            var bestForPuzzlesDataScraper = new BestForPuzzlesUsualSuspectDataScraper(new HttpClient()
+            {
+                BaseAddress = new Uri("https://bestforpuzzles.com/cryptic-crossword-dictionary/")
+            }, null);
+            await bestForPuzzlesDataScraper.Scrape();
+            return Ok();
+        }
     }
 }

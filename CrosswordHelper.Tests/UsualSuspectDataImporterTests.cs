@@ -80,15 +80,19 @@ namespace CrosswordHelper.Tests
         public async Task Scrape_Correctly_Extracts_AnagramIndicators()
         {
             var mockRepository = new Mock<ICrosswordHelperManagerRepository>();
+            var mockUrlBuilder = new Mock<IUrlBuilder>();
+            mockUrlBuilder.Setup(builder => builder.GetUrls())
+                .Returns(new[] { "w.html" });
 
             var stubMessageHandler = new StubMessageHandler(File.ReadAllText("TestData.html"));
             var httpClient = new HttpClient(stubMessageHandler)
             {
                 BaseAddress = new Uri("http://127.0.0.1")
             };
-            var scraper = new BestForPuzzlesUsualSuspectDataScraper(httpClient, mockRepository.Object);
+            var scraper = new BestForPuzzlesUsualSuspectDataScraper(httpClient, mockRepository.Object, mockUrlBuilder.Object);
             await scraper.Scrape();
 
+            mockRepository.Verify(repo => repo.AddAnagramIndictor(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(19));
             mockRepository.Verify(repo => repo.AddAnagramIndictor("wander", It.IsAny<string>()));
             mockRepository.Verify(repo => repo.AddAnagramIndictor("wandering", It.IsAny<string>()));
             mockRepository.Verify(repo => repo.AddAnagramIndictor("warped", It.IsAny<string>()));
@@ -108,6 +112,49 @@ namespace CrosswordHelper.Tests
             mockRepository.Verify(repo => repo.AddAnagramIndictor("writhing", It.IsAny<string>()));
             mockRepository.Verify(repo => repo.AddAnagramIndictor("wrong", It.IsAny<string>()));
             mockRepository.Verify(repo => repo.AddAnagramIndictor("wrongly", It.IsAny<string>()));
+        }
+
+        [Test]
+        public async Task Scrape_Correctly_Extracts_ReversalIndicators()
+        {
+            var mockRepository = new Mock<ICrosswordHelperManagerRepository>();
+            var mockUrlBuilder = new Mock<IUrlBuilder>();
+            mockUrlBuilder.Setup(builder => builder.GetUrls())
+                .Returns(new[] { "w.html" });
+
+            var stubMessageHandler = new StubMessageHandler(File.ReadAllText("TestData.html"));
+            var httpClient = new HttpClient(stubMessageHandler)
+            {
+                BaseAddress = new Uri("http://127.0.0.1")
+            };
+            var scraper = new BestForPuzzlesUsualSuspectDataScraper(httpClient, mockRepository.Object, mockUrlBuilder.Object);
+            await scraper.Scrape();
+
+            mockRepository.Verify(repo => repo.AddReversalIndicator(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
+            mockRepository.Verify(repo => repo.AddReversalIndicator("westbound", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddReversalIndicator("written up", It.IsAny<string>()));
+        }
+
+        [Test]
+        public async Task Scrape_Correctly_Extracts_RemovalIndicators()
+        {
+            var mockRepository = new Mock<ICrosswordHelperManagerRepository>();
+            var mockUrlBuilder = new Mock<IUrlBuilder>();
+            mockUrlBuilder.Setup(builder => builder.GetUrls())
+                .Returns(new[] { "w.html" });
+
+            var stubMessageHandler = new StubMessageHandler(File.ReadAllText("TestData.html"));
+            var httpClient = new HttpClient(stubMessageHandler)
+            {
+                BaseAddress = new Uri("http://127.0.0.1")
+            };
+            var scraper = new BestForPuzzlesUsualSuspectDataScraper(httpClient, mockRepository.Object, mockUrlBuilder.Object);
+            await scraper.Scrape();
+
+            mockRepository.Verify(repo => repo.AddRemovalIndicator(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(3));
+            mockRepository.Verify(repo => repo.AddRemovalIndicator("wingless", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddRemovalIndicator("without end", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddRemovalIndicator("without limits", It.IsAny<string>()));
         }
     }
 

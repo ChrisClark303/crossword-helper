@@ -26,21 +26,22 @@ namespace CrosswordHelper.Data.Import
 
         private readonly HttpClient _client;
         private readonly ICrosswordHelperManagerRepository _managerRepository;
+        private readonly IUrlBuilder _urlBuilder;
 
-        public BestForPuzzlesUsualSuspectDataScraper(HttpClient client, ICrosswordHelperManagerRepository managerRepository)
+        public BestForPuzzlesUsualSuspectDataScraper(HttpClient client, ICrosswordHelperManagerRepository managerRepository, IUrlBuilder urlBuilder)
         {
             _client = client;
             _managerRepository = managerRepository;
+            _urlBuilder = urlBuilder;
         }
-
-        private const string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
         public async Task Scrape()
         {
             var words = new List<WordData>();
-            foreach (char letter in alphabet)
+            var urls = _urlBuilder.GetUrls();
+            foreach (string url in urls)
             {
-                var response = await _client.GetAsync($"{letter.ToString()}.html");
+                var response = await _client.GetAsync(url);
                 HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                 
                 var page = await response.Content.ReadAsStringAsync();
@@ -70,10 +71,30 @@ namespace CrosswordHelper.Data.Import
                 }
             }
 
-            var anagramIndicators = words.Where(w => w.WordType == WordType.Anagram);
-            foreach (var anagramIndicator in anagramIndicators)
+            AddIndicatorsByType(words, WordType.Anagram, (indicator) => _managerRepository.AddAnagramIndictor(indicator.Word, indicator.Description));
+            AddIndicatorsByType(words, WordType.Reversal, (indicator) => _managerRepository.AddReversalIndicator(indicator.Word, indicator.Description));
+            AddIndicatorsByType(words, WordType.Removal, (indicator) => _managerRepository.AddRemovalIndicator(indicator.Word, indicator.Description));
+
+            //var anagramIndicators = words.Where(w => w.WordType == WordType.Anagram);
+            //foreach (var anagramIndicator in anagramIndicators)
+            //{
+            //    _managerRepository.AddAnagramIndictor(anagramIndicator.Word, anagramIndicator.Description);
+            //}
+
+            //var reversalIndicators = words.Where(w => w.WordType == WordType.Reversal);
+            //foreach (var reversalIndicator in reversalIndicators)
+            //{
+            //    _managerRepository.AddReversalIndicator(reversalIndicator.Word, reversalIndicator.Description);
+            //}
+        }
+
+        private void AddIndicatorsByType(List<WordData> words, WordType wordType, Action<WordData> dataHandler)
+        {
+            var indicators = words.Where(w => w.WordType == wordType);
+            foreach (var indicator in indicators)
             {
-                _managerRepository.AddAnagramIndictor(anagramIndicator.Word, anagramIndicator.Description);
+                dataHandler(indicator);
+                //_managerRepository.AddAnagramIndictor(anagramIndicator.Word, anagramIndicator.Description);
             }
         }
     }
@@ -94,5 +115,16 @@ namespace CrosswordHelper.Data.Import
         Removal,
         Container,
         Hidden
+    }
+
+    public class UrlBuilder : IUrlBuilder
+    {
+        private const string alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+        public string[] GetUrls()
+        {
+            return alphabet.Select(letter => $"{letter}.html")
+                .ToArray();
+        }
     }
 }

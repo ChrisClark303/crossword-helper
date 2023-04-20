@@ -74,27 +74,15 @@ namespace CrosswordHelper.Data.Import
             AddIndicatorsByType(words, WordType.Anagram, (indicator) => _managerRepository.AddAnagramIndictor(indicator.Word, indicator.Description));
             AddIndicatorsByType(words, WordType.Reversal, (indicator) => _managerRepository.AddReversalIndicator(indicator.Word, indicator.Description));
             AddIndicatorsByType(words, WordType.Removal, (indicator) => _managerRepository.AddRemovalIndicator(indicator.Word, indicator.Description));
-
-            //var anagramIndicators = words.Where(w => w.WordType == WordType.Anagram);
-            //foreach (var anagramIndicator in anagramIndicators)
-            //{
-            //    _managerRepository.AddAnagramIndictor(anagramIndicator.Word, anagramIndicator.Description);
-            //}
-
-            //var reversalIndicators = words.Where(w => w.WordType == WordType.Reversal);
-            //foreach (var reversalIndicator in reversalIndicators)
-            //{
-            //    _managerRepository.AddReversalIndicator(reversalIndicator.Word, reversalIndicator.Description);
-            //}
+            AddIndicatorsByType(words, WordType.Container, (indicator) => _managerRepository.AddContainerIndicator(indicator.Word, indicator.Description));
         }
-
+  
         private void AddIndicatorsByType(List<WordData> words, WordType wordType, Action<WordData> dataHandler)
         {
             var indicators = words.Where(w => w.WordType == wordType);
             foreach (var indicator in indicators)
             {
                 dataHandler(indicator);
-                //_managerRepository.AddAnagramIndictor(anagramIndicator.Word, anagramIndicator.Description);
             }
         }
     }

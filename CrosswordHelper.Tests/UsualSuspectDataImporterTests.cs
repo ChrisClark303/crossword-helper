@@ -156,6 +156,31 @@ namespace CrosswordHelper.Tests
             mockRepository.Verify(repo => repo.AddRemovalIndicator("without end", It.IsAny<string>()));
             mockRepository.Verify(repo => repo.AddRemovalIndicator("without limits", It.IsAny<string>()));
         }
+
+        [Test]
+        public async Task Scrape_Correctly_Extracts_ContainerIndicators()
+        {
+            var mockRepository = new Mock<ICrosswordHelperManagerRepository>();
+            var mockUrlBuilder = new Mock<IUrlBuilder>();
+            mockUrlBuilder.Setup(builder => builder.GetUrls())
+                .Returns(new[] { "w.html" });
+
+            var stubMessageHandler = new StubMessageHandler(File.ReadAllText("TestData.html"));
+            var httpClient = new HttpClient(stubMessageHandler)
+            {
+                BaseAddress = new Uri("http://127.0.0.1")
+            };
+            var scraper = new BestForPuzzlesUsualSuspectDataScraper(httpClient, mockRepository.Object, mockUrlBuilder.Object);
+            await scraper.Scrape();
+
+            mockRepository.Verify(repo => repo.AddContainerIndicator(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(6));
+            mockRepository.Verify(repo => repo.AddContainerIndicator("within", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddContainerIndicator("without", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddContainerIndicator("wrap", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddContainerIndicator("wrapping", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddContainerIndicator("wrapped", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddContainerIndicator("wraps", It.IsAny<string>()));
+        }
     }
 
     public class StubMessageHandler : DelegatingHandler

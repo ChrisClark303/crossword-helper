@@ -60,29 +60,40 @@ namespace CrosswordHelper.Data.Import
                             var description = nextNode.InnerText;
                             var anchor = nextNode.SelectSingleNode("./a");
                             var wordType = anchor.InnerText;
+                            var substitutions = nextNode.SelectNodes("./strong");
                             words.Add(new WordData()
                             {
                                 Word = word,
                                 WordType = _wordTypeMaps[wordType],
-                                Description = description
+                                Description = description,
+                                Substitutions = substitutions.Select(n => n.InnerText).ToArray()
                             });
                         }
                     }
                 }
             }
 
-            AddIndicatorsByType(words, WordType.Anagram, (indicator) => _managerRepository.AddAnagramIndictor(indicator.Word, indicator.Description));
-            AddIndicatorsByType(words, WordType.Reversal, (indicator) => _managerRepository.AddReversalIndicator(indicator.Word, indicator.Description));
-            AddIndicatorsByType(words, WordType.Removal, (indicator) => _managerRepository.AddRemovalIndicator(indicator.Word, indicator.Description));
-            AddIndicatorsByType(words, WordType.Container, (indicator) => _managerRepository.AddContainerIndicator(indicator.Word, indicator.Description));
+            AddIndicatorsByType(words, WordType.Anagram, _managerRepository.AddAnagramIndictor);
+            AddIndicatorsByType(words, WordType.Reversal, _managerRepository.AddReversalIndicator);
+            AddIndicatorsByType(words, WordType.Removal, _managerRepository.AddRemovalIndicator);
+            AddIndicatorsByType(words, WordType.Container, _managerRepository.AddContainerIndicator);
         }
   
-        private void AddIndicatorsByType(List<WordData> words, WordType wordType, Action<WordData> dataHandler)
+        private void AddIndicatorsByType(List<WordData> words, WordType wordType, Action<string,string> dataHandler)
         {
             var indicators = words.Where(w => w.WordType == wordType);
             foreach (var indicator in indicators)
             {
-                dataHandler(indicator);
+                dataHandler(indicator.Word!, indicator.Description!);
+            }
+        }
+
+        private void AddIndicatorsByType(List<WordData> words, WordType wordType, Action<string,string[]> dataHandler)
+        {
+            var indicators = words.Where(w => w.WordType == wordType);
+            foreach (var indicator in indicators)
+            {
+                dataHandler(indicator.Word!, indicator.Substitutions);
             }
         }
     }
@@ -92,6 +103,7 @@ namespace CrosswordHelper.Data.Import
         public string? Word { get; set; }
         public WordType WordType { get; set; }
         public string? Description { get; set; }
+        public string[] Substitutions { get; set; }
     }
 
     public enum WordType

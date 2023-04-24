@@ -198,13 +198,38 @@ namespace CrosswordHelper.Tests
             var scraper = new BestForPuzzlesUsualSuspectDataScraper(httpClient, mockRepository.Object, mockUrlBuilder.Object);
             await scraper.Scrape();
 
-            mockRepository.Verify(repo => repo.AddAUsualSuspect(It.IsAny<string>(), It.IsAny<string[]>()), Times.Exactly(6));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect(It.IsAny<string>(), It.IsAny<string[]>()), Times.Exactly(31));
             mockRepository.Verify(repo => repo.AddAUsualSuspect("wales", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
-            mockRepository.Verify(repo => repo.AddAUsualSuspect("wander", It.IsAny<string>()));
-            mockRepository.Verify(repo => repo.AddAUsualSuspect("wrap", It.IsAny<string>()));
-            mockRepository.Verify(repo => repo.AddAUsualSuspect("wrapping", It.IsAny<string>()));
-            mockRepository.Verify(repo => repo.AddAUsualSuspect("wrapped", It.IsAny<string>()));
-            mockRepository.Verify(repo => repo.AddAUsualSuspect("wraps", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("wander", It.Is<string[]>(s => s.Intersect(new[] { "ERR" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("watt", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("wed", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("wednesday", It.Is<string[]>(s => s.Intersect(new[] { "W","WED" }).Count() == 2)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("week", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("weekend", It.Is<string[]>(s => s.Intersect(new[] { "K" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("weight", It.Is<string[]>(s => s.Intersect(new[] { "W","OZ","LB","DRAM","TON" }).Count() == 5)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("welsh", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("welshman", It.Is<string[]>(s => s.Intersect(new[] { "DAI" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("west", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("western", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("west indies", It.Is<string[]>(s => s.Intersect(new[] { "WI" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("whiskey", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("wicket", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("wide", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("width", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("wife", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("wingtip", It.Is<string[]>(s => s.Intersect(new[] { "G" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("with", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("wizard place", It.Is<string[]>(s => s.Intersect(new[] { "OZ" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("wolfram", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("woman", It.Is<string[]>(s => s.Intersect(new[] { "HER", "SHE" }).Count() == 2)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("won", It.Is<string[]>(s => s.Intersect(new[] { "W" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("work", It.Is<string[]>(s => s.Intersect(new[] { "W", "OP" }).Count() == 2)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("worker", It.Is<string[]>(s => s.Intersect(new[] { "ANT", "BEE" }).Count() == 2)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("wrath", It.Is<string[]>(s => s.Intersect(new[] { "IRE" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("write", It.Is<string[]>(s => s.Intersect(new[] { "PEN" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("writer", It.Is<string[]>(s => s.Intersect(new[] { "PEN" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("writing", It.Is<string[]>(s => s.Intersect(new[] { "MS" }).Count() == 1)));
+            mockRepository.Verify(repo => repo.AddAUsualSuspect("wrong", It.Is<string[]>(s => s.Intersect(new[] { "X", "SIN", "TORT" }).Count() == 3)));
         }
     }
 

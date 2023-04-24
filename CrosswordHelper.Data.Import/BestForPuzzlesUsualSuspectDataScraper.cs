@@ -66,7 +66,7 @@ namespace CrosswordHelper.Data.Import
                                 Word = word,
                                 WordType = _wordTypeMaps[wordType],
                                 Description = description,
-                                Substitutions = substitutions.Select(n => n.InnerText).ToArray()
+                                Substitutions = substitutions?.Select(n => n.InnerText)?.ToArray()
                             });
                         }
                     }
@@ -77,6 +77,7 @@ namespace CrosswordHelper.Data.Import
             AddIndicatorsByType(words, WordType.Reversal, _managerRepository.AddReversalIndicator);
             AddIndicatorsByType(words, WordType.Removal, _managerRepository.AddRemovalIndicator);
             AddIndicatorsByType(words, WordType.Container, _managerRepository.AddContainerIndicator);
+            AddIndicatorsByType(words, WordType.UsualSuspect, _managerRepository.AddAUsualSuspect);
         }
   
         private void AddIndicatorsByType(List<WordData> words, WordType wordType, Action<string,string> dataHandler)
@@ -93,7 +94,10 @@ namespace CrosswordHelper.Data.Import
             var indicators = words.Where(w => w.WordType == wordType);
             foreach (var indicator in indicators)
             {
-                dataHandler(indicator.Word!, indicator.Substitutions);
+                if (indicator.Substitutions != null) 
+                {
+                    dataHandler(indicator.Word!, indicator.Substitutions);
+                }
             }
         }
     }

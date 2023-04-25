@@ -33,51 +33,7 @@ app.UseCors(options =>
     options.AllowAnyMethod();
 });
 
-app.MapGet("/help/{crosswordClue}", (string crosswordClue,[FromServices]ICrosswordHelperService helperService) =>
-{
-    return helperService.Help(crosswordClue);
-})
-.WithName("GetCrosswordHelp");
-app.MapGet("/help/anagram-indicators", ([FromServices] ICrosswordHelperService helperService) =>
-{
-    return helperService.GetAnagramIndicators();
-})
-.WithName("GetAnagramIndicators");
-app.MapGet("/help/removal-indicators", ([FromServices] ICrosswordHelperService helperService) =>
-{
-    return helperService.GetRemovalIndicators();
-})
-.WithName("GetRemovalIndicators");
-app.MapGet("/help/reversal-indicators", ([FromServices] ICrosswordHelperService helperService) =>
-{
-    return helperService.GetReversalIndicators();
-})
-.WithName("GetReversalIndicators");
-app.MapGet("/help/container-indicators", ([FromServices] ICrosswordHelperService helperService) =>
-{
-    return helperService.GetContainerIndicators();
-})
-.WithName("GetContainerIndicators");
-app.MapGet("/help/letter-selection-indicators", ([FromServices] ICrosswordHelperService helperService) =>
-{
-    return helperService.GetLetterSelectionIndicators();
-})
-.WithName("GetLetterSelectionIndicators");
-app.MapGet("/help/homophone-indicators", ([FromServices] ICrosswordHelperService helperService) =>
-{
-    return helperService.GetHomophoneIndicators();
-})
-.WithName("GetHomophoneIndicators");
-app.MapGet("/help/substitution-indicators", ([FromServices] ICrosswordHelperService helperService) =>
-{
-    return helperService.GetSubstitutionIndicators();
-})
-.WithName("GetSubstitutionIndicators");
-app.MapGet("/help/usual-suspects", ([FromServices] ICrosswordHelperService helperService) =>
-{
-    return helperService.GetUsualSuspects();
-})
-.WithName("GetUsualSuspects");
+app.BuildRoutes();
 app.MapControllers();
 
 app.Run();

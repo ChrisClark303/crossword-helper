@@ -10,6 +10,7 @@
         void AddLetterSelectionIndicator(string word, string notes = "");
         void AddHomophoneIndicator(string word, string notes = "");
         void AddSubstitutionIndicator(string word, string notes = "");
+        void AddHiddenWordIndicator(string word, string notes = "");
         void AddAUsualSuspect(string original, params string[] replacements);
     }
 }

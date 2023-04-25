@@ -5,7 +5,7 @@
 -- Dumped from database version 14.5 (Debian 14.5-1.pgdg110+1)
 -- Dumped by pg_dump version 15.1
 
--- Started on 2023-03-08 20:55:46
+-- Started on 2023-04-25 22:16:21
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,7 +19,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 3407 (class 1262 OID 16385)
+-- TOC entry 3420 (class 1262 OID 16385)
 -- Name: crossword_helper; Type: DATABASE; Schema: -; Owner: user
 --
 
@@ -52,7 +52,7 @@ SET row_security = off;
 ALTER SCHEMA public OWNER TO "user";
 
 --
--- TOC entry 228 (class 1255 OID 16386)
+-- TOC entry 229 (class 1255 OID 16386)
 -- Name: AddAnagramIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -72,7 +72,7 @@ $$;
 ALTER PROCEDURE public."AddAnagramIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 225 (class 1255 OID 16387)
+-- TOC entry 227 (class 1255 OID 16387)
 -- Name: AddContainerIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -90,7 +90,27 @@ $$;
 ALTER PROCEDURE public."AddContainerIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 229 (class 1255 OID 16388)
+-- TOC entry 236 (class 1255 OID 49250)
+-- Name: AddHiddenWordIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
+--
+
+CREATE PROCEDURE public."AddHiddenWordIndicators"(IN word text, IN notes text)
+    LANGUAGE sql
+    AS $$
+
+INSERT INTO public."HiddenWordIndicators"("Word", "Notes")
+	VALUES (word, notes)
+ON CONFLICT ("Word")
+	DO UPDATE
+	SET "Word" = word;
+
+$$;
+
+
+ALTER PROCEDURE public."AddHiddenWordIndicators"(IN word text, IN notes text) OWNER TO "user";
+
+--
+-- TOC entry 230 (class 1255 OID 16388)
 -- Name: AddHomophoneIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -109,7 +129,7 @@ $$;
 ALTER PROCEDURE public."AddHomophoneIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 230 (class 1255 OID 16389)
+-- TOC entry 231 (class 1255 OID 16389)
 -- Name: AddLetterSelectionIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -128,7 +148,7 @@ $$;
 ALTER PROCEDURE public."AddLetterSelectionIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 231 (class 1255 OID 16390)
+-- TOC entry 232 (class 1255 OID 16390)
 -- Name: AddRemovalIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -146,7 +166,7 @@ $$;
 ALTER PROCEDURE public."AddRemovalIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 232 (class 1255 OID 16391)
+-- TOC entry 233 (class 1255 OID 16391)
 -- Name: AddReversalIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -164,7 +184,7 @@ $$;
 ALTER PROCEDURE public."AddReversalIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 233 (class 1255 OID 32859)
+-- TOC entry 234 (class 1255 OID 32859)
 -- Name: AddSubstitutionIndicators(text, text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -184,27 +204,51 @@ $$;
 ALTER PROCEDURE public."AddSubstitutionIndicators"(IN word text, IN notes text) OWNER TO "user";
 
 --
--- TOC entry 226 (class 1255 OID 16392)
+-- TOC entry 261 (class 1255 OID 16392)
 -- Name: AddUsualSuspect(text, text[], text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
 CREATE PROCEDURE public."AddUsualSuspect"(IN word text, IN replacements text[], IN notes text)
-    LANGUAGE sql
+    LANGUAGE plpgsql
     AS $$
-
+Declare 
+	tempArray text[];
+Begin
 INSERT INTO public."UsualSuspects"("Word", "Replacements", "Notes")
 VALUES(word, replacements, notes) 
 ON CONFLICT ("Word") 
 DO 
-   UPDATE SET "Replacements" = array_cat("UsualSuspects"."Replacements", replacements)
-   
+   UPDATE SET "Replacements" = Array(SELECT DISTINCT unnest(array_cat("UsualSuspects"."Replacements", replacements)));
+End 
 $$;
 
 
 ALTER PROCEDURE public."AddUsualSuspect"(IN word text, IN replacements text[], IN notes text) OWNER TO "user";
 
 --
--- TOC entry 227 (class 1255 OID 16393)
+-- TOC entry 260 (class 1255 OID 49240)
+-- Name: AddUsualSuspectTest(text, text[], text); Type: PROCEDURE; Schema: public; Owner: user
+--
+
+CREATE PROCEDURE public."AddUsualSuspectTest"(IN word text, IN replacements text[], IN notes text)
+    LANGUAGE plpgsql
+    AS $$
+Declare 
+	tempArray text[];
+Begin
+INSERT INTO public."UsualSuspects"("Word", "Replacements", "Notes")
+VALUES(word, replacements, notes) 
+ON CONFLICT ("Word") 
+DO 
+   UPDATE SET "Replacements" = Array(SELECT DISTINCT unnest(array_cat("UsualSuspects"."Replacements", replacements)));
+End 
+$$;
+
+
+ALTER PROCEDURE public."AddUsualSuspectTest"(IN word text, IN replacements text[], IN notes text) OWNER TO "user";
+
+--
+-- TOC entry 228 (class 1255 OID 16393)
 -- Name: GetAnagramIndicators(); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -223,7 +267,7 @@ $_$;
 ALTER PROCEDURE public."GetAnagramIndicators"() OWNER TO "user";
 
 --
--- TOC entry 235 (class 1255 OID 16394)
+-- TOC entry 237 (class 1255 OID 16394)
 -- Name: GetWordMatches(text); Type: PROCEDURE; Schema: public; Owner: user
 --
 
@@ -255,7 +299,7 @@ $_$;
 ALTER PROCEDURE public."GetWordMatches"(IN word text) OWNER TO "user";
 
 --
--- TOC entry 239 (class 1255 OID 16395)
+-- TOC entry 242 (class 1255 OID 16395)
 -- Name: arraytest(text[]); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -267,7 +311,7 @@ CREATE FUNCTION public.arraytest(testarray text[]) RETURNS text[]
 ALTER FUNCTION public.arraytest(testarray text[]) OWNER TO "user";
 
 --
--- TOC entry 248 (class 1255 OID 16396)
+-- TOC entry 251 (class 1255 OID 16396)
 -- Name: checkcrosswordclue(text[]); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -312,7 +356,7 @@ $$;
 ALTER FUNCTION public.checkcrosswordclue(words text[]) OWNER TO "user";
 
 --
--- TOC entry 249 (class 1255 OID 16397)
+-- TOC entry 252 (class 1255 OID 16397)
 -- Name: getanagramindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -331,7 +375,7 @@ $_$;
 ALTER FUNCTION public.getanagramindicators() OWNER TO "user";
 
 --
--- TOC entry 250 (class 1255 OID 16398)
+-- TOC entry 253 (class 1255 OID 16398)
 -- Name: getcontainerindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -350,7 +394,26 @@ $_$;
 ALTER FUNCTION public.getcontainerindicators() OWNER TO "user";
 
 --
--- TOC entry 251 (class 1255 OID 16399)
+-- TOC entry 238 (class 1255 OID 49252)
+-- Name: gethiddenwordindicators(); Type: FUNCTION; Schema: public; Owner: user
+--
+
+CREATE FUNCTION public.gethiddenwordindicators() RETURNS TABLE(id integer, word text, notes text)
+    LANGUAGE sql
+    AS $_$
+
+SELECT "Id", "Word", "Notes"
+	FROM public."HiddenWordIndicators";
+
+/*END $$;*/
+
+$_$;
+
+
+ALTER FUNCTION public.gethiddenwordindicators() OWNER TO "user";
+
+--
+-- TOC entry 254 (class 1255 OID 16399)
 -- Name: gethomophoneindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -369,7 +432,7 @@ $_$;
 ALTER FUNCTION public.gethomophoneindicators() OWNER TO "user";
 
 --
--- TOC entry 252 (class 1255 OID 16400)
+-- TOC entry 255 (class 1255 OID 16400)
 -- Name: getletterselectionindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -388,7 +451,7 @@ $_$;
 ALTER FUNCTION public.getletterselectionindicators() OWNER TO "user";
 
 --
--- TOC entry 253 (class 1255 OID 16401)
+-- TOC entry 256 (class 1255 OID 16401)
 -- Name: getremovalindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -407,7 +470,7 @@ $_$;
 ALTER FUNCTION public.getremovalindicators() OWNER TO "user";
 
 --
--- TOC entry 254 (class 1255 OID 16402)
+-- TOC entry 257 (class 1255 OID 16402)
 -- Name: getreversalindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -426,7 +489,7 @@ $_$;
 ALTER FUNCTION public.getreversalindicators() OWNER TO "user";
 
 --
--- TOC entry 234 (class 1255 OID 32860)
+-- TOC entry 235 (class 1255 OID 32860)
 -- Name: getsubstitutionindicators(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -445,7 +508,7 @@ $_$;
 ALTER FUNCTION public.getsubstitutionindicators() OWNER TO "user";
 
 --
--- TOC entry 255 (class 1255 OID 16403)
+-- TOC entry 258 (class 1255 OID 16403)
 -- Name: getusualsuspects(); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -464,7 +527,7 @@ $_$;
 ALTER FUNCTION public.getusualsuspects() OWNER TO "user";
 
 --
--- TOC entry 256 (class 1255 OID 16404)
+-- TOC entry 259 (class 1255 OID 16404)
 -- Name: getwordmatches(text); Type: FUNCTION; Schema: public; Owner: user
 --
 
@@ -526,7 +589,7 @@ CREATE SEQUENCE public."AnagramIndicators_Id_seq"
 ALTER TABLE public."AnagramIndicators_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3409 (class 0 OID 0)
+-- TOC entry 3422 (class 0 OID 0)
 -- Dependencies: 210
 -- Name: AnagramIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
@@ -564,13 +627,42 @@ CREATE SEQUENCE public."ContainerIndicators_Id_seq"
 ALTER TABLE public."ContainerIndicators_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3410 (class 0 OID 0)
+-- TOC entry 3423 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: ContainerIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
 
 ALTER SEQUENCE public."ContainerIndicators_Id_seq" OWNED BY public."ContainerIndicators"."Id";
 
+
+--
+-- TOC entry 225 (class 1259 OID 49241)
+-- Name: HiddenWordIndicators_Id_seq; Type: SEQUENCE; Schema: public; Owner: user
+--
+
+CREATE SEQUENCE public."HiddenWordIndicators_Id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 32767
+    CACHE 1;
+
+
+ALTER TABLE public."HiddenWordIndicators_Id_seq" OWNER TO "user";
+
+--
+-- TOC entry 226 (class 1259 OID 49242)
+-- Name: HiddenWordIndicators; Type: TABLE; Schema: public; Owner: user
+--
+
+CREATE TABLE public."HiddenWordIndicators" (
+    "Id" smallint DEFAULT nextval('public."HiddenWordIndicators_Id_seq"'::regclass) NOT NULL,
+    "Word" text,
+    "Notes" text
+);
+
+
+ALTER TABLE public."HiddenWordIndicators" OWNER TO "user";
 
 --
 -- TOC entry 213 (class 1259 OID 16417)
@@ -660,7 +752,7 @@ CREATE SEQUENCE public."RemovalIndicators_Id_seq"
 ALTER TABLE public."RemovalIndicators_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3411 (class 0 OID 0)
+-- TOC entry 3424 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: RemovalIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
@@ -698,7 +790,7 @@ CREATE SEQUENCE public."ReversalIndicators_Id_seq"
 ALTER TABLE public."ReversalIndicators_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3412 (class 0 OID 0)
+-- TOC entry 3425 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: ReversalIndicators_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
@@ -766,7 +858,7 @@ CREATE SEQUENCE public."UsualSuspects_Id_seq"
 ALTER TABLE public."UsualSuspects_Id_seq" OWNER TO "user";
 
 --
--- TOC entry 3413 (class 0 OID 0)
+-- TOC entry 3426 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: UsualSuspects_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
@@ -775,7 +867,7 @@ ALTER SEQUENCE public."UsualSuspects_Id_seq" OWNED BY public."UsualSuspects"."Id
 
 
 --
--- TOC entry 3223 (class 2604 OID 16449)
+-- TOC entry 3231 (class 2604 OID 16449)
 -- Name: AnagramIndicators Id; Type: DEFAULT; Schema: public; Owner: user
 --
 
@@ -783,7 +875,7 @@ ALTER TABLE ONLY public."AnagramIndicators" ALTER COLUMN "Id" SET DEFAULT nextva
 
 
 --
--- TOC entry 3224 (class 2604 OID 16450)
+-- TOC entry 3232 (class 2604 OID 16450)
 -- Name: ContainerIndicators Id; Type: DEFAULT; Schema: public; Owner: user
 --
 
@@ -791,7 +883,7 @@ ALTER TABLE ONLY public."ContainerIndicators" ALTER COLUMN "Id" SET DEFAULT next
 
 
 --
--- TOC entry 3227 (class 2604 OID 16451)
+-- TOC entry 3235 (class 2604 OID 16451)
 -- Name: RemovalIndicators Id; Type: DEFAULT; Schema: public; Owner: user
 --
 
@@ -799,7 +891,7 @@ ALTER TABLE ONLY public."RemovalIndicators" ALTER COLUMN "Id" SET DEFAULT nextva
 
 
 --
--- TOC entry 3228 (class 2604 OID 16452)
+-- TOC entry 3236 (class 2604 OID 16452)
 -- Name: ReversalIndicators Id; Type: DEFAULT; Schema: public; Owner: user
 --
 
@@ -807,7 +899,7 @@ ALTER TABLE ONLY public."ReversalIndicators" ALTER COLUMN "Id" SET DEFAULT nextv
 
 
 --
--- TOC entry 3229 (class 2604 OID 16453)
+-- TOC entry 3237 (class 2604 OID 16453)
 -- Name: UsualSuspects Id; Type: DEFAULT; Schema: public; Owner: user
 --
 
@@ -815,567 +907,691 @@ ALTER TABLE ONLY public."UsualSuspects" ALTER COLUMN "Id" SET DEFAULT nextval('p
 
 
 --
--- TOC entry 3386 (class 0 OID 16405)
+-- TOC entry 3397 (class 0 OID 16405)
 -- Dependencies: 209
 -- Data for Name: AnagramIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (1, 'Mixed', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (3, 'drunken', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (5, 'worked-up', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (6, 'mixed-up', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (7, 'inebriated', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (8, 'dizzy', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (9, 'muddled', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (10, 'murky', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (11, 'twizzled', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (12, 'diffused', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (13, 'roundabout', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (14, 'around', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (15, 'transformed', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (17, 'changed', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (18, 'twisted', NULL);
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (23, 'intricate', 'testing');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (24, 'broken', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (25, 'damaged', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (26, 'cooked', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (27, 'confused', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (28, 'upset', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (29, 'edited', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (30, 'ugly', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (31, 'insane', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (32, 'invented', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (33, 'engineered', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (34, 'out of sorts', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (35, 'designed', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (36, 'mishandled', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (37, 'drunk', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (38, 'built', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (39, 'versatile', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (40, 'rearranged', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (41, 'smashed', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (42, 'askew', 'From dummies');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (43, 'jumbled', '');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (48, 'eccentric', '');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (49, 'doctor', '');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (50, 'model', '');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (51, 'organised', '');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (52, 'reorganised', '');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (53, 'resort', '');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (54, 'wild', '');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (55, 'shattered.', '');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (56, 'new', '');
-INSERT INTO public."AnagramIndicators" ("Id", "Word", "Notes") VALUES (57, 'out', '');
+INSERT INTO public."AnagramIndicators" VALUES (1, 'Mixed', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (3, 'drunken', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (5, 'worked-up', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (6, 'mixed-up', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (7, 'inebriated', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (8, 'dizzy', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (9, 'muddled', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (10, 'murky', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (11, 'twizzled', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (12, 'diffused', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (13, 'roundabout', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (14, 'around', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (15, 'transformed', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (17, 'changed', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (18, 'twisted', NULL);
+INSERT INTO public."AnagramIndicators" VALUES (23, 'intricate', 'testing');
+INSERT INTO public."AnagramIndicators" VALUES (24, 'broken', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (25, 'damaged', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (26, 'cooked', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (27, 'confused', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (28, 'upset', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (29, 'edited', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (30, 'ugly', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (31, 'insane', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (32, 'invented', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (33, 'engineered', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (34, 'out of sorts', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (35, 'designed', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (36, 'mishandled', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (37, 'drunk', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (38, 'built', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (39, 'versatile', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (40, 'rearranged', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (41, 'smashed', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (42, 'askew', 'From dummies');
+INSERT INTO public."AnagramIndicators" VALUES (43, 'jumbled', '');
+INSERT INTO public."AnagramIndicators" VALUES (48, 'eccentric', '');
+INSERT INTO public."AnagramIndicators" VALUES (49, 'doctor', '');
+INSERT INTO public."AnagramIndicators" VALUES (50, 'model', '');
+INSERT INTO public."AnagramIndicators" VALUES (51, 'organised', '');
+INSERT INTO public."AnagramIndicators" VALUES (52, 'reorganised', '');
+INSERT INTO public."AnagramIndicators" VALUES (53, 'resort', '');
+INSERT INTO public."AnagramIndicators" VALUES (54, 'wild', '');
+INSERT INTO public."AnagramIndicators" VALUES (55, 'shattered.', '');
+INSERT INTO public."AnagramIndicators" VALUES (56, 'new', '');
+INSERT INTO public."AnagramIndicators" VALUES (57, 'out', '');
 
 
 --
--- TOC entry 3388 (class 0 OID 16411)
+-- TOC entry 3399 (class 0 OID 16411)
 -- Dependencies: 211
 -- Data for Name: ContainerIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (1, 'jailed', NULL);
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (2, 'contains', NULL);
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (3, 'within', NULL);
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (11, 'housing', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (12, 'acquiring', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (13, 'keeping', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (14, 'possessing', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (15, 'devouring', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (17, 'amidst', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (18, 'occupying', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (19, 'getting into', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (20, 'set in', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (21, 'some', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (23, 'Piece', 'as in, "piece of"');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (24, 'wears', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (25, 'in', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (26, 'inwardly', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (27, 'pick', 'as in, "pick from"');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (28, 'picks', 'as in, "picks from"');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (29, 'contained', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (30, 'about', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (32, 'filling', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (33, 'holds', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (34, 'holding', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (35, 'included', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (36, 'including', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (37, 'inside', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (38, 'outside', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (39, 'involved', 'as in "involved in"');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (40, 'kept', 'as in "kept in"');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (41, 'trapped', 'as in "trapped in"');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (42, 'around', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (43, 'caught', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (44, 'catching', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (45, 'circling', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (46, 'encircled', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (47, 'encircling', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (48, 'embraced', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (49, 'embracing', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (50, 'grasping', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (16, 'hugging', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (52, 'hugged', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (53, 'taken', 'as in "taken in" or "taken by"');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (54, 'wearing', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (31, 'without', '');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (56, 'buried', 'as in "buried in"');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (57, 'put', 'as in "put in"');
-INSERT INTO public."ContainerIndicators" ("Id", "Word", "Notes") VALUES (58, 'takes', '');
+INSERT INTO public."ContainerIndicators" VALUES (1, 'jailed', NULL);
+INSERT INTO public."ContainerIndicators" VALUES (2, 'contains', NULL);
+INSERT INTO public."ContainerIndicators" VALUES (3, 'within', NULL);
+INSERT INTO public."ContainerIndicators" VALUES (11, 'housing', '');
+INSERT INTO public."ContainerIndicators" VALUES (12, 'acquiring', '');
+INSERT INTO public."ContainerIndicators" VALUES (13, 'keeping', '');
+INSERT INTO public."ContainerIndicators" VALUES (14, 'possessing', '');
+INSERT INTO public."ContainerIndicators" VALUES (15, 'devouring', '');
+INSERT INTO public."ContainerIndicators" VALUES (17, 'amidst', '');
+INSERT INTO public."ContainerIndicators" VALUES (18, 'occupying', '');
+INSERT INTO public."ContainerIndicators" VALUES (19, 'getting into', '');
+INSERT INTO public."ContainerIndicators" VALUES (20, 'set in', '');
+INSERT INTO public."ContainerIndicators" VALUES (21, 'some', '');
+INSERT INTO public."ContainerIndicators" VALUES (23, 'Piece', 'as in, "piece of"');
+INSERT INTO public."ContainerIndicators" VALUES (24, 'wears', '');
+INSERT INTO public."ContainerIndicators" VALUES (25, 'in', '');
+INSERT INTO public."ContainerIndicators" VALUES (26, 'inwardly', '');
+INSERT INTO public."ContainerIndicators" VALUES (27, 'pick', 'as in, "pick from"');
+INSERT INTO public."ContainerIndicators" VALUES (28, 'picks', 'as in, "picks from"');
+INSERT INTO public."ContainerIndicators" VALUES (29, 'contained', '');
+INSERT INTO public."ContainerIndicators" VALUES (30, 'about', '');
+INSERT INTO public."ContainerIndicators" VALUES (32, 'filling', '');
+INSERT INTO public."ContainerIndicators" VALUES (33, 'holds', '');
+INSERT INTO public."ContainerIndicators" VALUES (34, 'holding', '');
+INSERT INTO public."ContainerIndicators" VALUES (35, 'included', '');
+INSERT INTO public."ContainerIndicators" VALUES (36, 'including', '');
+INSERT INTO public."ContainerIndicators" VALUES (37, 'inside', '');
+INSERT INTO public."ContainerIndicators" VALUES (38, 'outside', '');
+INSERT INTO public."ContainerIndicators" VALUES (39, 'involved', 'as in "involved in"');
+INSERT INTO public."ContainerIndicators" VALUES (40, 'kept', 'as in "kept in"');
+INSERT INTO public."ContainerIndicators" VALUES (41, 'trapped', 'as in "trapped in"');
+INSERT INTO public."ContainerIndicators" VALUES (42, 'around', '');
+INSERT INTO public."ContainerIndicators" VALUES (43, 'caught', '');
+INSERT INTO public."ContainerIndicators" VALUES (44, 'catching', '');
+INSERT INTO public."ContainerIndicators" VALUES (45, 'circling', '');
+INSERT INTO public."ContainerIndicators" VALUES (46, 'encircled', '');
+INSERT INTO public."ContainerIndicators" VALUES (47, 'encircling', '');
+INSERT INTO public."ContainerIndicators" VALUES (48, 'embraced', '');
+INSERT INTO public."ContainerIndicators" VALUES (49, 'embracing', '');
+INSERT INTO public."ContainerIndicators" VALUES (50, 'grasping', '');
+INSERT INTO public."ContainerIndicators" VALUES (16, 'hugging', '');
+INSERT INTO public."ContainerIndicators" VALUES (52, 'hugged', '');
+INSERT INTO public."ContainerIndicators" VALUES (53, 'taken', 'as in "taken in" or "taken by"');
+INSERT INTO public."ContainerIndicators" VALUES (54, 'wearing', '');
+INSERT INTO public."ContainerIndicators" VALUES (31, 'without', '');
+INSERT INTO public."ContainerIndicators" VALUES (56, 'buried', 'as in "buried in"');
+INSERT INTO public."ContainerIndicators" VALUES (57, 'put', 'as in "put in"');
+INSERT INTO public."ContainerIndicators" VALUES (58, 'takes', '');
 
 
 --
--- TOC entry 3391 (class 0 OID 16418)
+-- TOC entry 3414 (class 0 OID 49242)
+-- Dependencies: 226
+-- Data for Name: HiddenWordIndicators; Type: TABLE DATA; Schema: public; Owner: user
+--
+
+
+
+--
+-- TOC entry 3402 (class 0 OID 16418)
 -- Dependencies: 214
 -- Data for Name: HomophoneIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (1, 'air', 'as in, "on the air"');
-INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (2, 'broadcast', 'From dummies');
-INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (3, 'hear', 'From dummies');
-INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (4, 'said', 'From dummies');
-INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (5, 'declared', 'From dummies');
-INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (6, 'audibly', 'From dummies');
-INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (7, 'outspoken', 'From dummies');
-INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (8, 'reportedly', 'From dummies');
-INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (9, 'sounds', 'From dummies');
-INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (10, 'sounds like', 'From dummies');
-INSERT INTO public."HomophoneIndicators" ("Id", "Word", "Notes") VALUES (11, 'vocal', 'From dummies');
+INSERT INTO public."HomophoneIndicators" VALUES (1, 'air', 'as in, "on the air"');
+INSERT INTO public."HomophoneIndicators" VALUES (2, 'broadcast', 'From dummies');
+INSERT INTO public."HomophoneIndicators" VALUES (3, 'hear', 'From dummies');
+INSERT INTO public."HomophoneIndicators" VALUES (4, 'said', 'From dummies');
+INSERT INTO public."HomophoneIndicators" VALUES (5, 'declared', 'From dummies');
+INSERT INTO public."HomophoneIndicators" VALUES (6, 'audibly', 'From dummies');
+INSERT INTO public."HomophoneIndicators" VALUES (7, 'outspoken', 'From dummies');
+INSERT INTO public."HomophoneIndicators" VALUES (8, 'reportedly', 'From dummies');
+INSERT INTO public."HomophoneIndicators" VALUES (9, 'sounds', 'From dummies');
+INSERT INTO public."HomophoneIndicators" VALUES (10, 'sounds like', 'From dummies');
+INSERT INTO public."HomophoneIndicators" VALUES (11, 'vocal', 'From dummies');
 
 
 --
--- TOC entry 3393 (class 0 OID 16425)
+-- TOC entry 3404 (class 0 OID 16425)
 -- Dependencies: 216
 -- Data for Name: LetterSelectionIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (10, 'first', 'From Dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (11, 'head', 'From Dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (12, 'opener', 'From Dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (13, 'tail', 'From Dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (14, 'end', 'From Dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (15, 'conclusion', 'From Dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (16, 'half', 'From Dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (17, 'middle', 'From Dummies');
-INSERT INTO public."LetterSelectionIndicators" ("Id", "Word", "Notes") VALUES (18, 'centre', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" VALUES (10, 'first', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" VALUES (11, 'head', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" VALUES (12, 'opener', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" VALUES (13, 'tail', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" VALUES (14, 'end', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" VALUES (15, 'conclusion', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" VALUES (16, 'half', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" VALUES (17, 'middle', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" VALUES (18, 'centre', 'From Dummies');
+INSERT INTO public."LetterSelectionIndicators" VALUES (19, 'wings', 'may indicate the first and last letters of a word');
 
 
 --
--- TOC entry 3394 (class 0 OID 16431)
+-- TOC entry 3405 (class 0 OID 16431)
 -- Dependencies: 217
 -- Data for Name: RemovalIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (13, 'absent', 'From Dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (14, 'excluding', 'From Dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (15, 'losing', 'From Dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (16, 'not', 'From Dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (18, 'cut', 'From Dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (19, 'without', 'From Dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (20, 'short', 'From Dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (21, 'heartless', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (22, 'no', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (23, 'abandoned', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (24, 'abandoning', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (26, 'lacking', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (27, 'lacks', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (28, 'left out', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (29, 'omitting', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (30, 'omits', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (31, 'headless', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (32, 'decapitated', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (33, 'topless', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (34, 'endless', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (35, 'chopping', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (36, 'almost', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (37, 'curtailed', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (38, 'reduced', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (39, 'tailless', '');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (17, 'dropped', 'From Dummies');
-INSERT INTO public."RemovalIndicators" ("Id", "Word", "Notes") VALUES (25, 'dropping', '');
+INSERT INTO public."RemovalIndicators" VALUES (13, 'absent', 'From Dummies');
+INSERT INTO public."RemovalIndicators" VALUES (14, 'excluding', 'From Dummies');
+INSERT INTO public."RemovalIndicators" VALUES (15, 'losing', 'From Dummies');
+INSERT INTO public."RemovalIndicators" VALUES (16, 'not', 'From Dummies');
+INSERT INTO public."RemovalIndicators" VALUES (18, 'cut', 'From Dummies');
+INSERT INTO public."RemovalIndicators" VALUES (19, 'without', 'From Dummies');
+INSERT INTO public."RemovalIndicators" VALUES (20, 'short', 'From Dummies');
+INSERT INTO public."RemovalIndicators" VALUES (21, 'heartless', '');
+INSERT INTO public."RemovalIndicators" VALUES (22, 'no', '');
+INSERT INTO public."RemovalIndicators" VALUES (23, 'abandoned', '');
+INSERT INTO public."RemovalIndicators" VALUES (24, 'abandoning', '');
+INSERT INTO public."RemovalIndicators" VALUES (26, 'lacking', '');
+INSERT INTO public."RemovalIndicators" VALUES (27, 'lacks', '');
+INSERT INTO public."RemovalIndicators" VALUES (28, 'left out', '');
+INSERT INTO public."RemovalIndicators" VALUES (29, 'omitting', '');
+INSERT INTO public."RemovalIndicators" VALUES (30, 'omits', '');
+INSERT INTO public."RemovalIndicators" VALUES (31, 'headless', '');
+INSERT INTO public."RemovalIndicators" VALUES (32, 'decapitated', '');
+INSERT INTO public."RemovalIndicators" VALUES (33, 'topless', '');
+INSERT INTO public."RemovalIndicators" VALUES (34, 'endless', '');
+INSERT INTO public."RemovalIndicators" VALUES (35, 'chopping', '');
+INSERT INTO public."RemovalIndicators" VALUES (36, 'almost', '');
+INSERT INTO public."RemovalIndicators" VALUES (37, 'curtailed', '');
+INSERT INTO public."RemovalIndicators" VALUES (38, 'reduced', '');
+INSERT INTO public."RemovalIndicators" VALUES (39, 'tailless', '');
+INSERT INTO public."RemovalIndicators" VALUES (17, 'dropped', 'From Dummies');
+INSERT INTO public."RemovalIndicators" VALUES (25, 'dropping', '');
 
 
 --
--- TOC entry 3396 (class 0 OID 16437)
+-- TOC entry 3407 (class 0 OID 16437)
 -- Dependencies: 219
 -- Data for Name: ReversalIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (16, 'reversed', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (17, 'backward', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (18, 'around', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (19, 'backslide', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (20, 'brought about', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (21, 'come back', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (22, 'flipped over', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (23, 'going west', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (24, 'knocked over', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (25, 'reflected', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (26, 'rising', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (27, 'upwards', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (28, 'upward', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (29, 'held up', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (30, 'lifted', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (31, 'skyward', 'From Dummies');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (32, 'retreat', '');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (33, 'retreated', '');
-INSERT INTO public."ReversalIndicators" ("Id", "Word", "Notes") VALUES (34, 'rejected', '');
+INSERT INTO public."ReversalIndicators" VALUES (16, 'reversed', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (17, 'backward', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (18, 'around', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (19, 'backslide', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (20, 'brought about', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (21, 'come back', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (22, 'flipped over', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (23, 'going west', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (24, 'knocked over', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (25, 'reflected', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (26, 'rising', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (27, 'upwards', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (28, 'upward', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (29, 'held up', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (30, 'lifted', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (31, 'skyward', 'From Dummies');
+INSERT INTO public."ReversalIndicators" VALUES (32, 'retreat', '');
+INSERT INTO public."ReversalIndicators" VALUES (33, 'retreated', '');
+INSERT INTO public."ReversalIndicators" VALUES (34, 'rejected', '');
 
 
 --
--- TOC entry 3401 (class 0 OID 32851)
+-- TOC entry 3412 (class 0 OID 32851)
 -- Dependencies: 224
 -- Data for Name: SubstitutionIndicators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-INSERT INTO public."SubstitutionIndicators" ("Id", "Word", "Notes") VALUES (1, 'instead', 'as in "instead of"');
-INSERT INTO public."SubstitutionIndicators" ("Id", "Word", "Notes") VALUES (2, 'replaced', '');
-INSERT INTO public."SubstitutionIndicators" ("Id", "Word", "Notes") VALUES (3, 'replaces', '');
-INSERT INTO public."SubstitutionIndicators" ("Id", "Word", "Notes") VALUES (4, 'replacing', '');
-INSERT INTO public."SubstitutionIndicators" ("Id", "Word", "Notes") VALUES (5, 'in place of', '');
-INSERT INTO public."SubstitutionIndicators" ("Id", "Word", "Notes") VALUES (6, 'rather than', '');
-INSERT INTO public."SubstitutionIndicators" ("Id", "Word", "Notes") VALUES (7, 'swapping', '');
-INSERT INTO public."SubstitutionIndicators" ("Id", "Word", "Notes") VALUES (8, 'swapped', '');
+INSERT INTO public."SubstitutionIndicators" VALUES (1, 'instead', 'as in "instead of"');
+INSERT INTO public."SubstitutionIndicators" VALUES (2, 'replaced', '');
+INSERT INTO public."SubstitutionIndicators" VALUES (3, 'replaces', '');
+INSERT INTO public."SubstitutionIndicators" VALUES (4, 'replacing', '');
+INSERT INTO public."SubstitutionIndicators" VALUES (5, 'in place of', '');
+INSERT INTO public."SubstitutionIndicators" VALUES (6, 'rather than', '');
+INSERT INTO public."SubstitutionIndicators" VALUES (7, 'swapping', '');
+INSERT INTO public."SubstitutionIndicators" VALUES (8, 'swapped', '');
 
 
 --
--- TOC entry 3398 (class 0 OID 16443)
+-- TOC entry 3409 (class 0 OID 16443)
 -- Dependencies: 221
 -- Data for Name: UsualSuspects; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1382, '5', '{V}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1383, '10', '{X}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1385, '100', '{C}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1386, '1000', '{M}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1387, 'a', '{"PER (as in tuppence a/per pound, penny an/per ounce)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1388, 'an', '{"PER (as in tuppence a/per pound, penny an/per ounce)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1389, 'about', '{C,CE,RE}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1390, 'abstainer', '{"TT (Teetotaller)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1384, '50', '{L,"L (fifty in Roman numerals)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1391, 'account', '{AC}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1392, 'act', '{DO}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1393, 'actors', '{CAST}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1394, 'against', '{"V (versus)",V,VS}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1396, 'airman', '{"AC (aircraftsman)","LAC (leading aircraftsman)","PO (pilot Officer)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1397, 'airmen', '{"RAF (Royal Air Force)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1398, 'alien', '{"ET (Extra-Terrestrial - movie)",ET}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1400, 'ambassador', '{"HE (His Excellency)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1401, 'Anglican', '{"CE (Church of England)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1402, 'Anglicans', '{"CE (Church of England)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1403, 'Anglo-Saxon', '{AS}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1404, 'answer', '{A}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1405, 'Arabic', '{AR}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1406, 'article', '{"A, AN (indefinite articles)","THE (definite article)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1407, 'artist', '{"RA (Royal Academy)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1408, 'Asian', '{"E (Eastern)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1409, 'banker', '{"name of a river, e.g. CAM, DEE, DON, PO","see also flower and runner"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1410, 'bass', '{B}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1411, 'bearing', '{"E, N, S, W (compass bearings)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1412, 'beer', '{ALE}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1413, 'beginner', '{L}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1414, 'bend', '{S,U}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1415, 'bible', '{"AV (Authorised Version aka the King James Bible)","RV (Revised Version)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1416, 'bill', '{"A/C (account)","ACT (legal)","TAB (tabulation)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1417, 'bird', '{"any one of the many species of bird, including, but not limited to, AUK, EMU, JAY, OWL, TIT, CROW, DOVE, ERNE, GULL. HAWK, KIWI, KNOT, LARK, MINA, MYNA, RAIL, RHEA, ROOK, RUFF, SKUA, SWAN, TERN & WREN","TIME (in prison / Cockney rhyming slang bird lime)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1418, 'bishop', '{"B (chess notation)","RR (Right Reverend)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1419, 'blood', '{A,B,AB,O}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1420, 'book', '{B,"ACTS (book in the New Testament)","EDDA (Scandinavian book)","NT (New Testament)","OT (Old Testament)","VEDA (Hindu scripture)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1421, 'books', '{B,"ACTS (book in the New Testament)","EDDA (Scandinavian book)","NT (New Testament)","OT (Old Testament)","VEDA (Hindu scripture)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1422, 'boozer', '{"PH (public house)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1423, 'British', '{B,BR}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1424, 'broadcaster', '{"BBC (British Broadcasting Corporation)","RTE (Radio Telefis Éireann)",SKY}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1425, 'bury', '{INTER}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1426, 'by', '{"X (as in 2 by 3 ≡ 2 x 3)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1427, 'Capone', '{AL}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1428, 'cardinal', '{"HE (His Eminence)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1429, 'care', '{CO}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1430, 'castle', '{"R (rook)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1431, 'century', '{"C (one hundred in Roman numerals)",TON}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1432, 'chapter', '{C,CH}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1433, 'chessman', '{"B (bishop)","K (king)","N (knight)","P (pawn)","Q (queen)","R (rook)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1434, 'chief', '{CH}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1435, 'chimney', '{LUM}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1436, 'china', '{"MATE (Cockney rhyming slang china plate)",PAL}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1437, 'church', '{"CE (Church of England)","RC (Roman Catholic church)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1438, 'cigarette', '{FAG,TAB}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1439, 'city', '{"EC (postcode of the City of London)",ELY}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1440, 'cleaner', '{"CHAR (charlady, charwoman)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1441, 'closed', '{"TO (as in \"\"he pulled the door to behind him\"\")"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1442, 'club', '{BAT,"C (cards)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1444, 'clubs', '{"C (cards)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1445, 'code', '{MORSE}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1446, 'college', '{POLY}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1447, 'colourless', '{WAN}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1448, 'communist', '{RED}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1449, 'companion', '{"CH (Companion of Honour)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1450, 'concerning', '{RE}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1451, 'conservationist', '{"NT (National Trust)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1452, 'conservationists', '{"NT (National Trust)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1453, 'constant', '{"C (mathematical constant)","G (gravitational constant)","K (Boltzmann constant)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1454, 'cool', '{HIP}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1455, 'copper', '{"PC (Police Constable)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1456, 'corporation', '{"TUM (stomach)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1457, 'court', '{CT}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1458, 'criminal', '{"CON (convict)",LAG}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1459, 'cross', '{X}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1460, 'currency', '{"name of a river, e.g. CAM, DEE, PO"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1461, 'current', '{"I (symbol for electric current)","AC (alternating current)","DC (direct current)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1462, 'Cyprus', '{CY}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1463, 'daughter', '{D}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1464, 'debt', '{IOU(S)}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1465, 'debts', '{IOU(S)}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1466, 'degree', '{D,BA,MA}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1467, 'deliveries', '{"OVER (cricket)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1468, 'detective', '{"DC (Detective Constable)","DI (Detective Inspector)","DS (Detective Sergeant)","PI (Private Investigator)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1469, 'detectives', '{"CID (Criminal Investigation Department)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1470, 'diamond', '{"D (cards)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1471, 'diamonds', '{"D (cards)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1472, 'Diana', '{DI}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1473, 'dictionary', '{"OED (Oxford English Dictionary)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1474, 'direction', '{N,S,E,W}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1475, 'doctor', '{"GP (General Practitioner)","MB (Medicinae Baccalaureus / Bachelor of Medicine)","MD (Medicinae Doctor / Doctor of Medicine)","MO (Medical Officer)","NO (Doctor No - movie)","VET (veterinary surgeon)","WHO (Doctor Who - TV program)",DR,MB,MD,MO}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1477, 'doughboy', '{"GI (American soldier)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1478, 'dram', '{DR}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1479, 'drug', '{"E (ecstasy)","C (cocaine)","H (heroin)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1480, 'duck', '{"O (cricketing)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1481, 'economists', '{"LSE (London School of Economics)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1482, 'Edward', '{"ER (Edwardus Rex or King Edward)","ERI (Edwardus Rex Imperator or Edward King and Emperor)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1483, 'Elizabeth', '{E}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1484, 'employ', '{USE}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1485, 'engineer', '{"RE (Royal Engineers)","REME (Royal Electrical and Mechanical Engineers)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1486, 'engineers', '{"RE (Royal Engineers)","REME (Royal Electrical and Mechanical Engineers)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1487, 'English', '{E}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1488, 'exercise', '{"PE (Physical Exercise)","PT (Physical Training)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1489, 'exist', '{BE}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1490, 'expert', '{"ACE, DAB, PRO"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1491, 'fashion', '{CUT,FAD,TON}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1493, 'favourite', '{"PET (as in teacher''s pet)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1494, 'feathers', '{DOWN}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1495, 'female', '{F,SHE,HER}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1496, 'fifty', '{"L (fifty in Roman numerals)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1498, 'fighter', '{"MIG (Soviet Russian fighter aircraft)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1499, 'fine', '{"F (pencil)",OK}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1500, 'first', '{"IST (1st)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1501, 'fish', '{"ID, LING etc.",ID,LING,EEL,"COD etc."}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1503, 'five', '{"V (five in roman numerals)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1504, 'flag', '{"IRIS (plant)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1505, 'flier', '{"name of a bird, e.g. TIT, WREN"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1506, 'flyer', '{"name of a bird, e.g. TIT, WREN"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1507, 'fliers', '{"RAF (Royal Air Force)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1508, 'flower', '{"name of a river","see also banker"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1509, 'fool', '{ASS,CLOT,NIT,TWIT}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1510, 'footballers', '{"FA (Football Association)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1511, 'force', '{F}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1512, 'France', '{F}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1513, 'Frenchman', '{EMIL,FROG,RENÉ}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1514, 'front', '{VAN}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1515, 'gallery', '{"TATE (Tate Modern, Tate Britain, Tate Liverpool and Tate St Ives)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1516, 'game', '{"see sport"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1517, 'gangster', '{"AL (Al Capone)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1518, 'gas', '{"H (hydrogen)","CO (carbon monoxide)",""}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1519, 'George', '{G}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1520, 'Georgia', '{"GA (state)","GE (country)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1521, 'German', '{G}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1522, 'gold', '{AU,"OR (heraldry)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1523, 'good', '{G}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1524, 'graduate', '{"BA (Bachelor of Arts)","BSC (Bachelor of Science)","MA (Master of Arts)",MB}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1525, 'academic', '{"BA (Bachelor of Arts)","BSC (Bachelor of Science)","MA (Master of Arts)",MB}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1526, 'grunt', '{"GI (American soldier)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1527, 'Guevara', '{CHE}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1528, 'gunner', '{"RA (Royal Artillery)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1529, 'gunners', '{"RA (Royal Artillery)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1530, 'hand', '{"L (left) and/or R (right)","E (East) or N (North) or S (South) or W (West) - (bridge hands)",""}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1531, 'hands', '{"L (left) and/or R (right)","E (East) or N (North) or S (South) or W (West) - (bridge hands)",""}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1532, 'hard', '{"H (pencil)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1533, 'hat', '{TILE}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1534, 'heart', '{"H (cards)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1535, 'hearts', '{"H (cards)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1536, 'heather', '{LING}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1537, 'hexadecimal', '{HEX}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1538, 'home', '{IN}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1539, 'honour', '{"A, J, K, Q (honours in bridge)","CBE, CH, MBE, OBE (honours / awards)",OBE}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1541, 'hooligan', '{"TED (Teddy boy)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1542, 'hospital', '{"SAN (sanatorium)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1543, 'hour', '{HR}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1544, 'hug', '{O}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1545, 'hundred', '{"C (one hundred in Roman numerals)",TON}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1546, 'husband', '{H}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1547, 'hush', '{SH}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1548, 'information', '{DATA,DOPE,GEN}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1549, 'info', '{DATA,DOPE,GEN}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1550, 'island', '{"CAY, IONA","IOW (Isle of Wight)","KEY, MAN (Isle of Man)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1551, 'isle', '{"CAY, IONA","IOW (Isle of Wight)","KEY, MAN (Isle of Man)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1552, 'jolly', '{"RM (Royal Marine)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1553, 'journalist', '{"ED (editor)",HACK}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1554, 'judge', '{"REF (referee)",J}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1556, 'key', '{"A-G (musical keys)",ALT,DEL(ete),ESC(ape),INS,TAB}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1557, 'king', '{"HM (His Majesty)","LEAR (King Lear - Shakespeare)","see also \"\"Edward - King\"\", \"\"Edward - King and Emperor\"\", \"\"George – King\"\" and \"\"George - King and Emperor",K,ER}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1559, 'kiss', '{X}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1560, 'lake', '{L}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1492, 'fashionable', '{IN,HIP,IN}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1561, 'large', '{"OS (out-size)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1562, 'lawyer', '{"BL (Bachelor of Law)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1563, 'learner', '{"L (from the L-plate carried by learner drivers)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1564, 'letter', '{EF,EM,EL}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1565, 'Liberal', '{L}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1566, 'line', '{"L (l looks like a line)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1567, 'local', '{BAR,INN,"PH (Public House)",PUB}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1568, 'police', '{"MET (Metropolitan Police Service)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1569, 'loud', '{"F (forte)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1570, 'love', '{"O (a score of zero in tennis)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1571, 'low', '{"MOO (sound made by cattle)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1572, 'many', '{"C (one hundred in roman numerals)","D (five hundred in roman numerals)","K (Kilo - metric prefix for a thousand)","L (fifty in roman numerals)","M (one thousand in roman numerals)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1573, 'measure', '{"EM or EN (a unit of measurement equal to the width of the lower-case letter ‘m’ or ‘n’ in 12-point)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1575, 'medic', '{"MD (Medicinae Doctor / Doctor of Medicine)","MO (Medical Officer)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1576, 'member', '{ARM,LEG,"MP (Member of Parliament)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1577, 'men', '{"see soldiers"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1578, 'midday', '{"N (noon)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1579, 'miners', '{"NUM (National Union of Mineworkers)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1580, 'model', '{"T (Model T Ford)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1581, 'moment', '{MO}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1582, 'money', '{G}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1583, 'monsieur', '{M}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1584, 'months', '{MOS}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1585, 'motorists', '{"AA (Automobile Association)","RAC (Royal Automobile Club)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1586, 'motorway', '{MI}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1587, 'new', '{N}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1588, 'news', '{"NN (N[ew] + N[ew])"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1589, 'newspaper', '{"FT (Financial Times","RAG (low quality newspaper)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1590, 'newton', '{"N (unit)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1591, 'nil', '{"O (a score of zero in football)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1592, 'noon', '{N}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1593, 'note', '{"A - G (notes of the diatonic scale)","DO, DOH, FA, FAH, LA, LAH, ME, MI, RAY, RE, SI, SO, SOH, SOL, TE, TI, UT (notes of the scale in sol-fa notation)",MEMO,"PS (PostScript)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1594, 'nothing', '{O}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1595, 'notice', '{"AD (advertisement)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1596, 'number', '{"N (used in mathematical formulae)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1597, 'nurse', '{"EN (Enrolled Nurse)","SEN (State Enrolled Nurse - obsolescent)","SRN (State Registered Nurse - obsolescent)",""}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1598, 'ocean', '{O}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1599, 'old', '{EX}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1600, 'one', '{A,AN,"I (1)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1601, 'operation', '{OP}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1602, 'opponents', '{"bridge opponents: EN, ES, NE, NW, SE, SW, WN or WS (combinations of east, north, south and west)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1603, 'oriental', '{"E (from the East)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1604, 'partners', '{"bridge partners: EW, NS, SN, WE (combinations of east, north, south and west)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1605, 'party', '{BASH,"CON (Conservative)",DO,"LAB (Labour)","LIB (Liberal)",RAVE}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1606, 'pass', '{COL}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1607, 'peacekeeper', '{"UN (United Nations) or UNO (United Nations Organization)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1608, 'peacekeepers', '{"UN (United Nations) or UNO (United Nations Organization)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1609, 'penny', '{P}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1610, 'pet', '{CAT,DOG,SULK,TIFF}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1611, 'physicists', '{CERN,"NPL (National Physical Laboratory)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1612, 'piece', '{MAN,"see also chessman"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1613, 'playing', '{"ON (stage)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1614, 'point', '{N,E,S,"W (compass points)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1615, 'pole', '{"N, S, NS, SN (North and South poles)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1616, 'poles', '{"N, S, NS, SN (North and South poles)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1617, 'policeman', '{"COP (copper)","DI (Detective Inspector)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1618, 'politician', '{"MP (Member of Parliament)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1619, 'popular', '{IN}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1621, 'posh', '{"U (upper-class)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1622, 'power', '{P}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1623, 'presenter', '{"DJ (Disk Jockey)","MC (Master of Ceremonies)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1624, 'priest', '{"ELI (Old Testament)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1625, 'princess', '{DI}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1626, 'prison', '{CAN,JUG,NICK,"PEN (penitentiary)",STIR}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1627, 'prisoner', '{"CON (convict)",LAG}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1628, 'promotion', '{"AD (advertisement)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1629, 'prophet', '{AMOS,ELI}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1630, 'provided', '{IF}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1631, 'province', '{"NI (Province of Northern Ireland)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1632, 'quarter', '{N,NE,NW,E}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1633, 'Queen', '{"ER (Elizabeth Regina, Queen Elizabeth)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1634, 'queen', '{"CAT (female cat)","HM (Her Majesty)","see also \"\"Elizabeth - Queen\"\", \"\"Victoria - Queen\"\" and \"\"Victoria - Queen and Empress",R,Q,ER}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1636, 'quiet', '{"P (piano)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1637, 'record', '{"EP (extended play record)","LP (long play record)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1638, 'religious', '{"PI (shortened form of pious)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1639, 'resistance', '{"R (unit)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1574, 'space', '{"EM or EN (a unit of measurement equal to the width of the lower-case letter ‘m’ or ‘n’ in 12-point)","see measure"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1640, 'revolutionary', '{"CHE (Guevara)",RED}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1641, 'right', '{"LIEN (legal right)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1642, 'ring', '{O}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1643, 'river', '{R,EXE,DEE,PO,""}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1644, 'rogue', '{CUR}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1645, 'roughly', '{"CA (circa)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1646, 'round', '{O}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1647, 'runner', '{"name of a river","see also banker"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1648, 'sailor', '{"AB (Able-Bodied seaman)","OS (Ordinary Seaman)","PO (Petty Officer)",SALT,TAR}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1649, 'salt', '{"AB (Able-Bodied seaman)","OS (Ordinary Seaman)","PO (Petty Officer)",SALT,TAR}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1650, 'sailors', '{"RN (Royal Navy)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1651, 'salesman', '{"REP (representative)",TOUT}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1652, 'sapper', '{"RE (Royal Engineers)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1653, 'sappers', '{"RE (Royal Engineers)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1654, 'scientists', '{"RS (Royal Society, a body of eminent scientists)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1655, 'Scotsman', '{IAN,MAC}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1656, 'second', '{S}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1657, 'second-class', '{B}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1658, 'see', '{"ELY (diocese)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1659, 'service', '{"RAF (Royal Air Force)","RN (Royal Navy)","TREE (a Eurasian tree)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1660, 'sheep', '{EWE,LAMB,RAM,"TEG/TEGG (in second year)","TUP (ram)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1661, 'ship', '{"SS (steamship)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1662, 'ships', '{"SS (steamship)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1663, 'single', '{"I (1)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1664, 'smooth', '{IRON}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1665, 'socialite', '{"DEB (debutante)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1666, 'society', '{S}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1667, 'soft', '{"P (music)","B (pencil)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1668, 'soldier', '{"ANT (soldier ant)","GI (American soldier)",MAN,"PARA (paratrooper)","RA (Royal Artillery)","RE (Royal Engineers)",""}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1669, 'soldiers', '{MEN,"OR (Other Ranks)","RA (Royal Artillery)","RE (Royal Engineers)","plurals such as ANTS, GIS"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1670, 'son', '{S}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1672, 'spade', '{"S (cards)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1673, 'spades', '{"S (cards)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1674, 'spies', '{"CIA (Central Intelligence Agency)","MI (Military Intelligence)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1675, 'sport', '{"RL (Rugby League)","RU (Rugby Union)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1676, 'spy', '{MOLE}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1677, 'square', '{S}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1678, 'state', '{"one (or more) of the two-letter codes for US States"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1679, 'states', '{"one (or more) of the two-letter codes for US States"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1680, 'students', '{"NUS (National Union of Students)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1681, 'support', '{"TEE (a support for a golf ball)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1683, 'take', '{"R (℞ ≡ recipe [Latin for take])"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1684, 'tantrum', '{PET}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1685, 'tax', '{SCOT,"VAT (Value Added Tax)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1686, 'taxman', '{"IR (Inland Revenue)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1687, 'teachers', '{"NUT (National Union of Teachers)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1688, 'teetotal', '{TT}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1689, 'teetotaller', '{TT}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1690, 'temperature', '{T}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1691, 'ten', '{"IO (visual representation of 10)","X (ten in roman numerals)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1692, 'test', '{"MOT (A compulsory annual check made by order of the Ministry of Transport - now Department for Transport)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1693, 'thanks', '{TA}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1694, 'theologian', '{"DD (Divinitatis Doctor/Doctor of Divinity)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1695, 'thousand', '{"K (Kilo - metric prefix for a thousand)","M (one thousand in Roman numerals)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1696, 'tile', '{HAT}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1697, 'times', '{"BY (as in 2 times 3 ≡ 2 by 3)","TT (T[ime] + T[ime])","X (as in 2 times 3 ≡ 2 x 3)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1698, 'tom', '{"CAT (male cat)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1699, 'training', '{"PE (Physical Exercise)","PT (Physical Training)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1700, 'translator', '{TR}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1701, 'trendy', '{HIP}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1702, 'unknown', '{X,Y}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1703, 'variable', '{X,Y,"Z (mathematical variables)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1704, 'vase', '{MING}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1705, 'versus', '{V,VS}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1706, 'Victoria', '{"VIR (Victoria Imperatrix Regina, Victoria, Empress and Queen)","VRI (Victoria Regina et Imperatrix, Victoria, Queen and Empress)","VR (Victoria Regina, Queen Victoria)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1708, 'vitamin', '{A,B,"BI (B1)",C,etc.}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1709, 'volunteer', '{"TA (Territorial Army)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1710, 'volunteers', '{"TA (Territorial Army)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1711, 'vote', '{X}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1712, 'whistler', '{"REF (referee)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1713, 'wife', '{"RIB (from Bible Genesis 2.21–23)",W}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1714, 'will', '{"LL (contraction)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1715, 'wine', '{ASTI,CAVA,HOCK,RED,ROSÉ,SACK,SEC,TENT,VIN,VINO}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1682, 'supporter', '{"BRA (brassiere)",BRA}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1717, 'work', '{OP,"OPUS (a work, especially a musical composition)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1718, 'worker', '{"ANT (worker ant)","BEE (worker bee)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1719, 'workers', '{"TU (Trade Union)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1720, 'working', '{ON}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1721, 'writing', '{"MS (manuscript)","MSS (manuscripts)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1722, 'writings', '{"MS (manuscript)","MSS (manuscripts)"}', '');
-INSERT INTO public."UsualSuspects" ("Id", "Word", "Replacements", "Notes") VALUES (1723, 'year', '{Y}', '');
+INSERT INTO public."UsualSuspects" VALUES (2614, 'wednesday', '{WED,W}', '');
+INSERT INTO public."UsualSuspects" VALUES (2579, 'test', '{"MOT (A compulsory annual check made by order of the Ministry of Transport - now Department for Transport)",X,"X (eg, eXam)",T}', '');
+INSERT INTO public."UsualSuspects" VALUES (2605, 'victor', '{V}', '');
+INSERT INTO public."UsualSuspects" VALUES (2606, 'Victoria', '{"VIR (Victoria Imperatrix Regina, Victoria, Empress and Queen)","VRI (Victoria Regina et Imperatrix, Victoria, Queen and Empress)","VR (Victoria Regina, Queen Victoria)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2608, 'vitamin', '{A,B,"BI (B1)",C,D,E}', '');
+INSERT INTO public."UsualSuspects" VALUES (2609, 'volt', '{V}', '');
+INSERT INTO public."UsualSuspects" VALUES (2610, 'volume', '{V}', '');
+INSERT INTO public."UsualSuspects" VALUES (2611, 'volunteer', '{"TA (Territorial Army)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2612, 'volunteers', '{"TA (Territorial Army)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2613, 'vote', '{X}', '');
+INSERT INTO public."UsualSuspects" VALUES (2615, 'week', '{W}', '');
+INSERT INTO public."UsualSuspects" VALUES (2616, 'west', '{W}', '');
+INSERT INTO public."UsualSuspects" VALUES (2617, 'whiskey', '{W}', '');
+INSERT INTO public."UsualSuspects" VALUES (2618, 'whistler', '{"REF (referee)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2619, 'wide', '{W}', '');
+INSERT INTO public."UsualSuspects" VALUES (2620, 'width', '{W}', '');
+INSERT INTO public."UsualSuspects" VALUES (2621, 'wife', '{"RIB (from Bible Genesis 2.21–23)",W}', '');
+INSERT INTO public."UsualSuspects" VALUES (2622, 'will', '{"LL (contraction)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2623, 'wine', '{ASTI,CAVA,HOCK,RED,ROSÉ,SACK,SEC,TENT,VIN,VINO}', '');
+INSERT INTO public."UsualSuspects" VALUES (2624, 'without', '{WO}', '');
+INSERT INTO public."UsualSuspects" VALUES (2625, 'woman', '{SHE}', '');
+INSERT INTO public."UsualSuspects" VALUES (2562, 'supporter', '{"BRA (brassiere)",BRA}', '');
+INSERT INTO public."UsualSuspects" VALUES (2627, 'work', '{OP,"OPUS (a work, especially a musical composition)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2628, 'worker', '{"ANT (worker ant)","BEE (worker bee)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2629, 'workers', '{"TU (Trade Union)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2630, 'working', '{ON}', '');
+INSERT INTO public."UsualSuspects" VALUES (2631, 'writing', '{"MS (manuscript)","MSS (manuscripts)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2632, 'writings', '{"MS (manuscript)","MSS (manuscripts)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2633, 'x-ray', '{X}', '');
+INSERT INTO public."UsualSuspects" VALUES (2634, 'yankee', '{Y}', '');
+INSERT INTO public."UsualSuspects" VALUES (2635, 'year', '{Y,YR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2636, 'you', '{"YE (old/archaic)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2637, 'zulu', '{Z}', '');
+INSERT INTO public."UsualSuspects" VALUES (2239, 'century', '{"C (one hundred in Roman numerals)",TON,C}', '');
+INSERT INTO public."UsualSuspects" VALUES (2242, 'chapter', '{C,CH}', '');
+INSERT INTO public."UsualSuspects" VALUES (2243, 'chessman', '{"B (bishop)","K (king)","N (knight)","P (pawn)","Q (queen)","R (rook)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2244, 'chief', '{CH}', '');
+INSERT INTO public."UsualSuspects" VALUES (2245, 'chimney', '{LUM}', '');
+INSERT INTO public."UsualSuspects" VALUES (2246, 'china', '{"MATE (Cockney rhyming slang china plate)",PAL}', '');
+INSERT INTO public."UsualSuspects" VALUES (2247, 'christ', '{X}', '');
+INSERT INTO public."UsualSuspects" VALUES (2248, 'church', '{"CE (Church of England)","RC (Roman Catholic church)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2249, 'cigarette', '{FAG,TAB}', '');
+INSERT INTO public."UsualSuspects" VALUES (2250, 'city', '{"EC (postcode of the City of London)",ELY}', '');
+INSERT INTO public."UsualSuspects" VALUES (2181, '5', '{V}', '');
+INSERT INTO public."UsualSuspects" VALUES (2182, '10', '{X}', '');
+INSERT INTO public."UsualSuspects" VALUES (2184, '100', '{C}', '');
+INSERT INTO public."UsualSuspects" VALUES (2185, '1000', '{M}', '');
+INSERT INTO public."UsualSuspects" VALUES (2186, 'a', '{"PER (as in tuppence a/per pound, penny an/per ounce)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2187, 'an', '{"PER (as in tuppence a/per pound, penny an/per ounce)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2188, 'about', '{C,CE,RE}', '');
+INSERT INTO public."UsualSuspects" VALUES (2189, 'abstainer', '{"TT (Teetotaller)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2191, 'account', '{AC}', '');
+INSERT INTO public."UsualSuspects" VALUES (2192, 'act', '{DO,DEED}', '');
+INSERT INTO public."UsualSuspects" VALUES (2193, 'actors', '{CAST}', '');
+INSERT INTO public."UsualSuspects" VALUES (2194, 'against', '{V,VS}', '');
+INSERT INTO public."UsualSuspects" VALUES (2195, 'airman', '{"AC (aircraftsman)","LAC (leading aircraftsman)","PO (pilot Officer)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2196, 'airmen', '{"RAF (Royal Air Force)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2197, 'alien', '{"ET (Extra-Terrestrial - movie)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2198, 'alpha', '{A}', '');
+INSERT INTO public."UsualSuspects" VALUES (2199, 'alto', '{A}', '');
+INSERT INTO public."UsualSuspects" VALUES (2200, 'ambassador', '{"HE (His Excellency)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2201, 'Anglican', '{"CE (Church of England)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2202, 'Anglicans', '{"CE (Church of England)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2203, 'Anglo-Saxon', '{AS}', '');
+INSERT INTO public."UsualSuspects" VALUES (2204, 'answer', '{A}', '');
+INSERT INTO public."UsualSuspects" VALUES (2205, 'antique', '{OLD}', '');
+INSERT INTO public."UsualSuspects" VALUES (2206, 'arabic', '{AR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2207, 'article', '{"A, AN (indefinite articles)","THE (definite article)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2208, 'artist', '{"RA (Royal Academy)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2209, 'Asian', '{"E (Eastern)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2210, 'bachelor', '{BA,B}', '');
+INSERT INTO public."UsualSuspects" VALUES (2211, 'banker', '{"name of a river, e.g. CAM, DEE, DON, PO","see also flower and runner"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2212, 'bass', '{B}', '');
+INSERT INTO public."UsualSuspects" VALUES (2213, 'bearing', '{"E, N, S, W (compass bearings)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2214, 'beer', '{ALE}', '');
+INSERT INTO public."UsualSuspects" VALUES (2215, 'beginner', '{L,L}', '');
+INSERT INTO public."UsualSuspects" VALUES (2217, 'bend', '{S,U}', '');
+INSERT INTO public."UsualSuspects" VALUES (2218, 'beware', '{CAVE}', '');
+INSERT INTO public."UsualSuspects" VALUES (2219, 'bible', '{"AV (Authorised Version aka the King James Bible)","RV (Revised Version)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2220, 'big', '{OS}', '');
+INSERT INTO public."UsualSuspects" VALUES (2221, 'bill', '{"AC (account)","ACT (legal)","TAB (tabulation)",IOU}', '');
+INSERT INTO public."UsualSuspects" VALUES (2222, 'bird', '{"any one of the many species of bird, including, but not limited to, AUK, EMU, JAY, OWL, TIT, CROW, DOVE, ERNE, GULL. HAWK, KIWI, KNOT, LARK, MINA, MYNA, RAIL, RHEA, ROOK, RUFF, SKUA, SWAN, TERN & WREN","TIME (in prison / Cockney rhyming slang bird lime)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2223, 'bishop', '{"B (chess notation)","RR (Right Reverend)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2224, 'blood', '{A,B,AB,O}', '');
+INSERT INTO public."UsualSuspects" VALUES (2225, 'bob', '{"S (for shilliing)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2226, 'book', '{B,"ACTS (book in the New Testament)","EDDA (Scandinavian book)","NT (New Testament)","OT (Old Testament)","VEDA (Hindu scripture)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2227, 'books', '{B,"ACTS (book in the New Testament)","EDDA (Scandinavian book)","NT (New Testament)","OT (Old Testament)","VEDA (Hindu scripture)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2228, 'boozer', '{"PH (public house)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2229, 'bravo', '{B}', '');
+INSERT INTO public."UsualSuspects" VALUES (2230, 'british', '{B,BR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2231, 'broadcaster', '{"BBC (British Broadcasting Corporation)","RTE (Radio Telefis Éireann)",SKY}', '');
+INSERT INTO public."UsualSuspects" VALUES (2232, 'burger', '{MAC}', '');
+INSERT INTO public."UsualSuspects" VALUES (2233, 'bury', '{INTER}', '');
+INSERT INTO public."UsualSuspects" VALUES (2234, 'by', '{"X (as in 2 by 3 ≡ 2 x 3)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2235, 'capone', '{AL}', '');
+INSERT INTO public."UsualSuspects" VALUES (2236, 'cardinal', '{"HE (His Eminence)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2237, 'care', '{CO}', '');
+INSERT INTO public."UsualSuspects" VALUES (2238, 'castle', '{"R (rook)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2240, 'catholic', '{C}', '');
+INSERT INTO public."UsualSuspects" VALUES (2252, 'circle', '{O}', '');
+INSERT INTO public."UsualSuspects" VALUES (2253, 'circuit', '{O}', '');
+INSERT INTO public."UsualSuspects" VALUES (2254, 'cleaner', '{"CHAR (charlady, charwoman)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2255, 'clef', '{C,F}', '');
+INSERT INTO public."UsualSuspects" VALUES (2256, 'closed', '{"TO (as in \"\"he pulled the door to behind him\"\")"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2257, 'club', '{BAT,"C (cards)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2259, 'clubs', '{"C (cards)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2260, 'code', '{MORSE}', '');
+INSERT INTO public."UsualSuspects" VALUES (2261, 'college', '{POLY}', '');
+INSERT INTO public."UsualSuspects" VALUES (2262, 'colourless', '{WAN}', '');
+INSERT INTO public."UsualSuspects" VALUES (2263, 'communist', '{RED}', '');
+INSERT INTO public."UsualSuspects" VALUES (2264, 'companion', '{"CH (Companion of Honour)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2265, 'concerning', '{RE}', '');
+INSERT INTO public."UsualSuspects" VALUES (2266, 'conservationist', '{"NT (National Trust)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2267, 'conservationists', '{"NT (National Trust)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2268, 'conservative', '{C,CON}', '');
+INSERT INTO public."UsualSuspects" VALUES (2269, 'conservatives', '{C,CON}', '');
+INSERT INTO public."UsualSuspects" VALUES (2251, 'engineer', '{"CE (civil engineer)","RE (Royal Engineers)","REME (Royal Electrical and Mechanical Engineers)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2183, '50', '{L,"L (fifty in Roman numerals)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2270, 'constant', '{"C (mathematical constant)","G (gravitational constant)","K (Boltzmann constant)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2271, 'cool', '{HIP}', '');
+INSERT INTO public."UsualSuspects" VALUES (2272, 'copper', '{"PC (Police Constable)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2273, 'corporation', '{"TUM (stomach)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2274, 'court', '{CT}', '');
+INSERT INTO public."UsualSuspects" VALUES (2275, 'criminal', '{"CON (convict)",LAG}', '');
+INSERT INTO public."UsualSuspects" VALUES (2276, 'cross', '{X}', '');
+INSERT INTO public."UsualSuspects" VALUES (2277, 'currency', '{"name of a river, e.g. CAM, DEE, PO"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2278, 'current', '{"I (symbol for electric current)","AC (alternating current)","DC (direct current)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2279, 'Cyprus', '{CY}', '');
+INSERT INTO public."UsualSuspects" VALUES (2280, 'daughter', '{D}', '');
+INSERT INTO public."UsualSuspects" VALUES (2281, 'debt', '{IOU(S)}', '');
+INSERT INTO public."UsualSuspects" VALUES (2282, 'debts', '{IOU(S)}', '');
+INSERT INTO public."UsualSuspects" VALUES (2283, 'degree', '{D,BA,MA,"C (celsius)","F (fahrenheit)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2284, 'deliveries', '{"OVER (cricket)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2285, 'delta', '{D}', '');
+INSERT INTO public."UsualSuspects" VALUES (2286, 'detective', '{"DC (Detective Constable)","DI (Detective Inspector)","DS (Detective Sergeant)","PI (Private Investigator)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2287, 'detectives', '{"CID (Criminal Investigation Department)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2288, 'diamond', '{"D (cards)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2289, 'diamonds', '{"D (cards)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2290, 'Diana', '{DI}', '');
+INSERT INTO public."UsualSuspects" VALUES (2291, 'dictionary', '{"OED (Oxford English Dictionary)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2292, 'direction', '{N,S,E,W}', '');
+INSERT INTO public."UsualSuspects" VALUES (2293, 'disc', '{O,EP,LP,CD}', '');
+INSERT INTO public."UsualSuspects" VALUES (2294, 'doctor', '{DR,"GP (General Practitioner)","MB (Medicinae Baccalaureus / Bachelor of Medicine)","MD (Medicinae Doctor / Doctor of Medicine)","MO (Medical Officer)","NO (Doctor No - movie)","VET (veterinary surgeon)","WHO (Doctor Who - TV program)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2295, 'dollar', '{"S (like $)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2296, 'dope', '{GEN}', '');
+INSERT INTO public."UsualSuspects" VALUES (2297, 'doughboy', '{"GI (American soldier)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2298, 'dram', '{DR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2299, 'drug', '{"E (ecstasy)","C (cocaine)","H (heroin)",POT}', '');
+INSERT INTO public."UsualSuspects" VALUES (2300, 'duck', '{"O (cricketing)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2301, 'east', '{E}', '');
+INSERT INTO public."UsualSuspects" VALUES (2302, 'eastern', '{E}', '');
+INSERT INTO public."UsualSuspects" VALUES (2303, 'echo', '{E}', '');
+INSERT INTO public."UsualSuspects" VALUES (2304, 'economists', '{"LSE (London School of Economics)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2305, 'Edward', '{"ER (Edwardus Rex or King Edward)","ERI (Edwardus Rex Imperator or Edward King and Emperor)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2306, 'egg', '{O}', '');
+INSERT INTO public."UsualSuspects" VALUES (2307, 'Elizabeth', '{E}', '');
+INSERT INTO public."UsualSuspects" VALUES (2308, 'embarrassed', '{RED}', '');
+INSERT INTO public."UsualSuspects" VALUES (2309, 'employ', '{USE}', '');
+INSERT INTO public."UsualSuspects" VALUES (2310, 'energy', '{E}', '');
+INSERT INTO public."UsualSuspects" VALUES (2312, 'engineers', '{"RE (Royal Engineers)","REME (Royal Electrical and Mechanical Engineers)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2313, 'English', '{E}', '');
+INSERT INTO public."UsualSuspects" VALUES (2314, 'era', '{"AD,BC","CE (common era)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2315, 'excellent', '{"AI (A1)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2316, 'exercise', '{"PE (Physical Exercise)","PT (Physical Training)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2317, 'exist', '{BE}', '');
+INSERT INTO public."UsualSuspects" VALUES (2318, 'expert', '{"ACE, DAB, PRO"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2319, 'explosive', '{"HE (high explosive)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2320, 'fashion', '{CUT,FAD,TON}', '');
+INSERT INTO public."UsualSuspects" VALUES (2322, 'favourite', '{"PET (as in teacher''s pet)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2323, 'feathers', '{DOWN}', '');
+INSERT INTO public."UsualSuspects" VALUES (2324, 'fellows', '{MEN}', '');
+INSERT INTO public."UsualSuspects" VALUES (2325, 'female', '{F,SHE,HER}', '');
+INSERT INTO public."UsualSuspects" VALUES (2326, 'fifty', '{"L (fifty in Roman numerals)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2328, 'fighter', '{"MIG (Soviet Russian fighter aircraft)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2329, 'fine', '{"F (pencil)",OK}', '');
+INSERT INTO public."UsualSuspects" VALUES (2330, 'first', '{"IST (1st)","A (first character)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2331, 'fish', '{ID,LING,EEL,COD,GAR,RAY}', '');
+INSERT INTO public."UsualSuspects" VALUES (2332, 'five', '{"V (five in roman numerals)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2333, 'flag', '{"IRIS (plant)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2334, 'flier', '{"name of a bird, e.g. TIT, WREN"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2335, 'flyer', '{"name of a bird, e.g. TIT, WREN"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2336, 'fliers', '{"RAF (Royal Air Force)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2337, 'flower', '{"name of a river","see also banker"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2338, 'following', '{F}', '');
+INSERT INTO public."UsualSuspects" VALUES (2339, 'fool', '{ASS,CLOT,NIT,TWIT}', '');
+INSERT INTO public."UsualSuspects" VALUES (2340, 'footnote', '{PS}', '');
+INSERT INTO public."UsualSuspects" VALUES (2341, 'footballers', '{"FA (Football Association)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2342, 'force', '{F}', '');
+INSERT INTO public."UsualSuspects" VALUES (2343, 'former', '{EX}', '');
+INSERT INTO public."UsualSuspects" VALUES (2344, 'foxtrot', '{F}', '');
+INSERT INTO public."UsualSuspects" VALUES (2345, 'forte', '{F}', '');
+INSERT INTO public."UsualSuspects" VALUES (2346, 'France', '{F}', '');
+INSERT INTO public."UsualSuspects" VALUES (2347, 'French', '{F}', '');
+INSERT INTO public."UsualSuspects" VALUES (2348, 'french', '{"M (monsier)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2349, 'Frenchman', '{EMIL,FROG,RENÉ}', '');
+INSERT INTO public."UsualSuspects" VALUES (2350, 'Friday', '{F,FR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2351, 'front', '{VAN,BOW}', '');
+INSERT INTO public."UsualSuspects" VALUES (2352, 'gallery', '{"TATE (Tate Modern, Tate Britain, Tate Liverpool and Tate St Ives)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2353, 'game', '{"see sport"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2354, 'gangster', '{"AL (Al Capone)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2355, 'gas', '{"H (hydrogen)","CO (carbon monoxide)","HE (helium)","OO (oxygen o2?)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2356, 'George', '{G}', '');
+INSERT INTO public."UsualSuspects" VALUES (2357, 'Georgia', '{"GA (state)","GE (country)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2358, 'German', '{G}', '');
+INSERT INTO public."UsualSuspects" VALUES (2359, 'gold', '{AU,"OR (heraldry)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2360, 'good', '{G}', '');
+INSERT INTO public."UsualSuspects" VALUES (2361, 'graduate', '{"BA (Bachelor of Arts)","BSC (Bachelor of Science)","MA (Master of Arts)",MB}', '');
+INSERT INTO public."UsualSuspects" VALUES (2190, 'academic', '{BA,MA,MB,"BA (Bachelor of Arts)","BSC (Bachelor of Science)","MA (Master of Arts)",MB}', '');
+INSERT INTO public."UsualSuspects" VALUES (2363, 'grand', '{G,K}', '');
+INSERT INTO public."UsualSuspects" VALUES (2364, 'grunt', '{"GI (American soldier)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2365, 'Guevara', '{CHE}', '');
+INSERT INTO public."UsualSuspects" VALUES (2366, 'gunner', '{"RA (Royal Artillery)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2367, 'gunners', '{"RA (Royal Artillery)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2368, 'hand', '{"L (left) and/or R (right)","E (East) or N (North) or S (South) or W (West) - (bridge hands)","AB (sailor)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2369, 'hands', '{"L (left) and/or R (right)","E (East) or N (North) or S (South) or W (West) - (bridge hands)","AB (sailor)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2370, 'hard', '{"H (pencil)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2371, 'hardly', '{"FEW (as in \"\"hardly any\"\")"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2372, 'hat', '{TILE}', '');
+INSERT INTO public."UsualSuspects" VALUES (2373, 'heart', '{"H (cards)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2374, 'hearts', '{"H (cards)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2375, 'heather', '{LING}', '');
+INSERT INTO public."UsualSuspects" VALUES (2376, 'hexadecimal', '{HEX}', '');
+INSERT INTO public."UsualSuspects" VALUES (2377, 'home', '{IN}', '');
+INSERT INTO public."UsualSuspects" VALUES (2378, 'honour', '{"A, J, K, Q (honours in bridge)","CBE, CH, MBE, OBE (honours / awards)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2379, 'hooligan', '{"TED (Teddy boy)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2380, 'hospital', '{"SAN (sanatorium)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2381, 'hotel', '{H}', '');
+INSERT INTO public."UsualSuspects" VALUES (2382, 'hour', '{H,HR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2383, 'hug', '{O}', '');
+INSERT INTO public."UsualSuspects" VALUES (2384, 'huge', '{"OS (out-size)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2385, 'hundred', '{"C (one hundred in Roman numerals)",TON}', '');
+INSERT INTO public."UsualSuspects" VALUES (2386, 'husband', '{H}', '');
+INSERT INTO public."UsualSuspects" VALUES (2387, 'hush', '{SH}', '');
+INSERT INTO public."UsualSuspects" VALUES (2388, 'india', '{I}', '');
+INSERT INTO public."UsualSuspects" VALUES (2389, 'information', '{DATA,DOPE,GEN}', '');
+INSERT INTO public."UsualSuspects" VALUES (2390, 'info', '{DATA,DOPE,GEN}', '');
+INSERT INTO public."UsualSuspects" VALUES (2391, 'island', '{"CAY, IONA","IOW (Isle of Wight)","KEY, MAN (Isle of Man)",I,IS}', '');
+INSERT INTO public."UsualSuspects" VALUES (2392, 'isle', '{"CAY, IONA","IOW (Isle of Wight)","KEY, MAN (Isle of Man)",I,IS}', '');
+INSERT INTO public."UsualSuspects" VALUES (2393, 'jolly', '{"RM (Royal Marine)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2394, 'journalist', '{"ED (editor)",HACK}', '');
+INSERT INTO public."UsualSuspects" VALUES (2395, 'judge', '{"REF (referee)",J}', '');
+INSERT INTO public."UsualSuspects" VALUES (2396, 'juliet', '{J}', '');
+INSERT INTO public."UsualSuspects" VALUES (2397, 'key', '{"A-G (musical keys)",ALT,DEL(ete),ESC(ape),INS,TAB}', '');
+INSERT INTO public."UsualSuspects" VALUES (2398, 'kilo', '{K}', '');
+INSERT INTO public."UsualSuspects" VALUES (2399, 'king', '{"HM (His Majesty)","LEAR (King Lear - Shakespeare)","see also \"\"Edward - King\"\", \"\"Edward - King and Emperor\"\", \"\"George – King\"\" and \"\"George - King and Emperor",K,ER}', '');
+INSERT INTO public."UsualSuspects" VALUES (2401, 'knight', '{N}', '');
+INSERT INTO public."UsualSuspects" VALUES (2402, 'kiss', '{X}', '');
+INSERT INTO public."UsualSuspects" VALUES (2403, 'lake', '{L}', '');
+INSERT INTO public."UsualSuspects" VALUES (2404, 'large', '{"OS (out-size)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2405, 'lawyer', '{"BL (Bachelor of Law)",DA}', '');
+INSERT INTO public."UsualSuspects" VALUES (2406, 'learner', '{"L (from the L-plate carried by learner drivers)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2407, 'letter', '{EF,EM,EL}', '');
+INSERT INTO public."UsualSuspects" VALUES (2408, 'Liberal', '{L}', '');
+INSERT INTO public."UsualSuspects" VALUES (2409, 'lima', '{L}', '');
+INSERT INTO public."UsualSuspects" VALUES (2410, 'line', '{"L (l looks like a line)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2411, 'local', '{BAR,INN,"PH (Public House)",PUB}', '');
+INSERT INTO public."UsualSuspects" VALUES (2412, 'police', '{"MET (Metropolitan Police Service)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2413, 'hair', '{TRESS}', '');
+INSERT INTO public."UsualSuspects" VALUES (2414, 'loud', '{"F (forte)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2415, 'love', '{"O (a score of zero in tennis)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2416, 'low', '{"MOO (sound made by cattle)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2417, 'lunchtime', '{"IPM (1PM)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2418, 'male', '{M}', '');
+INSERT INTO public."UsualSuspects" VALUES (2419, 'many', '{"C (one hundred in roman numerals)","D (five hundred in roman numerals)","K (Kilo - metric prefix for a thousand)","L (fifty in roman numerals)","M (one thousand in roman numerals)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2420, 'master', '{M}', '');
+INSERT INTO public."UsualSuspects" VALUES (2421, 'measure', '{"EM or EN (a unit of measurement equal to the width of the lower-case letter ‘m’ or ‘n’ in 12-point)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2423, 'medic', '{"MD (Medicinae Doctor / Doctor of Medicine)","MO (Medical Officer)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2424, 'member', '{ARM,LEG,"MP (Member of Parliament)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2425, 'men', '{"see soldiers"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2426, 'midday', '{"N (noon)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2427, 'mike', '{M}', '');
+INSERT INTO public."UsualSuspects" VALUES (2428, 'miners', '{"NUM (National Union of Mineworkers)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2429, 'minute', '{M}', '');
+INSERT INTO public."UsualSuspects" VALUES (2430, 'model', '{"T (Model T Ford)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2431, 'moment', '{MO}', '');
+INSERT INTO public."UsualSuspects" VALUES (2432, 'monarch', '{ER}', '');
+INSERT INTO public."UsualSuspects" VALUES (2433, 'monday', '{M,MON}', '');
+INSERT INTO public."UsualSuspects" VALUES (2434, 'money', '{G}', '');
+INSERT INTO public."UsualSuspects" VALUES (2435, 'monsieur', '{M}', '');
+INSERT INTO public."UsualSuspects" VALUES (2436, 'months', '{MOS}', '');
+INSERT INTO public."UsualSuspects" VALUES (2422, 'space', '{"EM or EN (a unit of measurement equal to the width of the lower-case letter ‘m’ or ‘n’ in 12-point)","see measure"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2437, 'motorists', '{"AA (Automobile Association)","RAC (Royal Automobile Club)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2438, 'motorway', '{MI}', '');
+INSERT INTO public."UsualSuspects" VALUES (2439, 'new', '{N}', '');
+INSERT INTO public."UsualSuspects" VALUES (2440, 'news', '{"NN (N[ew] + N[ew])"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2441, 'newspaper', '{"FT (Financial Times","RAG (low quality newspaper)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2442, 'newton', '{"N (unit)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2443, 'nil', '{"O (a score of zero in football)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2444, 'noon', '{N}', '');
+INSERT INTO public."UsualSuspects" VALUES (2445, 'northern', '{N}', '');
+INSERT INTO public."UsualSuspects" VALUES (2446, 'north', '{N}', '');
+INSERT INTO public."UsualSuspects" VALUES (2447, 'note', '{"A - G (notes of the diatonic scale)","DO, DOH, FA, FAH, LA, LAH, ME, MI, RAY, RE, SI, SO, SOH, SOL, TE, TI, UT (notes of the scale in sol-fa notation)",MEMO,"PS (PostScript)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2448, 'nothing', '{O}', '');
+INSERT INTO public."UsualSuspects" VALUES (2449, 'notice', '{"AD (advertisement)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2450, 'november', '{N,NOV}', '');
+INSERT INTO public."UsualSuspects" VALUES (2451, 'novice', '{L}', '');
+INSERT INTO public."UsualSuspects" VALUES (2452, 'number', '{N,NO,PIN,"ROMAN NUMERALS","N (used in mathematical formulae)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2454, 'nurse', '{"EN (Enrolled Nurse)","SEN (State Enrolled Nurse - obsolescent)","SRN (State Registered Nurse - obsolescent)",""}', '');
+INSERT INTO public."UsualSuspects" VALUES (2455, 'ocean', '{O}', '');
+INSERT INTO public."UsualSuspects" VALUES (2456, 'old', '{O,EX}', '');
+INSERT INTO public."UsualSuspects" VALUES (2457, 'one', '{A,AN,"I (1)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2458, 'operation', '{OP}', '');
+INSERT INTO public."UsualSuspects" VALUES (2459, 'opponents', '{"bridge opponents: EN, ES, NE, NW, SE, SW, WN or WS (combinations of east, north, south and west)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2460, 'oriental', '{"E (from the East)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2461, 'oscar', '{O}', '');
+INSERT INTO public."UsualSuspects" VALUES (2462, 'outsize', '{"OS (out-size)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2463, 'page', '{P}', '');
+INSERT INTO public."UsualSuspects" VALUES (2464, 'pages', '{PP}', '');
+INSERT INTO public."UsualSuspects" VALUES (2465, 'pair', '{PR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2466, 'papa', '{P}', '');
+INSERT INTO public."UsualSuspects" VALUES (2467, 'partners', '{"bridge partners: EW, NS, SN, WE (combinations of east, north, south and west)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2468, 'party', '{BASH,"CON (Conservative)",DO,"LAB (Labour)","LIB (Liberal)",RAVE}', '');
+INSERT INTO public."UsualSuspects" VALUES (2469, 'pass', '{COL}', '');
+INSERT INTO public."UsualSuspects" VALUES (2470, 'pawn', '{P}', '');
+INSERT INTO public."UsualSuspects" VALUES (2471, 'peacekeeper', '{"UN (United Nations) or UNO (United Nations Organization)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2472, 'peacekeepers', '{"UN (United Nations) or UNO (United Nations Organization)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2473, 'penny', '{P}', '');
+INSERT INTO public."UsualSuspects" VALUES (2474, 'pet', '{CAT,DOG,SULK,TIFF}', '');
+INSERT INTO public."UsualSuspects" VALUES (2475, 'physicists', '{CERN,"NPL (National Physical Laboratory)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2476, 'piece', '{MAN,"see also chessman"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2477, 'playing.performing', '{"ON (stage)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2478, 'plug', '{"AD (advertisement)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2479, 'point', '{"N, E, S, W (compass points)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2480, 'pole', '{"N, S, NS, SN (North and South poles)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2481, 'poles', '{"N, S, NS, SN (North and South poles)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2482, 'policeman', '{"COP (copper)","DI (Detective Inspector)",PC}', '');
+INSERT INTO public."UsualSuspects" VALUES (2483, 'politician', '{"MP (Member of Parliament)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2484, 'popular', '{IN}', '');
+INSERT INTO public."UsualSuspects" VALUES (2321, 'fashionable', '{IN,HIP,IN}', '');
+INSERT INTO public."UsualSuspects" VALUES (2486, 'posh', '{"U (upper-class)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2487, 'power', '{P}', '');
+INSERT INTO public."UsualSuspects" VALUES (2488, 'presenter', '{"DJ (Disk Jockey)","MC (Master of Ceremonies)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2489, 'priest', '{"ELI (Old Testament)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2490, 'princess', '{DI}', '');
+INSERT INTO public."UsualSuspects" VALUES (2491, 'prison', '{CAN,JUG,NICK,"PEN (penitentiary)",STIR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2492, 'prisoner', '{"CON (convict)",LAG}', '');
+INSERT INTO public."UsualSuspects" VALUES (2493, 'private', '{GI}', '');
+INSERT INTO public."UsualSuspects" VALUES (2494, 'promotion', '{"AD (advertisement)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2495, 'prophet', '{AMOS,ELI}', '');
+INSERT INTO public."UsualSuspects" VALUES (2496, 'provided', '{IF}', '');
+INSERT INTO public."UsualSuspects" VALUES (2497, 'province', '{"NI (Province of Northern Ireland)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2498, 'quarter', '{"N, NE, NW, E etc"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2499, 'queen', '{"CAT (female cat)","HM (Her Majesty)","see also \"\"Elizabeth - Queen\"\", \"\"Victoria - Queen\"\" and \"\"Victoria - Queen and Empress",R,Q,ER}', '');
+INSERT INTO public."UsualSuspects" VALUES (2501, 'question', '{Q,QU}', '');
+INSERT INTO public."UsualSuspects" VALUES (2502, 'quiet', '{"P, PP (piano)",SH,MUM}', '');
+INSERT INTO public."UsualSuspects" VALUES (2503, 'railway', '{RY,BR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2504, 'record', '{"EP (extended play record)","LP (long play record)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2505, 'religious', '{"PI (shortened form of pious)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2506, 'resistance', '{"R (unit)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2507, 'revolutionary', '{"CHE (Guevara)",RED}', '');
+INSERT INTO public."UsualSuspects" VALUES (2508, 'right', '{"LIEN (legal right)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2509, 'ring', '{O}', '');
+INSERT INTO public."UsualSuspects" VALUES (2510, 'river', '{R,EXE,DEE,PO,""}', '');
+INSERT INTO public."UsualSuspects" VALUES (2511, 'road', '{RD}', '');
+INSERT INTO public."UsualSuspects" VALUES (2512, 'rogue', '{CUR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2513, 'romeo', '{R}', '');
+INSERT INTO public."UsualSuspects" VALUES (2514, 'rook', '{R}', '');
+INSERT INTO public."UsualSuspects" VALUES (2515, 'roughly', '{"C, CA (circa)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2516, 'round', '{O}', '');
+INSERT INTO public."UsualSuspects" VALUES (2517, 'runner', '{"name of a river","see also banker"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2518, 'sailor', '{"AB (Able-Bodied seaman)","OS (Ordinary Seaman)","PO (Petty Officer)",SALT,TAR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2519, 'salt', '{"AB (Able-Bodied seaman)","OS (Ordinary Seaman)","PO (Petty Officer)",SALT,TAR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2520, 'sailors', '{"RN (Royal Navy)",ABS}', '');
+INSERT INTO public."UsualSuspects" VALUES (2521, 'saint', '{ST}', '');
+INSERT INTO public."UsualSuspects" VALUES (2522, 'salesman', '{"REP (representative)",TOUT}', '');
+INSERT INTO public."UsualSuspects" VALUES (2523, 'sapper', '{"RE (Royal Engineers)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2524, 'sappers', '{"RE (Royal Engineers)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2525, 'saturday', '{S,SAT}', '');
+INSERT INTO public."UsualSuspects" VALUES (2526, 'scholar', '{BA}', '');
+INSERT INTO public."UsualSuspects" VALUES (2527, 'scientists', '{"RS (Royal Society, a body of eminent scientists)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2528, 'Scotsman', '{IAN,MAC}', '');
+INSERT INTO public."UsualSuspects" VALUES (2529, 'second', '{S}', '');
+INSERT INTO public."UsualSuspects" VALUES (2530, 'second-class', '{B}', '');
+INSERT INTO public."UsualSuspects" VALUES (2531, 'see', '{"ELY (diocese)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2532, 'service', '{"RAF (Royal Air Force)","RN (Royal Navy)","TREE (a Eurasian tree)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2533, 'sheep', '{EWE,LAMB,RAM,"TEG/TEGG (in second year)","TUP (ram)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2534, 'ship', '{"SS (steamship)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2535, 'ships', '{"SS (steamship)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2536, 'single', '{"I (1)",SOLO}', '');
+INSERT INTO public."UsualSuspects" VALUES (2537, 'smooth', '{IRON}', '');
+INSERT INTO public."UsualSuspects" VALUES (2538, 'sierra', '{S}', '');
+INSERT INTO public."UsualSuspects" VALUES (2539, 'silence', '{SH,MUM}', '');
+INSERT INTO public."UsualSuspects" VALUES (2540, 'six-footer', '{"ANT, BEE etc (Insect!)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2541, 'socialite', '{"DEB (debutante)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2542, 'society', '{S}', '');
+INSERT INTO public."UsualSuspects" VALUES (2543, 'soft', '{"P (music)","B (pencil)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2544, 'soldier', '{"ANT (soldier ant)","GI (American soldier)",MAN,"PARA (paratrooper)","RA (Royal Artillery)","RE (Royal Engineers)",RM}', '');
+INSERT INTO public."UsualSuspects" VALUES (2545, 'soldiers', '{MEN,"OR (Other Ranks)","RA (Royal Artillery)","RE (Royal Engineers)","plurals such as ANTS, GIS"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2546, 'son', '{S}', '');
+INSERT INTO public."UsualSuspects" VALUES (2547, 'song', '{CHANT}', '');
+INSERT INTO public."UsualSuspects" VALUES (2549, 'spade', '{"S (cards)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2550, 'spades', '{"S (cards)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2551, 'spies', '{"CIA (Central Intelligence Agency)","MI (Military Intelligence)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2552, 'sport', '{"RL (Rugby League)","RU (Rugby Union)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2553, 'spy', '{MOLE}', '');
+INSERT INTO public."UsualSuspects" VALUES (2554, 'square', '{S}', '');
+INSERT INTO public."UsualSuspects" VALUES (2555, 'state', '{"one (or more) of the two-letter codes for US States"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2556, 'states', '{"one (or more) of the two-letter codes for US States"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2557, 'street', '{RUE,ST,AVE,RD}', '');
+INSERT INTO public."UsualSuspects" VALUES (2558, 'strings', '{"E,A,D (violin strings)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2559, 'student', '{L}', '');
+INSERT INTO public."UsualSuspects" VALUES (2560, 'students', '{"NUS (National Union of Students)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2561, 'support', '{"TEE (a support for a golf ball)","BRA (brassiere)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2564, 'swindle', '{CON}', '');
+INSERT INTO public."UsualSuspects" VALUES (2565, 'take', '{"R (℞ ≡ recipe [Latin for take])"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2566, 'text', '{"MS (manuscript)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2567, 'tango', '{T}', '');
+INSERT INTO public."UsualSuspects" VALUES (2568, 'tantrum', '{PET}', '');
+INSERT INTO public."UsualSuspects" VALUES (2569, 'tar', '{"AB (Able-Bodied seaman)","OS (Ordinary Seaman)","PO (Petty Officer)",SALT,TAR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2570, 'tax', '{SCOT,"VAT (Value Added Tax)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2571, 'taxman', '{"IR (Inland Revenue)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2572, 'teachers', '{"NUT (National Union of Teachers)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2573, 'teas', '{TT}', '');
+INSERT INTO public."UsualSuspects" VALUES (2574, 'teetotal', '{TT}', '');
+INSERT INTO public."UsualSuspects" VALUES (2575, 'teetotaller', '{TT}', '');
+INSERT INTO public."UsualSuspects" VALUES (2576, 'temperature', '{T}', '');
+INSERT INTO public."UsualSuspects" VALUES (2577, 'ten', '{"IO (visual representation of 10)","X (ten in roman numerals)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2578, 'tenor', '{T}', '');
+INSERT INTO public."UsualSuspects" VALUES (2580, 'thanks', '{TA}', '');
+INSERT INTO public."UsualSuspects" VALUES (2581, 'theologian', '{"DD (Divinitatis Doctor/Doctor of Divinity)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2582, 'thousand', '{"K (Kilo - metric prefix for a thousand)","M (one thousand in Roman numerals)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2583, 'thursday', '{TH,THURS}', '');
+INSERT INTO public."UsualSuspects" VALUES (2584, 'tile', '{HAT}', '');
+INSERT INTO public."UsualSuspects" VALUES (2585, 'times', '{"BY (as in 2 times 3 ≡ 2 by 3)","TT (T[ime] + T[ime])","X (as in 2 times 3 ≡ 2 x 3)",T}', '');
+INSERT INTO public."UsualSuspects" VALUES (2586, 'tom', '{"CAT (male cat)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2587, 'town', '{CITY}', '');
+INSERT INTO public."UsualSuspects" VALUES (2588, 'training', '{"PE (Physical Exercise)","PT (Physical Training)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2589, 'tramp', '{BUM}', '');
+INSERT INTO public."UsualSuspects" VALUES (2590, 'translator', '{TR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2591, 'trouble', '{FUSS}', '');
+INSERT INTO public."UsualSuspects" VALUES (2592, 'trendy', '{HIP}', '');
+INSERT INTO public."UsualSuspects" VALUES (2593, 'tuesday', '{T,TU,TUES}', '');
+INSERT INTO public."UsualSuspects" VALUES (2594, 'turkey', '{TR}', '');
+INSERT INTO public."UsualSuspects" VALUES (2595, 'turn', '{"U (u-turn)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2596, 'two', '{"DUO, II"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2597, 'uniform', '{U}', '');
+INSERT INTO public."UsualSuspects" VALUES (2598, 'university', '{U,OU}', '');
+INSERT INTO public."UsualSuspects" VALUES (2599, 'unknown', '{X,Y}', '');
+INSERT INTO public."UsualSuspects" VALUES (2600, 'upper-class', '{U}', '');
+INSERT INTO public."UsualSuspects" VALUES (2601, 'variable', '{X,Y,"Z (mathematical variables)"}', '');
+INSERT INTO public."UsualSuspects" VALUES (2602, 'vase', '{MING}', '');
+INSERT INTO public."UsualSuspects" VALUES (2603, 'versus', '{V,VS}', '');
+INSERT INTO public."UsualSuspects" VALUES (2604, 'very', '{V}', '');
 
 
 --
--- TOC entry 3414 (class 0 OID 0)
+-- TOC entry 3427 (class 0 OID 0)
 -- Dependencies: 210
 -- Name: AnagramIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
@@ -1384,7 +1600,7 @@ SELECT pg_catalog.setval('public."AnagramIndicators_Id_seq"', 57, true);
 
 
 --
--- TOC entry 3415 (class 0 OID 0)
+-- TOC entry 3428 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: ContainerIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
@@ -1393,7 +1609,16 @@ SELECT pg_catalog.setval('public."ContainerIndicators_Id_seq"', 58, true);
 
 
 --
--- TOC entry 3416 (class 0 OID 0)
+-- TOC entry 3429 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: HiddenWordIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
+--
+
+SELECT pg_catalog.setval('public."HiddenWordIndicators_Id_seq"', 1, false);
+
+
+--
+-- TOC entry 3430 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: HomophoneIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
@@ -1402,16 +1627,16 @@ SELECT pg_catalog.setval('public."HomophoneIndicators_Id_seq"', 11, true);
 
 
 --
--- TOC entry 3417 (class 0 OID 0)
+-- TOC entry 3431 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: LetterSelectionIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public."LetterSelectionIndicators_Id_seq"', 18, true);
+SELECT pg_catalog.setval('public."LetterSelectionIndicators_Id_seq"', 19, true);
 
 
 --
--- TOC entry 3418 (class 0 OID 0)
+-- TOC entry 3432 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: RemovalIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
@@ -1420,7 +1645,7 @@ SELECT pg_catalog.setval('public."RemovalIndicators_Id_seq"', 41, true);
 
 
 --
--- TOC entry 3419 (class 0 OID 0)
+-- TOC entry 3433 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: ReversalIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
@@ -1429,7 +1654,7 @@ SELECT pg_catalog.setval('public."ReversalIndicators_Id_seq"', 34, true);
 
 
 --
--- TOC entry 3420 (class 0 OID 0)
+-- TOC entry 3434 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: SubstitutionIndicators_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
@@ -1438,16 +1663,16 @@ SELECT pg_catalog.setval('public."SubstitutionIndicators_Id_seq"', 8, true);
 
 
 --
--- TOC entry 3421 (class 0 OID 0)
+-- TOC entry 3435 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: UsualSuspects_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public."UsualSuspects_Id_seq"', 1723, true);
+SELECT pg_catalog.setval('public."UsualSuspects_Id_seq"', 2641, true);
 
 
 --
--- TOC entry 3232 (class 2606 OID 16455)
+-- TOC entry 3241 (class 2606 OID 16455)
 -- Name: AnagramIndicators anagram_uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
@@ -1456,7 +1681,7 @@ ALTER TABLE ONLY public."AnagramIndicators"
 
 
 --
--- TOC entry 3234 (class 2606 OID 24659)
+-- TOC entry 3243 (class 2606 OID 24659)
 -- Name: ContainerIndicators container_uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
@@ -1465,7 +1690,16 @@ ALTER TABLE ONLY public."ContainerIndicators"
 
 
 --
--- TOC entry 3236 (class 2606 OID 16457)
+-- TOC entry 3257 (class 2606 OID 49249)
+-- Name: HiddenWordIndicators hiddenwrd_uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
+--
+
+ALTER TABLE ONLY public."HiddenWordIndicators"
+    ADD CONSTRAINT hiddenwrd_uniquewrd_const UNIQUE ("Word");
+
+
+--
+-- TOC entry 3245 (class 2606 OID 16457)
 -- Name: HomophoneIndicators homophone_uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
@@ -1474,7 +1708,7 @@ ALTER TABLE ONLY public."HomophoneIndicators"
 
 
 --
--- TOC entry 3238 (class 2606 OID 16459)
+-- TOC entry 3247 (class 2606 OID 16459)
 -- Name: LetterSelectionIndicators letter_uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
@@ -1483,7 +1717,7 @@ ALTER TABLE ONLY public."LetterSelectionIndicators"
 
 
 --
--- TOC entry 3240 (class 2606 OID 16461)
+-- TOC entry 3249 (class 2606 OID 16461)
 -- Name: RemovalIndicators removal_uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
@@ -1492,7 +1726,7 @@ ALTER TABLE ONLY public."RemovalIndicators"
 
 
 --
--- TOC entry 3242 (class 2606 OID 16463)
+-- TOC entry 3251 (class 2606 OID 16463)
 -- Name: ReversalIndicators reversal_uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
@@ -1501,7 +1735,7 @@ ALTER TABLE ONLY public."ReversalIndicators"
 
 
 --
--- TOC entry 3246 (class 2606 OID 32858)
+-- TOC entry 3255 (class 2606 OID 32858)
 -- Name: SubstitutionIndicators substitution_uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
@@ -1510,7 +1744,7 @@ ALTER TABLE ONLY public."SubstitutionIndicators"
 
 
 --
--- TOC entry 3244 (class 2606 OID 16465)
+-- TOC entry 3253 (class 2606 OID 16465)
 -- Name: UsualSuspects uniquewrd_const; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
@@ -1519,7 +1753,7 @@ ALTER TABLE ONLY public."UsualSuspects"
 
 
 --
--- TOC entry 3408 (class 0 OID 0)
+-- TOC entry 3421 (class 0 OID 0)
 -- Dependencies: 5
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: user
 --
@@ -1528,7 +1762,7 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2023-03-08 20:55:46
+-- Completed on 2023-04-25 22:16:22
 
 --
 -- PostgreSQL database dump complete

@@ -63,6 +63,13 @@ namespace CrosswordHelper.Api.Controllers
             _helperService.AddSubstitutionIndicator(word, notes);
             return Ok();
         }
+
+        [HttpPost("/help/hidden-word-indicators/{word}")]
+        public IActionResult AddHiddenWordIndicator(string word, string notes = "")
+        {
+            _helperService.AddHiddenWordIndicator(word, notes);
+            return Ok();
+        }
     }
 
     [ApiController]

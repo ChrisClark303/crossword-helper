@@ -7,12 +7,12 @@ namespace CrosswordHelper.Data.Postgres
     {
         public void AddAnagramIndictor(string word, string notes)
         {
-            CallAddWordStoredProc("AddAnagramIndicators", word, notes);
+            CallAddWordStoredProc(IndicatorWordType.Anagram, word, notes);
         }
 
-        private void CallAddWordStoredProc(string procName, string word, string notes)
+        private void CallAddWordStoredProc(IndicatorWordType indicatorType, string word, string notes)
         {
-            var cmdText = $"CALL public.\"{procName}\"(:word,:notes)";
+            var cmdText = $"CALL public.\"Add{indicatorType}Indicators\"(:word,:notes)";
             Execute(cmdText, new[]
             {
                 new NpgsqlParameter("word", word),
@@ -22,12 +22,12 @@ namespace CrosswordHelper.Data.Postgres
 
         public void AddContainerIndicator(string word, string notes)
         {
-            CallAddWordStoredProc("AddContainerIndicators", word, notes);
+            CallAddWordStoredProc(IndicatorWordType.Container, word, notes);
         }
 
         public void AddReversalIndicator(string word, string notes)
         {
-            CallAddWordStoredProc("AddReversalIndicators", word, notes);
+            CallAddWordStoredProc(IndicatorWordType.Reversal, word, notes);
         }
 
         public void AddSeparator(string word)
@@ -37,7 +37,7 @@ namespace CrosswordHelper.Data.Postgres
 
         public void AddRemovalIndicator(string word, string notes)
         {
-            CallAddWordStoredProc("AddRemovalIndicators", word, notes);
+            CallAddWordStoredProc(IndicatorWordType.Removal, word, notes);
         }
 
         public void AddAUsualSuspect(string original, params string[] replacements)
@@ -53,17 +53,22 @@ namespace CrosswordHelper.Data.Postgres
 
         public void AddLetterSelectionIndicator(string word, string notes)
         {
-            CallAddWordStoredProc("AddLetterSelectionIndicators", word, notes);
+            CallAddWordStoredProc(IndicatorWordType.LetterSelection, word, notes);
         }
 
         public void AddHomophoneIndicator(string word, string notes)
         {
-            CallAddWordStoredProc("AddHomophoneIndicators", word, notes);
+            CallAddWordStoredProc(IndicatorWordType.Homophone, word, notes);
         }
 
         public void AddSubstitutionIndicator(string word, string notes)
         {
-            CallAddWordStoredProc("AddSubstitutionIndicators", word, notes);
+            CallAddWordStoredProc(IndicatorWordType.Substitution, word, notes);
+        }
+
+        public void AddHiddenWordIndicator(string word, string notes = "")
+        {
+            CallAddWordStoredProc(IndicatorWordType.HiddenWord, word, notes);
         }
     }
 }

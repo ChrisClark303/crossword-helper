@@ -58,6 +58,11 @@ namespace CrosswordHelper.Api
         {
             return _helperRepository.GetSubstitutionIndicators().ToArray();
         }
+
+        public IndicatorWord[] GetHiddenWordIndicators()
+        {
+            return _helperRepository.GetHiddenWordIndicators().ToArray();
+        }
     }
 
     public class CrosswordHelperResult

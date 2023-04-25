@@ -15,25 +15,45 @@ namespace CrosswordHelper.Data.Postgres
 
         public IEnumerable<IndicatorWord> GetAnagramIndicators()
         {
-            return GetIndicatorWords("Anagram");
+            return GetIndicatorWords(IndicatorWordType.Anagram);
         }
 
         public IEnumerable<IndicatorWord> GetContainerIndicators()
         {
-            return GetIndicatorWords("Container");
+            return GetIndicatorWords(IndicatorWordType.Container);
         }
 
         public IEnumerable<IndicatorWord> GetRemovalIndicators()
         {
-            return GetIndicatorWords("Removal");
+            return GetIndicatorWords(IndicatorWordType.Removal);
         }
 
         public IEnumerable<IndicatorWord> GetReversalIndicators()
         {
-            return GetIndicatorWords("Reversal");
+            return GetIndicatorWords(IndicatorWordType.Reversal);
         }
 
-        private IEnumerable<IndicatorWord> GetIndicatorWords(string indicatorType)
+        public IEnumerable<IndicatorWord> GetLetterSelectionIndicators()
+        {
+            return GetIndicatorWords(IndicatorWordType.LetterSelection);
+        }
+
+        public IEnumerable<IndicatorWord> GetHomophoneIndicators()
+        {
+            return GetIndicatorWords(IndicatorWordType.Homophone);
+        }
+
+        public IEnumerable<IndicatorWord> GetSubstitutionIndicators()
+        {
+            return GetIndicatorWords(IndicatorWordType.Substitution);
+        }
+
+        public IEnumerable<IndicatorWord> GetHiddenWordIndicators()
+        {
+            return GetIndicatorWords(IndicatorWordType.HiddenWord);
+        }
+
+        private IEnumerable<IndicatorWord> GetIndicatorWords(IndicatorWordType indicatorType)
         {
             return Query<IndicatorWord>($"get{indicatorType}Indicators", (reader) =>
             {
@@ -67,21 +87,6 @@ namespace CrosswordHelper.Data.Postgres
             {
                 return new UsualSuspect(reader.GetString("word"), (reader["replacements"] as string[])!);
             });
-        }
-
-        public IEnumerable<IndicatorWord> GetLetterSelectionIndicators()
-        {
-            return GetIndicatorWords("LetterSelection");
-        }
-
-        public IEnumerable<IndicatorWord> GetHomophoneIndicators()
-        {
-            return GetIndicatorWords("Homophone");
-        }
-
-        public IEnumerable<IndicatorWord> GetSubstitutionIndicators()
-        {
-            return GetIndicatorWords("Substitution");
         }
     }
 }

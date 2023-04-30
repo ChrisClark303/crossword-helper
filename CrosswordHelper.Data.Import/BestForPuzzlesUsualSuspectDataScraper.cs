@@ -41,14 +41,10 @@ namespace CrosswordHelper.Data.Import
             var urls = _urlBuilder.GetUrls();
             foreach (string url in urls)
             {
-                var response = await _client.GetAsync(url);
-                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                
-                var page = await response.Content.ReadAsStringAsync();
-                doc.LoadHtml(page);
-                var node = doc.DocumentNode.SelectSingleNode("//div[@class='col-md-8']");
-                var h2Nodes = node.SelectNodes("//h2");
+                HtmlDocument doc = await LoadHtmlDocumentFromUrl(url);
+                HtmlNodeCollection h2Nodes = GetH2Nodes(doc);
                 if (h2Nodes == null) continue;
+
                 foreach (var h2 in h2Nodes)
                 {
                     var word = h2.InnerText.ToLower();
@@ -57,17 +53,8 @@ namespace CrosswordHelper.Data.Import
                     {
                         if (nextNode?.Name == "p")
                         {
-                            var description = nextNode.InnerText;
-                            var anchor = nextNode.SelectSingleNode("./a");
-                            var wordType = anchor.InnerText;
-                            var substitutions = nextNode.SelectNodes("./strong");
-                            words.Add(new WordData()
-                            {
-                                Word = word,
-                                WordType = _wordTypeMaps[wordType],
-                                Description = description,
-                                Substitutions = substitutions?.Select(n => n.InnerText)?.ToArray()
-                            });
+                            var wordData = GenerateWordDataFromNode(word, nextNode);
+                            words.Add(wordData);
                         }
                     }
                 }
@@ -77,9 +64,41 @@ namespace CrosswordHelper.Data.Import
             AddIndicatorsByType(words, WordType.Reversal, _managerRepository.AddReversalIndicator);
             AddIndicatorsByType(words, WordType.Removal, _managerRepository.AddRemovalIndicator);
             AddIndicatorsByType(words, WordType.Container, _managerRepository.AddContainerIndicator);
+            AddIndicatorsByType(words, WordType.Hidden, _managerRepository.AddHiddenWordIndicator);
             AddIndicatorsByType(words, WordType.UsualSuspect, _managerRepository.AddAUsualSuspect);
         }
-  
+
+        private WordData GenerateWordDataFromNode(string word, HtmlNode node)
+        {
+            var description = node.InnerText;
+            var anchor = node.SelectSingleNode("./a");
+            var wordType = anchor.InnerText;
+            var substitutions = node.SelectNodes("./strong");
+            return new WordData()
+            {
+                Word = word,
+                WordType = _wordTypeMaps[wordType],
+                Description = description,
+                Substitutions = substitutions?.Select(n => n.InnerText)?.ToArray()
+            };
+        }
+
+        private static HtmlNodeCollection GetH2Nodes(HtmlDocument doc)
+        {
+            var node = doc.DocumentNode.SelectSingleNode("//div[@class='col-md-8']");
+            var h2Nodes = node.SelectNodes("//h2");
+            return h2Nodes;
+        }
+
+        private async Task<HtmlDocument> LoadHtmlDocumentFromUrl(string url)
+        {
+            var response = await _client.GetAsync(url);
+            var page = await response.Content.ReadAsStringAsync();
+            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(page);
+            return doc;
+        }
+
         private void AddIndicatorsByType(List<WordData> words, WordType wordType, Action<string,string> dataHandler)
         {
             var indicators = words.Where(w => w.WordType == wordType);
@@ -107,7 +126,7 @@ namespace CrosswordHelper.Data.Import
         public string? Word { get; set; }
         public WordType WordType { get; set; }
         public string? Description { get; set; }
-        public string[] Substitutions { get; set; }
+        public string[]? Substitutions { get; set; }
     }
 
     public enum WordType

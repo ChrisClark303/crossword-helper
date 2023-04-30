@@ -231,6 +231,27 @@ namespace CrosswordHelper.Tests
             mockRepository.Verify(repo => repo.AddAUsualSuspect("writing", It.Is<string[]>(s => s.Intersect(new[] { "MS" }).Count() == 1)));
             mockRepository.Verify(repo => repo.AddAUsualSuspect("wrong", It.Is<string[]>(s => s.Intersect(new[] { "X", "SIN", "TORT" }).Count() == 3)));
         }
+
+        [Test]
+        public async Task Scrape_Correctly_Extracts_HiddenWordIndicators()
+        {
+            var mockRepository = new Mock<ICrosswordHelperManagerRepository>();
+            var mockUrlBuilder = new Mock<IUrlBuilder>();
+            mockUrlBuilder.Setup(builder => builder.GetUrls())
+                .Returns(new[] { "w.html" });
+
+            var stubMessageHandler = new StubMessageHandler(File.ReadAllText("TestData.html"));
+            var httpClient = new HttpClient(stubMessageHandler)
+            {
+                BaseAddress = new Uri("http://127.0.0.1")
+            };
+            var scraper = new BestForPuzzlesUsualSuspectDataScraper(httpClient, mockRepository.Object, mockUrlBuilder.Object);
+            await scraper.Scrape();
+
+            mockRepository.Verify(repo => repo.AddHiddenWordIndicator(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
+            mockRepository.Verify(repo => repo.AddHiddenWordIndicator("within", It.IsAny<string>()));
+            mockRepository.Verify(repo => repo.AddHiddenWordIndicator("wrapped", It.IsAny<string>()));
+        }
     }
 
     public class StubMessageHandler : DelegatingHandler

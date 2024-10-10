@@ -64,10 +64,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "crossword-helper:build:production"
+              "buildTarget": "crossword-helper:build:production"
             },
             "development": {
-              "browserTarget": "crossword-helper:build:development"
+              "buildTarget": "crossword-helper:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -75,7 +75,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "crossword-helper:build"
+            "buildTarget": "crossword-helper:build"
           }
         },
         "test": {

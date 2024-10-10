@@ -153,7 +153,7 @@ button.crossword-clue-help {
   border-width: 5px;
 }
 input.crossword-clue-help {
-  width: 800px;
+  width: 80%;
 }
 .crossword-help-item-list {
   margin: .5em;

@@ -5,6 +5,10 @@ namespace CrosswordHelper.Data.Postgres
 
     public class CrosswordHelperManagerRepository : CrosswordHelperRepositoryBase, ICrosswordHelperManagerRepository
     {
+        public CrosswordHelperManagerRepository(IConnectionStrings connectionStrings) : base(connectionStrings)
+        {
+        }
+
         public void AddAnagramIndictor(string word, string notes)
         {
             CallAddWordStoredProc(IndicatorWordType.Anagram, word, notes);

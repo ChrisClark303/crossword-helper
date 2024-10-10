@@ -6,11 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connStrings = builder.Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>();
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
+builder.Services.AddSingleton<IConnectionStrings>(connStrings!);
 builder.Services.AddScoped<ICrosswordHelperService,CrosswordHelperService>();
 builder.Services.AddScoped<ICrosswordHelperRepository, CrosswordHelperRepository>();
 builder.Services.AddScoped<ICrosswordHelperManagerService, CrosswordHelperManagementService>();

@@ -1,14 +1,22 @@
-﻿using Npgsql;
+﻿
+using Npgsql;
 using System.Data;
+using System.Reflection.Metadata;
 
 namespace CrosswordHelper.Data.Postgres
 {
-    public class RepositoryExecutor : IDisposable
+    public class RepositoryExecutor : IDisposable, IRepositoryExecutor
     {
+        public RepositoryExecutor(IConnectionStrings connectionStrings)
+        {
+            _connString = connectionStrings.CrosswordHelper;
+        }
+
         private NpgsqlConnection _conn;
         private NpgsqlCommand _cmd;
-        private readonly string _connString = "User Id=user;Password=password;Host=DESKTOP-16C6RAL;Port=5432;Database=crossword_helper;Integrated Security=True";
-
+        //TODO : This is nonsense, isn't it??
+        //private readonly string _connString = "User Id=user;Password=password;Host=localhost;Port=5432;Database=crossword_helper;Integrated Security=True";
+        private readonly string _connString;
         public RepositoryExecutor Connect()
         {
             _conn = new NpgsqlConnection(_connString);

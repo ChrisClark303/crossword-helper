@@ -1,13 +1,13 @@
-version: "3.8"
-
 services:
   web:
     build:
         context: ./CrosswordHelper.Web/crossword-helper
     ports:
-      - 4202:80
+      - 4202:4200
   api:
     build: .
+    environment:
+      - ConnectionStrings__crosswordHelper=User Id=user;Password=password;Host=host.docker.internal;Port=5432;Database=crossword_helper;Integrated Security=True
     ports:
       - "8080:80"
   db:

@@ -8,6 +8,10 @@ namespace CrosswordHelper.Data.Postgres
 {
     public class CrosswordHelperRepository : CrosswordHelperRepositoryBase, ICrosswordHelperRepository
     {
+        public CrosswordHelperRepository(IConnectionStrings connectionStrings) : base(connectionStrings)
+        {
+        }
+
         public IEnumerable<WordDetails> CheckWords(string[] words)
         {
             return MatchWords("checkcrosswordclue", words);

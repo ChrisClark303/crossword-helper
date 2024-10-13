@@ -7,9 +7,9 @@ services:
   api:
     build: .
     environment:
-      - ConnectionStrings__crosswordHelper=User Id=user;Password=password;Host=host.docker.internal;Port=5432;Database=crossword_helper;Integrated Security=True
+      - ConnectionStrings__crosswordHelper=User Id=user;Password=password;Host=host.docker.internal;Port=5432;Database=crossword_helper
     ports:
-      - "8080:80"
+      - "8080:8080"
   db:
     image: db
     container_name: db

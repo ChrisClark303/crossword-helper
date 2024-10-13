@@ -14,8 +14,6 @@ namespace CrosswordHelper.Data.Postgres
 
         private NpgsqlConnection _conn;
         private NpgsqlCommand _cmd;
-        //TODO : This is nonsense, isn't it??
-        //private readonly string _connString = "User Id=user;Password=password;Host=localhost;Port=5432;Database=crossword_helper;Integrated Security=True";
         private readonly string _connString;
         public RepositoryExecutor Connect()
         {

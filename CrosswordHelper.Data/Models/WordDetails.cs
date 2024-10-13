@@ -2,14 +2,17 @@
 {
     public class WordDetails
     {
-        public string OriginalWord { get; set; }
-        public string[] PotentialReplacements { get; set; }
-        public bool CouldBeAnagramIndicator { get; set; }
-        public bool CouldBeContainerIndicator { get; set; }
-        public bool CouldBeReversalIndicator { get; set; }
-        public bool CouldBeLetterSelectionIndicator { get; set; }
-        public bool CouldBeHomophoneIndicator { get; set; }
-        public bool CouldBeSeparator { get; set; }
+        public string? OriginalWord { get; init; }
+        public string[]? PotentialReplacements { get; init; }
+        public bool CouldBeAnagramIndicator { get; init; }
+        public bool CouldBeContainerIndicator { get; init; }
+        public bool CouldBeReversalIndicator { get; init; }
+        public bool CouldBeRemovalIndicator { get;  init; }
+        public bool CouldBeLetterSelectionIndicator { get; init; }
+        public bool CouldBeHomophoneIndicator { get; init; }
+        public bool CouldBeSeparator { get; init; }
+        public bool CouldBeHiddenWordIndicator { get; init; }
+        public bool CouldBeSubstitutionIndicator { get; init; }
     }
 
     public record UsualSuspect(string Word, string[] Replacements);

@@ -267,57 +267,37 @@ $_$;
 ALTER PROCEDURE public."GetAnagramIndicators"() OWNER TO "user";
 
 --
--- TOC entry 237 (class 1255 OID 16394)
--- Name: GetWordMatches(text); Type: PROCEDURE; Schema: public; Owner: user
---
-
-CREATE PROCEDURE public."GetWordMatches"(IN word text)
-    LANGUAGE sql
-    AS $_$
-
-/*
-DO $$
-DECLARE replacements text[];
-BEGIN
-Select "Replacements"
-From public."UsualSuspects"
-Where "Word" = :word
-Into replacements;
-*/
-
-Select 
-	CASE WHEN Exists (Select 1 From public."AnagramIndicators" Where "Word" = word) THEN true ELSE false END IsAnagram,
-	CASE WHEN Exists (Select 1 From public."ContainerIndicators" Where "Word" = word) THEN true ELSE false END IsContainer,
-	CASE WHEN Exists (Select 1 From public."ReversalIndicators" Where "Word" = word) THEN true ELSE false END IsReversal;
-	/*replacements;*/
-
-/*END $$;*/
-
-$_$;
-
-
-ALTER PROCEDURE public."GetWordMatches"(IN word text) OWNER TO "user";
-
---
 -- TOC entry 242 (class 1255 OID 16395)
 -- Name: arraytest(text[]); Type: FUNCTION; Schema: public; Owner: user
 --
-
-CREATE FUNCTION public.arraytest(testarray text[]) RETURNS text[]
-    LANGUAGE sql
-    RETURN testarray;
-
-
-ALTER FUNCTION public.arraytest(testarray text[]) OWNER TO "user";
 
 --
 -- TOC entry 251 (class 1255 OID 16396)
 -- Name: checkcrosswordclue(text[]); Type: FUNCTION; Schema: public; Owner: user
 --
 
-CREATE FUNCTION public.checkcrosswordclue(words text[]) RETURNS TABLE(word text, id integer, replacements text[], isanagram boolean, iscontainer boolean, isreversal boolean, isremoval boolean, ishomophone boolean, isletterselection boolean)
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION public.checkcrosswordclue(
+	words text[])
+    RETURNS TABLE(
+		word text, 
+		id integer, 
+		replacements text[], 
+		isanagram boolean, 
+		iscontainer boolean,
+		ishiddenword boolean,
+		ishomophone boolean,
+		isremoval boolean,
+		isreversal boolean,  
+		isletterselection boolean,
+		issubstitution boolean
+		) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+
 DECLARE 
     ordinals int[];
 	counter int;
@@ -336,24 +316,28 @@ BEGIN
 	us."Replacements",
 	ai."Word" is not null isAnagram,
 	ci."Word" is not null isContainer,
-	ri."Word" is not null isReversal,
-	ri2."Word" is not null isRemoval,
+	hwi."Word" is not null isHiddenWord,
 	hi."Word" is not null isHomophone,
-	lsi."Word" is not null isLetterSelection
+	lsi."Word" is not null isLetterSelection,
+	remi."Word" is not null isRemoval,
+	revi."Word" is not null isReversal,
+	si."Word" is not null isSubstitution
 	from unnest(words,ordinals) w(word,ord)
 	left outer Join public."UsualSuspects" us on us."Word" = w.word
 	left outer Join public."AnagramIndicators" ai on ai."Word" ILIKE w.word
 	left outer Join public."ContainerIndicators" ci on ci."Word" ILIKE w.word
-	left outer Join public."ReversalIndicators" ri on ri."Word" ILIKE w.word
-	left outer Join public."RemovalIndicators" ri2 on ri2."Word" ILIKE w.word
+	left outer Join public."HiddenWordIndicators" hwi on hwi."Word" ILIKE w.word
 	left outer Join public."HomophoneIndicators" hi on hi."Word" ILIKE w.word
 	left outer Join public."LetterSelectionIndicators" lsi on lsi."Word" ILIKE w.word
+	left outer Join public."RemovalIndicators" remi on remi."Word" ILIKE w.word
+	left outer Join public."ReversalIndicators" revi on revi."Word" ILIKE w.word
+	left outer Join public."SubstitutionIndicators" si on si."Word" ILIKE w.word
 	ORDER by 2;
 END; 
-$$;
+$BODY$;
 
-
-ALTER FUNCTION public.checkcrosswordclue(words text[]) OWNER TO "user";
+ALTER FUNCTION public.checkcrosswordclue(text[])
+    OWNER TO "user";
 
 --
 -- TOC entry 252 (class 1255 OID 16397)

@@ -21,6 +21,8 @@ builder.Services.AddScoped<ICrosswordHelperManagerRepository, CrosswordHelperMan
 builder.Services.AddTransient<IUsualSuspectDataImporter, UsualSuspectDataImporter>();
 builder.Services.AddControllers();
 
+AppContext.SetSwitch("Npgsql.EnableStoredProcedureCompatMode", true);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

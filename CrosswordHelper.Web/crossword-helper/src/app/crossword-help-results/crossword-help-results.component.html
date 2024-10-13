@@ -9,6 +9,9 @@
             <span *ngIf="word.couldBeContainerIndicator" class="crossword-help-item container">
               container
             </span>
+            <span *ngIf="word.couldBeRemovalIndicator" class="crossword-help-item removal">
+              removal
+            </span>
             <span *ngIf="word.couldBeReversalIndicator" class="crossword-help-item reversal">
               reversal
             </span>
@@ -17,6 +20,9 @@
             </span>
             <span *ngIf="word.couldBeLetterSelectionIndicator" class="crossword-help-item letter-selection">
               letter selection
+            </span>
+            <span *ngIf="word.couldBeSubstitutionIndicator" class="crossword-help-item substitution">
+              substitution
             </span>
             <span *ngIf="word.couldBeSeparator" class="crossword-help-item separator">
               separator

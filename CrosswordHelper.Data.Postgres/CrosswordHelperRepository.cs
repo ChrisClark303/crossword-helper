@@ -77,8 +77,11 @@ namespace CrosswordHelper.Data.Postgres
                     CouldBeAnagramIndicator = reader.GetBoolean("isanagram"),
                     CouldBeContainerIndicator = reader.GetBoolean("iscontainer"),
                     CouldBeReversalIndicator = reader.GetBoolean("isreversal"),
+                    CouldBeRemovalIndicator = reader.GetBoolean("isremoval"),
                     CouldBeHomophoneIndicator = reader.GetBoolean("ishomophone"),
                     CouldBeLetterSelectionIndicator = reader.GetBoolean("isletterselection"),
+                    CouldBeHiddenWordIndicator = reader.GetBoolean("ishiddenword"),
+                    CouldBeSubstitutionIndicator = reader.GetBoolean("issubstitution"),
                     PotentialReplacements = reader["replacements"] as string[]
                 };
                 return wordDetails;

@@ -23,8 +23,10 @@ export class WordDetails {
     potentialReplacements: [string];
     couldBeAnagramIndicator: boolean;
     couldBeContainerIndicator: boolean;
+    couldBeRemovalIndicator: boolean;
     couldBeReversalIndicator: boolean;
     couldBeHomophoneIndicator: boolean;
     couldBeLetterSelectionIndicator: boolean;
     couldBeSeparator: boolean;
+    couldBeSubstitutionIndicator: boolean;
 }

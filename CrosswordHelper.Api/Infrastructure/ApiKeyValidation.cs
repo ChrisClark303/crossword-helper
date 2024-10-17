@@ -1,6 +1,6 @@
 ﻿using CrosswordHelper.Api.Models;
 
-namespace CrosswordHelper.Api
+namespace CrosswordHelper.Api.Infrastructure
 {
     public class ApiKeyValidation : IApiKeyValidation
     {

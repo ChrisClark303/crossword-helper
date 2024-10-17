@@ -2,7 +2,7 @@
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
-namespace CrosswordHelper.Api
+namespace CrosswordHelper.Api.Infrastructure
 {
     public class ApiKeyMiddleware
     {

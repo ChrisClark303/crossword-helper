@@ -5,6 +5,7 @@ using CrosswordHelper.Data.Postgres;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.AddConsole();
 
 var connStrings = builder.Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>();
 Console.WriteLine(connStrings.CrosswordHelper);

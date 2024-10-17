@@ -1,5 +1,4 @@
 ﻿using CrosswordHelper.Api;
-using CrosswordHelper.Data.Import;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +8,12 @@ namespace CrosswordHelper.Api.Controllers
     public class ManagementController : ControllerBase
     {
         private readonly ICrosswordHelperManagerService _helperService;
+        private readonly ILogger<ManagementController> _logger;
 
-        public ManagementController(ICrosswordHelperManagerService helperService)
+        public ManagementController(ICrosswordHelperManagerService helperService, ILogger<ManagementController> logger)
         {
             _helperService = helperService;
+            _logger = logger;
         }
 
         [HttpPost("/help/anagram-indicators/{word}")]
@@ -75,40 +76,14 @@ namespace CrosswordHelper.Api.Controllers
         public IActionResult TestConnection()
         {
             string connHealth = _helperService.GetConnectionHealth();
-            return Ok(connHealth);
-        }
-    }
-
-    [ApiController]
-    public class ImportController : ControllerBase
-    {
-        private readonly IUsualSuspectDataImporter _dataImporter;
-
-        public ImportController(IUsualSuspectDataImporter dataImporter)
-        {
-            _dataImporter = dataImporter;
-        }
-
-        [HttpPost("/import/usual-suspects")]
-        public IActionResult ImportUsualSuspect(IFormFile file)
-        {
-            var stream = file.OpenReadStream();
-            StreamReader sReader = new StreamReader(stream);
-            var lines = sReader.ReadAllLines().ToArray();
-            _dataImporter.Import(lines);
-
-            return Ok();
-        }
-
-        [HttpPatch("/import/best-for-puzzles")]
-        public async Task<IActionResult> ImportFromBestForPuzzles()
-        {
-            var bestForPuzzlesDataScraper = new BestForPuzzlesUsualSuspectDataScraper(new HttpClient()
+            if (string.IsNullOrEmpty(connHealth))
             {
-                BaseAddress = new Uri("https://bestforpuzzles.com/cryptic-crossword-dictionary/")
-            }, null, new UrlBuilder());
-            await bestForPuzzlesDataScraper.Scrape();
-            return Ok();
+                _logger.LogInformation("Connection test successful.");
+            }
+            else {
+                _logger.LogError($"Error testing connection: {connHealth}");
+            }
+            return Ok(connHealth);
         }
     }
 }

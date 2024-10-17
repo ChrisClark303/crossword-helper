@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 var builder = WebApplication.CreateBuilder(args);
 
 var connStrings = builder.Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>();
+Console.WriteLine(connStrings.CrosswordHelper);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

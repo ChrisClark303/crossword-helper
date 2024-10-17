@@ -14,12 +14,19 @@ namespace CrosswordHelper.Data.Postgres
 
         protected IEnumerable<T> Query<T>(string cmdText, Func<NpgsqlDataReader, T> resultAction, params NpgsqlParameter[]? parameters)
         {
-            var executor = new RepositoryExecutor(_connectionStrings);
-            return executor
-                .Connect()
-                .WithFunction(cmdText)
-                .WithParams(parameters)
-                .Query<T>(resultAction);
+            try
+            {
+                var executor = new RepositoryExecutor(_connectionStrings);
+                return executor
+                    .Connect()
+                    .WithFunction(cmdText)
+                    .WithParams(parameters)
+                    .Query<T>(resultAction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         protected void Execute(string cmdText, params NpgsqlParameter[]? parameters)

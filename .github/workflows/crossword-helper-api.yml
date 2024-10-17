@@ -47,4 +47,4 @@ jobs:
         publish-profile: ${{ secrets.crossword_helper_api_0969 }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
       env:
-        CONNECTIONSTRINGS__CROSSWORDHELPER: ${{secrets.AZURE_CONNECTION_STRING}}
+        ConnectionStrings__crosswordHelper: ${{secrets.AZURE_CONNECTION_STRING}}

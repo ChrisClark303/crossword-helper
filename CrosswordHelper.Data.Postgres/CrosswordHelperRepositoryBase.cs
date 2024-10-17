@@ -14,19 +14,12 @@ namespace CrosswordHelper.Data.Postgres
 
         protected IEnumerable<T> Query<T>(string cmdText, Func<NpgsqlDataReader, T> resultAction, params NpgsqlParameter[]? parameters)
         {
-            try
-            {
-                var executor = new RepositoryExecutor(_connectionStrings);
-                return executor
-                    .Connect()
-                    .WithFunction(cmdText)
-                    .WithParams(parameters)
-                    .Query<T>(resultAction);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var executor = new RepositoryExecutor(_connectionStrings);
+            return executor
+                .Connect()
+                .WithFunction(cmdText)
+                .WithParams(parameters)
+                .Query<T>(resultAction);
         }
 
         protected void Execute(string cmdText, params NpgsqlParameter[]? parameters)
@@ -40,15 +33,10 @@ namespace CrosswordHelper.Data.Postgres
 
         protected void Test()
         {
-            try { new RepositoryExecutor(_connectionStrings)
+            new RepositoryExecutor(_connectionStrings)
                     .Connect()
                     .WithFunction("test")
-                    .Query(reader => reader.GetData(1)); 
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Connection failed with message: {ex.Message}", ex);
-            }
+                    .Query(reader => reader.GetData(1));
         }
     }
 }

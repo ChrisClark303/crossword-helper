@@ -80,7 +80,8 @@ namespace CrosswordHelper.Api.Controllers
             {
                 _logger.LogInformation("Connection test successful.");
             }
-            else {
+            else 
+            {
                 _logger.LogError($"Error testing connection: {connHealth}");
             }
             return Ok(connHealth);

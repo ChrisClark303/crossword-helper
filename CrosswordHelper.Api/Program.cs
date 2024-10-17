@@ -3,12 +3,30 @@ using CrosswordHelper.Data;
 using CrosswordHelper.Data.Import;
 using CrosswordHelper.Data.Postgres;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
+
+var configuration = new ConfigurationBuilder()
+                  .AddJsonFile("appsettings.json")
+                  .AddEnvironmentVariables()
+                  .Build();
+
+Log.Logger = new LoggerConfiguration()
+          .ReadFrom.Configuration(configuration)
+          .CreateBootstrapLogger();
+
+Log.Information("Building web host.");
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddConsole();
 
+builder.Host.UseSerilog((ctx, services, config) =>
+{
+    config
+    .ReadFrom.Configuration(ctx.Configuration)
+    .ReadFrom.Services(services);
+});
+
 var connStrings = builder.Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>();
-Console.WriteLine(connStrings.CrosswordHelper);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -27,12 +45,11 @@ AppContext.SetSwitch("Npgsql.EnableStoredProcedureCompatMode", true);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-//}
+app.UseSerilogRequestLogging();
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 app.UseCors(options =>
 {
     options.AllowAnyOrigin();

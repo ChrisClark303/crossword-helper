@@ -70,6 +70,13 @@ namespace CrosswordHelper.Api.Controllers
             _helperService.AddHiddenWordIndicator(word, notes);
             return Ok();
         }
+
+        [HttpGet("/health/db")]
+        public IActionResult TestConnection()
+        {
+            string connHealth = _helperService.GetConnectionHealth();
+            return Ok(connHealth);
+        }
     }
 
     [ApiController]

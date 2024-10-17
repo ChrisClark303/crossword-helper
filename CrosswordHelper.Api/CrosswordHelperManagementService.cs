@@ -68,5 +68,10 @@ namespace CrosswordHelper.Api
         {
             SplitWordsAndExecute(word, notes, _helperManagerRepository.AddHiddenWordIndicator);
         }
+
+        public string GetConnectionHealth()
+        {
+            return _helperManagerRepository.TestConnection();
+        }
     }
 }

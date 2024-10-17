@@ -74,5 +74,18 @@ namespace CrosswordHelper.Data.Postgres
         {
             CallAddWordStoredProc(IndicatorWordType.HiddenWord, word, notes);
         }
+
+        public string TestConnection()
+        {
+            try
+            {
+                Test();
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
     }
 }

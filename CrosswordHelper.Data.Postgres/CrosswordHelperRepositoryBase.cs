@@ -37,5 +37,18 @@ namespace CrosswordHelper.Data.Postgres
                 .WithParams(parameters)
                 .Execute();
         }
+
+        protected void Test()
+        {
+            try { new RepositoryExecutor(_connectionStrings)
+                    .Connect()
+                    .WithFunction("test")
+                    .Query(reader => reader.GetData(1)); 
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Connection failed with message: {ex.Message}", ex);
+            }
+        }
     }
 }

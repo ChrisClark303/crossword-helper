@@ -28,5 +28,6 @@ namespace CrosswordHelper.Api
         void AddSubstitutionIndicator(string word, string notes);
         void AddUsualSuspect(string word, string replacement);
         void AddHiddenWordIndicator(string word, string notes);
+        string GetConnectionHealth();
     }
 }

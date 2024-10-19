@@ -1,15 +1,16 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root'
   })
 export class ServiceBase {
 
-    private serviceUrl: string = 'http://localhost:8080';
+    private serviceUrl: string = environment.serviceUrl;
     private httpOptions = {
-        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+        headers: new HttpHeaders({ 'Content-Type': 'application/json'})
       };
 
     constructor(private httpClient: HttpClient) { }
@@ -24,7 +25,7 @@ export class ServiceBase {
 
     private get<T>(url:string): Observable<T> {
         var absUrl = `${this.serviceUrl}${url}`;
-        console.log("Sending request to " + absUrl)
+        console.log("Sending request to " + absUrl);
         return this.httpClient.get<T>(absUrl);
       }
 

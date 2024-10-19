@@ -21,13 +21,10 @@ namespace CrosswordHelper.Api.Infrastructure
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (_settings.IsEnabled)
+            if (!ValidateApiKey(context, _settings))
             {
-                if (!ValidateApiKey(context, _settings))
-                {
-                    _logger.LogWarning("Unauthorised request attempted.");
-                    return;
-                }
+                _logger.LogWarning("Unauthorised request attempted.");
+                return;
             }
 
             await _next(context);
@@ -35,7 +32,7 @@ namespace CrosswordHelper.Api.Infrastructure
 
         private bool ValidateApiKey(HttpContext context, ApiKeySettings settings)
         {
-            if (context.Request.Path.Value.Contains("swagger")) return true;
+            if (CanBypassApiKeyValidation(context)) return true;
 
             var apiKeyHeader = context.Request.Headers[ApiKeyValidation.ApiKeyHeaderName];
 
@@ -52,6 +49,11 @@ namespace CrosswordHelper.Api.Infrastructure
             }
 
             return true;
+        }
+
+        private bool CanBypassApiKeyValidation(HttpContext context)
+        {
+            return !_settings.IsEnabled || context.Request.Method == "OPTIONS" || context.Request.Path.Value!.Contains("swagger");
         }
     }
 }

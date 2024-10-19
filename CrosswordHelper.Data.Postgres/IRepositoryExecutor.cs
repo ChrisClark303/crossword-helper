@@ -4,12 +4,12 @@ namespace CrosswordHelper.Data.Postgres
 {
     public interface IRepositoryExecutor
     {
-        RepositoryExecutor Connect();
+        QueryBuilder Connect();
         void Dispose();
         void Execute();
         IEnumerable<T> Query<T>(Func<NpgsqlDataReader, T> resultReader);
-        RepositoryExecutor WithFunction(string functionName);
-        RepositoryExecutor WithParams(params NpgsqlParameter[]? parameters);
-        RepositoryExecutor WithProc(string procName);
+        QueryBuilder WithFunction(string functionName);
+        QueryBuilder WithParams(params NpgsqlParameter[]? parameters);
+        QueryBuilder WithProc(string procName);
     }
 }

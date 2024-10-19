@@ -5,9 +5,9 @@ using System.Reflection.Metadata;
 
 namespace CrosswordHelper.Data.Postgres
 {
-    public class RepositoryExecutor : IDisposable, IRepositoryExecutor
+    public class QueryBuilder : IDisposable, IRepositoryExecutor
     {
-        public RepositoryExecutor(IConnectionStrings connectionStrings)
+        public QueryBuilder(IConnectionStrings connectionStrings)
         {
             _connString = connectionStrings.CrosswordHelper;
         }
@@ -15,14 +15,14 @@ namespace CrosswordHelper.Data.Postgres
         private NpgsqlConnection _conn;
         private NpgsqlCommand _cmd;
         private readonly string _connString;
-        public RepositoryExecutor Connect()
+        public QueryBuilder Connect()
         {
             _conn = new NpgsqlConnection(_connString);
             _conn.Open();
             return this;
         }
 
-        public RepositoryExecutor WithProc(string procName)
+        public QueryBuilder WithProc(string procName)
         {
             _cmd = new(procName, _conn)
             {
@@ -31,7 +31,7 @@ namespace CrosswordHelper.Data.Postgres
             return this;
         }
 
-        public RepositoryExecutor WithFunction(string functionName)
+        public QueryBuilder WithFunction(string functionName)
         {
             _cmd = new(functionName, _conn)
             {
@@ -40,7 +40,7 @@ namespace CrosswordHelper.Data.Postgres
             return this;
         }
 
-        public RepositoryExecutor WithParams(params NpgsqlParameter[]? parameters)
+        public QueryBuilder WithParams(params NpgsqlParameter[]? parameters)
         {
             if (parameters != null)
             {

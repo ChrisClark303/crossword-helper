@@ -1,4 +1,5 @@
 using CrosswordHelper.Api;
+using CrosswordHelper.Api.Infrastructure;
 using CrosswordHelper.Api.Models;
 using CrosswordHelper.Data;
 using CrosswordHelper.Data.Import;

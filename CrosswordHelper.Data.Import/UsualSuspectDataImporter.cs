@@ -29,7 +29,7 @@ namespace CrosswordHelper.Data.Import
 
         private static (string word, string replacementText) SplitOutWordAndReplacementText(string item)
         {
-            var posOfFirstComma = item.IndexOf(",");
+            var posOfFirstComma = item.IndexOf(',');
             var word = item[..posOfFirstComma];
             var replacementText = item[(posOfFirstComma + 1)..];
             return (word, replacementText);
@@ -58,9 +58,9 @@ namespace CrosswordHelper.Data.Import
             if (word.EndsWith(PluralMarker))
             {
                 var nonplural = word.Replace(PluralMarker, string.Empty);
-                return new[] { nonplural, $"{nonplural}s" };
+                return [nonplural, $"{nonplural}s"];
             }
-            return new[] { word };
+            return [word];
         }
     }
 }

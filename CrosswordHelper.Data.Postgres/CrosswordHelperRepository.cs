@@ -82,10 +82,17 @@ namespace CrosswordHelper.Data.Postgres
                     CouldBeLetterSelectionIndicator = reader.GetBoolean("isletterselection"),
                     CouldBeHiddenWordIndicator = reader.GetBoolean("ishiddenword"),
                     CouldBeSubstitutionIndicator = reader.GetBoolean("issubstitution"),
-                    PotentialReplacements = reader["replacements"] as string[]
+                    PotentialReplacements = ReadReplacements(reader)
                 };
                 return wordDetails;
             }, new NpgsqlParameter("words", words));
+        }
+
+        private string[]? ReadReplacements(IDataReader reader)
+        {
+            return (reader["replacements"] as string[])?
+                .Select(s => s.Split("(")[0].Trim())
+                .ToArray();
         }
 
         public IEnumerable<UsualSuspect> GetUsualSuspects()

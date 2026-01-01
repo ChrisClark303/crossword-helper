@@ -7,6 +7,7 @@ namespace CrosswordHelper.Api
     public class CrosswordHelperService : ICrosswordHelperService
     {
         private readonly ICrosswordHelperRepository _helperRepository;
+        private ILogger<ICrosswordHelperService> _logger;
 
         public CrosswordHelperService(ICrosswordHelperRepository helperRepository)
         {

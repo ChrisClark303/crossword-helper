@@ -1,44 +1,40 @@
 ﻿using HtmlAgilityPack;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using System.Xml.XPath;
+using System.Diagnostics;
 
 namespace CrosswordHelper.Data.Import
 {
-    public class BestForPuzzlesUsualSuspectDataScraper
+    public class BestForPuzzlesUsualSuspectDataScraper(HttpClient client, ICrosswordHelperManagerRepository managerRepository, IUrlBuilder urlBuilder) : IBestForPuzzlesUsualSuspectDataScraper
     {
         private Dictionary<string, WordType> _wordTypeMaps = new()
         {
-            {"anagram indicator", WordType.Anagram  },
+            {"anagram indicator", WordType.Anagram },
             {"bits-and-pieces indicator", WordType.UsualSuspect },
+            {"bits and pieces indicator", WordType.UsualSuspect  },
             {"reversal indicator", WordType.Reversal },
             {"container-and-contents indicator", WordType.Container },
+            {"container and contents indicator", WordType.Container },
             {"subtraction indicator", WordType.Removal },
             {"hidden word indicator", WordType.Hidden },
             {"NATO Phonetic Alphabet", WordType.None },
-            {"Please let us know", WordType.None }
+            {"Please let us know", WordType.None },
+            {"Symbols for Chemical Elements", WordType.None },
+            {"homophone indicators", WordType.Homophone },
+            {"homophone indicator", WordType.Homophone },
+            {"cryptic definition", WordType.None },
+            {"Drinks", WordType.None },
+            {"BIRDS", WordType.None },
+            {"Flowers", WordType.None },
+            {"Rivers of the British Isles", WordType.None },
+            {"Islands of the British Isles", WordType.None },
+            {"International Vehicle Registrations", WordType.None },
+            {"Lists of Fish", WordType.None },
+            { "", WordType.UsualSuspect }
         };
-
-        private readonly HttpClient _client;
-        private readonly ICrosswordHelperManagerRepository _managerRepository;
-        private readonly IUrlBuilder _urlBuilder;
-
-        public BestForPuzzlesUsualSuspectDataScraper(HttpClient client, ICrosswordHelperManagerRepository managerRepository, IUrlBuilder urlBuilder)
-        {
-            _client = client;
-            _managerRepository = managerRepository;
-            _urlBuilder = urlBuilder;
-        }
 
         public async Task Scrape()
         {
             var words = new List<WordData>();
-            var urls = _urlBuilder.GetUrls();
+            var urls = urlBuilder.GetUrls();
             foreach (string url in urls)
             {
                 HtmlDocument doc = await LoadHtmlDocumentFromUrl(url);
@@ -60,19 +56,21 @@ namespace CrosswordHelper.Data.Import
                 }
             }
 
-            AddIndicatorsByType(words, WordType.Anagram, _managerRepository.AddAnagramIndictor);
-            AddIndicatorsByType(words, WordType.Reversal, _managerRepository.AddReversalIndicator);
-            AddIndicatorsByType(words, WordType.Removal, _managerRepository.AddRemovalIndicator);
-            AddIndicatorsByType(words, WordType.Container, _managerRepository.AddContainerIndicator);
-            AddIndicatorsByType(words, WordType.Hidden, _managerRepository.AddHiddenWordIndicator);
-            AddIndicatorsByType(words, WordType.UsualSuspect, _managerRepository.AddAUsualSuspect);
+            AddIndicatorsByType(words, WordType.Anagram, managerRepository.AddAnagramIndictor);
+            AddIndicatorsByType(words, WordType.Reversal, managerRepository.AddReversalIndicator);
+            AddIndicatorsByType(words, WordType.Removal, managerRepository.AddRemovalIndicator);
+            AddIndicatorsByType(words, WordType.Container, managerRepository.AddContainerIndicator);
+            AddIndicatorsByType(words, WordType.Hidden, managerRepository.AddHiddenWordIndicator);
+            AddIndicatorsByType(words, WordType.UsualSuspect, managerRepository.AddAUsualSuspect);
+            AddIndicatorsByType(words, WordType.Homophone, managerRepository.AddHomophoneIndicator);
         }
 
         private WordData GenerateWordDataFromNode(string word, HtmlNode node)
         {
+            Debug.WriteLine(word);
             var description = node.InnerText;
             var anchor = node.SelectSingleNode("./a");
-            var wordType = anchor.InnerText;
+            var wordType = anchor?.InnerText ?? "";
             var substitutions = node.SelectNodes("./strong");
             return new WordData()
             {
@@ -92,28 +90,29 @@ namespace CrosswordHelper.Data.Import
 
         private async Task<HtmlDocument> LoadHtmlDocumentFromUrl(string url)
         {
-            var response = await _client.GetAsync(url);
+            var response = await client.GetAsync(url);
             var page = await response.Content.ReadAsStringAsync();
-            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+            var doc = new HtmlDocument();
             doc.LoadHtml(page);
             return doc;
         }
 
-        private void AddIndicatorsByType(List<WordData> words, WordType wordType, Action<string,string> dataHandler)
+        private void AddIndicatorsByType(List<WordData> words, WordType wordType, Action<string, string> dataHandler)
         {
             var indicators = words.Where(w => w.WordType == wordType);
             foreach (var indicator in indicators)
             {
+                Debug.WriteLine($"Adding word {indicator.Word} {indicator.Description}");
                 dataHandler(indicator.Word!, indicator.Description!);
             }
         }
 
-        private void AddIndicatorsByType(List<WordData> words, WordType wordType, Action<string,string[]> dataHandler)
+        private void AddIndicatorsByType(List<WordData> words, WordType wordType, Action<string, string[]> dataHandler)
         {
             var indicators = words.Where(w => w.WordType == wordType);
             foreach (var indicator in indicators)
             {
-                if (indicator.Substitutions != null) 
+                if (indicator.Substitutions != null)
                 {
                     dataHandler(indicator.Word!, indicator.Substitutions);
                 }
@@ -137,7 +136,8 @@ namespace CrosswordHelper.Data.Import
         Reversal,
         Removal,
         Container,
-        Hidden
+        Hidden,
+        Homophone
     }
 
     public class UrlBuilder : IUrlBuilder

@@ -1,6 +1,6 @@
 ﻿using CrosswordHelper.Data;
 
-namespace CrosswordHelper.Api
+namespace CrosswordHelper.Management.Api
 {
     public class CrosswordHelperManagementService : ICrosswordHelperManagerService
     {

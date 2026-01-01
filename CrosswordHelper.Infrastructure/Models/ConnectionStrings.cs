@@ -1,6 +1,6 @@
 ﻿using CrosswordHelper.Data;
 
-namespace CrosswordHelper.Api.Models
+namespace CrosswordHelper.Infrastructure.Models
 {
     public class ConnectionStrings : IConnectionStrings
     {

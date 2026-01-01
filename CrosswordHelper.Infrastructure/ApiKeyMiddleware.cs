@@ -1,8 +1,9 @@
-﻿using CrosswordHelper.Api.Models;
+﻿using CrosswordHelper.Infrastructure.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System.Net;
-using System.Security.Cryptography.X509Certificates;
 
-namespace CrosswordHelper.Api.Infrastructure
+namespace CrosswordHelper.Infrastructure
 {
     public class ApiKeyMiddleware
     {

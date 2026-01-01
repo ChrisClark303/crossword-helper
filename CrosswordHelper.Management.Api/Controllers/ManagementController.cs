@@ -1,8 +1,7 @@
-﻿using CrosswordHelper.Api;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CrosswordHelper.Api.Controllers
+namespace CrosswordHelper.Management.Api.Controllers
 {
     [ApiController]
     public class ManagementController : ControllerBase

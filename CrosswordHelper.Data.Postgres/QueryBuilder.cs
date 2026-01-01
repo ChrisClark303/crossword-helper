@@ -1,20 +1,15 @@
 ﻿
 using Npgsql;
 using System.Data;
-using System.Reflection.Metadata;
 
 namespace CrosswordHelper.Data.Postgres
 {
-    public class QueryBuilder : IDisposable, IRepositoryExecutor
+    public class QueryBuilder(IConnectionStrings connectionStrings) : IDisposable, IRepositoryExecutor
     {
-        public QueryBuilder(IConnectionStrings connectionStrings)
-        {
-            _connString = connectionStrings.CrosswordHelper;
-        }
+        private NpgsqlConnection _conn = null!;
+        private NpgsqlCommand _cmd = null!;
+        private readonly string _connString = connectionStrings.CrosswordHelper;
 
-        private NpgsqlConnection _conn;
-        private NpgsqlCommand _cmd;
-        private readonly string _connString;
         public QueryBuilder Connect()
         {
             _conn = new NpgsqlConnection(_connString);

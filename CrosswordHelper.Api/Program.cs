@@ -1,13 +1,10 @@
 using CrosswordHelper.Api;
-using CrosswordHelper.Api.Infrastructure;
-using CrosswordHelper.Api.Models;
+using CrosswordHelper.Infrastructure;
 using CrosswordHelper.Data;
-using CrosswordHelper.Data.Import;
 using CrosswordHelper.Data.Postgres;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
 using Serilog;
+using CrosswordHelper.Infrastructure.Services;
+using Microsoft.OpenApi.Models;
 
 var configuration = new ConfigurationBuilder()
                   .AddJsonFile("appsettings.json")
@@ -30,8 +27,7 @@ builder.Host.UseSerilog((ctx, services, config) =>
     .ReadFrom.Services(services);
 });
 
-var connStrings = builder.Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>();
-var apiKeySettings = builder.Configuration.GetSection("ApiKeySettings").Get<ApiKeySettings>();
+//var connStrings = builder.Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -60,14 +56,10 @@ builder.Services.AddSwaggerGen(c => {
     c.AddSecurityRequirement(requirement);
 });
 builder.Services.AddCors();
-builder.Services.AddSingleton<IConnectionStrings>(connStrings!);
-builder.Services.AddSingleton<ApiKeySettings>(apiKeySettings!);
-builder.Services.AddTransient<IApiKeyValidation, ApiKeyValidation>();
+builder.Services.AddApiKey(builder.Configuration);
+builder.Services.AddConnectionStrings(builder.Configuration);
 builder.Services.AddScoped<ICrosswordHelperService,CrosswordHelperService>();
 builder.Services.AddScoped<ICrosswordHelperRepository, CrosswordHelperRepository>();
-builder.Services.AddScoped<ICrosswordHelperManagerService, CrosswordHelperManagementService>();
-builder.Services.AddScoped<ICrosswordHelperManagerRepository, CrosswordHelperManagerRepository>();
-builder.Services.AddTransient<IUsualSuspectDataImporter, UsualSuspectDataImporter>();
 builder.Services.AddControllers();
 
 AppContext.SetSwitch("Npgsql.EnableStoredProcedureCompatMode", true);

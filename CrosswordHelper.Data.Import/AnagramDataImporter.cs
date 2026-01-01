@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CrosswordHelper.Data.Import
+﻿namespace CrosswordHelper.Data.Import
 {
     public class AnagramDataImporter
     {

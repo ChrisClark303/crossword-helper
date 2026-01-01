@@ -1,4 +1,4 @@
-﻿namespace CrosswordHelper.Api.Infrastructure
+﻿namespace CrosswordHelper.Infrastructure
 {
     public interface IApiKeyValidation
     {

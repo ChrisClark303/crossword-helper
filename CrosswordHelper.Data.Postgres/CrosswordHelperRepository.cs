@@ -1,8 +1,6 @@
 ﻿using CrosswordHelper.Data.Models;
 using Npgsql;
 using System.Data;
-using System.Runtime.CompilerServices;
-using System.Xml;
 
 namespace CrosswordHelper.Data.Postgres
 {

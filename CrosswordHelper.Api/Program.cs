@@ -5,6 +5,7 @@ using CrosswordHelper.Data.Postgres;
 using Serilog;
 using CrosswordHelper.Infrastructure.Services;
 using Microsoft.OpenApi.Models;
+using CrosswordHelper.Data.Cache;
 
 var configuration = new ConfigurationBuilder()
                   .AddJsonFile("appsettings.json")
@@ -59,8 +60,11 @@ builder.Services.AddCors();
 builder.Services.AddApiKey(builder.Configuration);
 builder.Services.AddConnectionStrings(builder.Configuration);
 builder.Services.AddScoped<ICrosswordHelperService,CrosswordHelperService>();
-builder.Services.AddScoped<ICrosswordHelperRepository, CrosswordHelperRepository>();
+builder.Services.AddScoped<ICrosswordHelperRepository, CrosswordHelperCacheBackedRepository>();
+
+builder.Services.AddCaching();
 builder.Services.AddControllers();
+builder.Services.AddValidation();
 
 AppContext.SetSwitch("Npgsql.EnableStoredProcedureCompatMode", true);
 

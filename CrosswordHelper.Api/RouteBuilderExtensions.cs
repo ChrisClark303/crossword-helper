@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace CrosswordHelper.Api
 {
@@ -28,6 +29,25 @@ namespace CrosswordHelper.Api
             app.MapGet("/help/{crosswordClue}", (string crosswordClue, [FromServices] ICrosswordHelperService helperService)
                 => helperService.Help(crosswordClue))
                .WithName("GetCrosswordHelp");
+
+            app.MapPost("/help/search", ([FromBody]SearchArgs args)
+                => Console.WriteLine("Hello"))
+               .WithName("Search");
+        }
+
+        public class SearchArgs
+        {
+            [Required]
+            public string Clue { get; set; } = string.Empty;
+
+            [Range(0, 10)]
+            public int Length { get; set; }
+            [Required]
+            public int? Length2 { get; set; }
+            public string ClueType { get; set; }
+
+            public DateTime ClueDate { get; set; }
+            public DateTime? ClueDate2 { get; set; }
         }
     }
 }

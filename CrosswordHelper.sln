@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.1.11312.151 d18.0
+VisualStudioVersion = 18.1.11312.151
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrosswordHelper.Api", "CrosswordHelper.Api\CrosswordHelper.Api.csproj", "{A27A3B6F-3D04-43C5-828E-C24548ADE879}"
 EndProject
@@ -23,6 +23,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrosswordHelper.Management.Api", "CrosswordHelper.Management.Api\CrosswordHelper.Management.Api.csproj", "{FACE4B99-9B14-414C-836F-1E2793568C4A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrosswordHelper.Infrastructure", "CrosswordHelper.Infrastructure\CrosswordHelper.Infrastructure.csproj", "{7CE2FE0F-D21A-4ED6-919D-1C09FC7939A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrosswordHelper.Data.InMemory", "CrosswordHelper.Data.InMemory\CrosswordHelper.Data.InMemory.csproj", "{C7165BBA-59C5-4649-A1AC-6FEC78A8CA44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrosswordHelper.Data.Cache", "CrosswordHelper.Data.Cache\CrosswordHelper.Data.Cache.csproj", "{CC2A1FB2-85DA-45D6-8807-868E4D74994A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,6 +66,14 @@ Global
 		{7CE2FE0F-D21A-4ED6-919D-1C09FC7939A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CE2FE0F-D21A-4ED6-919D-1C09FC7939A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CE2FE0F-D21A-4ED6-919D-1C09FC7939A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7165BBA-59C5-4649-A1AC-6FEC78A8CA44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7165BBA-59C5-4649-A1AC-6FEC78A8CA44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7165BBA-59C5-4649-A1AC-6FEC78A8CA44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7165BBA-59C5-4649-A1AC-6FEC78A8CA44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC2A1FB2-85DA-45D6-8807-868E4D74994A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC2A1FB2-85DA-45D6-8807-868E4D74994A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC2A1FB2-85DA-45D6-8807-868E4D74994A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC2A1FB2-85DA-45D6-8807-868E4D74994A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

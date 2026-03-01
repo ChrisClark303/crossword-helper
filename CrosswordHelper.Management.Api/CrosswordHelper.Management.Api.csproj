@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CrosswordHelper.Data.Export\CrosswordHelper.Data.Export.csproj" />
     <ProjectReference Include="..\CrosswordHelper.Data.Import\CrosswordHelper.Data.Import.csproj" />
     <ProjectReference Include="..\CrosswordHelper.Data.Postgres\CrosswordHelper.Data.Postgres.csproj" />
     <ProjectReference Include="..\CrosswordHelper.Infrastructure\CrosswordHelper.Infrastructure.csproj" />

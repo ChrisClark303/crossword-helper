@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CrosswordHelper.Data.Cache\CrosswordHelper.Data.Cache.csproj" />
     <ProjectReference Include="..\CrosswordHelper.Data.Postgres\CrosswordHelper.Data.Postgres.csproj" />
     <ProjectReference Include="..\CrosswordHelper.Data\CrosswordHelper.Data.csproj" />
     <ProjectReference Include="..\CrosswordHelper.Infrastructure\CrosswordHelper.Infrastructure.csproj" />
@@ -24,6 +25,36 @@
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Infrastructure\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="data\anagrams.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="data\containers.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="data\hiddenWords.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="data\homophones.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="data\letterSelections.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="data\removals.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="data\reversals.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="data\substitutions.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="data\usualSuspects.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

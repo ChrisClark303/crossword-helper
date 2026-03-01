@@ -1,5 +1,4 @@
-﻿
-using Npgsql;
+﻿using Npgsql;
 using System.Data;
 
 namespace CrosswordHelper.Data.Postgres
@@ -51,7 +50,7 @@ namespace CrosswordHelper.Data.Postgres
             {
                 yield return resultReader(reader);
             }
-            _conn.Dispose();
+            //_conn.Dispose();
         }
 
         public void Execute()

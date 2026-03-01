@@ -4,6 +4,7 @@ using CrosswordHelper.Data.Postgres;
 using CrosswordHelper.Management.Api;
 using Serilog;
 using CrosswordHelper.Infrastructure.Services;
+using CrosswordHelper.Data.Export;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,11 +27,17 @@ builder.Services.AddTransient<IUsualSuspectDataImporter, UsualSuspectDataImporte
 builder.Services.AddScoped<IUrlBuilder, UrlBuilder>();
 builder.Services.AddScoped<IBestForPuzzlesUsualSuspectDataScraper, BestForPuzzlesUsualSuspectDataScraper>();
 builder.Services.AddHttpClient<IBestForPuzzlesUsualSuspectDataScraper, BestForPuzzlesUsualSuspectDataScraper>((_, client) => client.BaseAddress = new Uri("https://bestforpuzzles.com/cryptic-crossword-dictionary/"));
+builder.Services.AddScoped<ICrosswordHelperRepository, CrosswordHelperRepository>();
+builder.Services.AddScoped<ICrosswordDataExtractionService, CrosswordDataExtractionService>();
+
+builder.Services.AddCaching();
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
+
+AppContext.SetSwitch("Npgsql.EnableStoredProcedureCompatMode", true);
 
 var app = builder.Build();
 

@@ -15,15 +15,17 @@ COPY ["CrosswordHelper.Api/CrosswordHelper.Api.csproj", "CrosswordHelper.Api/"]
 COPY ["CrosswordHelper.Data.Import/CrosswordHelper.Data.Import.csproj", "CrosswordHelper.Data.Import/"]
 COPY ["CrosswordHelper.Data/CrosswordHelper.Data.csproj", "CrosswordHelper.Data/"]
 COPY ["CrosswordHelper.Data.Postgres/CrosswordHelper.Data.Postgres.csproj", "CrosswordHelper.Data.Postgres/"]
-RUN dotnet restore "./CrosswordHelper.Api/CrosswordHelper.Api.csproj"
+RUN dotnet restore "CrosswordHelper.Api/CrosswordHelper.Api.csproj"
 COPY . .
 WORKDIR "/src/CrosswordHelper.Api"
-RUN dotnet build "./CrosswordHelper.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+#RUN dotnet build "./CrosswordHelper.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "CrosswordHelper.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./CrosswordHelper.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "CrosswordHelper.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final

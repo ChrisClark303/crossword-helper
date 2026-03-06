@@ -1,36 +1,56 @@
 <div>
-    <ul class="words">
-      <li class="crossword-help-item-list" *ngFor="let word of (crosswordHelp$ | async)?.wordDetails"> <!--  -->
+  <ul class="words">
+    @for (word of (crosswordHelp$ | async)?.wordDetails; track word) {
+      <li class="crossword-help-item-list"> <!--  -->
         <span class="crossword-help-item-row">
-            <div class="original-word-container"><span class="crossword-help-item original-word">{{word.originalWord}}</span></div>
-            <span *ngIf="word.couldBeAnagramIndicator" class="crossword-help-item anagram">
+          <div class="original-word-container"><span class="crossword-help-item original-word">{{word.originalWord}}</span></div>
+          @if (word.couldBeAnagramIndicator) {
+            <span class="crossword-help-item anagram">
               anagram
             </span>
-            <span *ngIf="word.couldBeContainerIndicator" class="crossword-help-item container">
+          }
+          @if (word.couldBeContainerIndicator) {
+            <span class="crossword-help-item container">
               container
             </span>
-            <span *ngIf="word.couldBeRemovalIndicator" class="crossword-help-item removal">
+          }
+          @if (word.couldBeRemovalIndicator) {
+            <span class="crossword-help-item removal">
               removal
             </span>
-            <span *ngIf="word.couldBeReversalIndicator" class="crossword-help-item reversal">
+          }
+          @if (word.couldBeReversalIndicator) {
+            <span class="crossword-help-item reversal">
               reversal
             </span>
-            <span *ngIf="word.couldBeHomophoneIndicator" class="crossword-help-item homophone">
+          }
+          @if (word.couldBeHomophoneIndicator) {
+            <span class="crossword-help-item homophone">
               homophone
             </span>
-            <span *ngIf="word.couldBeLetterSelectionIndicator" class="crossword-help-item letter-selection">
+          }
+          @if (word.couldBeLetterSelectionIndicator) {
+            <span class="crossword-help-item letter-selection">
               letter selection
             </span>
-            <span *ngIf="word.couldBeSubstitutionIndicator" class="crossword-help-item substitution">
+          }
+          @if (word.couldBeSubstitutionIndicator) {
+            <span class="crossword-help-item substitution">
               substitution
             </span>
-            <span *ngIf="word.couldBeSeparator" class="crossword-help-item separator">
+          }
+          @if (word.couldBeSeparator) {
+            <span class="crossword-help-item separator">
               separator
             </span>
-            <span *ngFor="let replacement of word.potentialReplacements" class="crossword-help-item replacement">
+          }
+          @for (replacement of word.potentialReplacements; track replacement) {
+            <span class="crossword-help-item replacement">
               {{replacement}}
             </span>
+          }
         </span>
       </li>
-    </ul>
-  </div>
+    }
+  </ul>
+</div>

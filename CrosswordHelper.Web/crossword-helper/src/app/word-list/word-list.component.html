@@ -3,11 +3,13 @@
 </div>
 <div class="list-border list-container">
   <ul class="words">
-    <li class="ui-listbox-item" *ngFor="let word of wordlist$ | async">
-      <span class="words-list">
+    @for (word of wordlist$ | async; track word) {
+      <li class="ui-listbox-item">
+        <span class="words-list">
           <span class="badge">   </span>
           <span class="name">{{word.word}}</span>
-      </span>
-    </li>
+        </span>
+      </li>
+    }
   </ul>
 </div>

@@ -5,9 +5,10 @@ import { WordType } from '../word-type';
 import { IndicatorWord } from '../indicator-word';
 
 @Component({
-  selector: 'app-reversals',
-  templateUrl: './reversals.component.html',
-  styleUrls: ['./reversals.component.css']
+    selector: 'app-reversals',
+    templateUrl: './reversals.component.html',
+    styleUrls: ['./reversals.component.css'],
+    standalone: false
 })
 export class ReversalsComponent implements OnInit {
 

@@ -5,9 +5,10 @@ import { WordType } from '../word-type';
 import { IndicatorWord } from '../indicator-word';
 
 @Component({
-  selector: 'app-containers',
-  templateUrl: './containers.component.html',
-  styleUrls: ['./containers.component.css']
+    selector: 'app-containers',
+    templateUrl: './containers.component.html',
+    styleUrls: ['./containers.component.css'],
+    standalone: false
 })
 export class ContainersComponent implements OnInit {
 

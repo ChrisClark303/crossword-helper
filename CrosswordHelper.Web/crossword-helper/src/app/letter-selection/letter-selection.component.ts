@@ -5,9 +5,10 @@ import { WordType } from '../word-type';
 import { IndicatorWord } from '../indicator-word';
 
 @Component({
-  selector: 'app-removals',
-  templateUrl: './letter-selection.component.html',
-  styleUrls: ['./letter-selection.component.css']
+    selector: 'app-removals',
+    templateUrl: './letter-selection.component.html',
+    styleUrls: ['./letter-selection.component.css'],
+    standalone: false
 })
 export class LetterSelectionComponent implements OnInit {
 

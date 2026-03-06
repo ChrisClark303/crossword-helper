@@ -4,9 +4,10 @@ import { CrosswordHelp } from '../crossword-help';
 import { HelpService } from '../help-service';
 
 @Component({
-  selector: 'app-get-help',
-  templateUrl: './get-help.component.html',
-  styleUrls: ['./get-help.component.css']
+    selector: 'app-get-help',
+    templateUrl: './get-help.component.html',
+    styleUrls: ['./get-help.component.css'],
+    standalone: false
 })
 export class GetHelpComponent implements OnInit {
 

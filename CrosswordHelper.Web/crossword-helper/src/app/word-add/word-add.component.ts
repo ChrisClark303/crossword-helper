@@ -3,9 +3,10 @@ import { AddWordsService } from '../add-words.service';
 import { WordType } from '../word-type';
 
 @Component({
-  selector: 'app-word-add',
-  templateUrl: './word-add.component.html',
-  styleUrls: ['./word-add.component.css']
+    selector: 'app-word-add',
+    templateUrl: './word-add.component.html',
+    styleUrls: ['./word-add.component.css'],
+    standalone: false
 })
 export class WordAddComponent implements OnInit {
 

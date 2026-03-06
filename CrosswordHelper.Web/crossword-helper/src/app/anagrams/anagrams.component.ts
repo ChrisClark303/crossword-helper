@@ -5,9 +5,10 @@ import { WordType } from '../word-type';
 import { IndicatorWord } from '../indicator-word';
 
 @Component({
-  selector: 'app-anagrams',
-  templateUrl: './anagrams.component.html',
-  styleUrls: ['./anagrams.component.css']
+    selector: 'app-anagrams',
+    templateUrl: './anagrams.component.html',
+    styleUrls: ['./anagrams.component.css'],
+    standalone: false
 })
 export class AnagramsComponent implements OnInit {
 

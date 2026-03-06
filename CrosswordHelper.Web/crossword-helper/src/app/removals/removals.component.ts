@@ -5,9 +5,10 @@ import { WordType } from '../word-type';
 import { IndicatorWord } from '../indicator-word';
 
 @Component({
-  selector: 'app-removals',
-  templateUrl: './removals.component.html',
-  styleUrls: ['./removals.component.css']
+    selector: 'app-removals',
+    templateUrl: './removals.component.html',
+    styleUrls: ['./removals.component.css'],
+    standalone: false
 })
 export class RemovalsComponent implements OnInit {
 

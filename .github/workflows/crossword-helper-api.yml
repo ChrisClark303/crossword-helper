@@ -1,8 +1,9 @@
 name: Build and deploy .NET Core application to Web App crossword-helper-api
 on:
-  push:
-    branches:
-    - main
+  workflow_dispatch
+  # push:
+  #   branches:
+  #   - main
 env:
   AZURE_WEBAPP_NAME: crossword-helper-api
   AZURE_WEBAPP_PACKAGE_PATH: CrosswordHelper.Api/publish

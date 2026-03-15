@@ -1,5 +1,6 @@
 ﻿using CrosswordHelper.Data;
 using CrosswordHelper.Data.Models;
+using System.Diagnostics;
 
 namespace CrosswordHelper.Api
 {
@@ -68,13 +69,35 @@ namespace CrosswordHelper.Api
 
     public class CrosswordHelperResult
     {
-        public WordDetails[] WordDetails { get; }
+        public WordDetailsResponse[] WordDetails { get; }
         public string OriginalClue { get; }
 
         public CrosswordHelperResult(string originalClue, IEnumerable<WordDetails> wordDetails)
         {
             OriginalClue = originalClue;
-            WordDetails = wordDetails.ToArray();
+            WordDetails = wordDetails.
+                Select(wd => new WordDetailsResponse
+                {
+                    CouldBeAnagramIndicator = wd.CouldBeAnagramIndicator,
+                    CouldBeContainerIndicator = wd.CouldBeContainerIndicator,
+                    CouldBeHiddenWordIndicator = wd.CouldBeHiddenWordIndicator,
+                    CouldBeHomophoneIndicator = wd.CouldBeHomophoneIndicator,
+                    CouldBeLetterSelectionIndicator = wd.CouldBeLetterSelectionIndicator,
+                    CouldBeRemovalIndicator = wd.CouldBeRemovalIndicator,
+                    CouldBeReversalIndicator = wd.CouldBeReversalIndicator,
+                    CouldBeSubstitutionIndicator = wd.CouldBeSubstitutionIndicator,
+                    OriginalWord = wd.OriginalWord,
+                    PotentialReplacements = wd.PotentialReplacements?.Select(pr => 
+                    {
+                        var pieces = pr.Split("(");
+                        return new ReplacementsResponse
+                        {
+                            ReplacementWord = pieces[0].Trim(),
+                            Description = pieces.Count() > 1 ? pieces[1].Trim(' ', ')') : string.Empty
+                        };
+                    }).ToArray() ?? Array.Empty<ReplacementsResponse>()
+                })
+                .ToArray();
         }
     }
 }

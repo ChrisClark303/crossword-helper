@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  serviceUrl: "https://crossword-helper-api.fly.dev",
-  apiKey: "8F3A8787-5B80-4211-887A-E21F9F85F497"
+  serviceUrl: "http://localhost:5144",
+  apiKey: "TESTING"
 };
 
 /*

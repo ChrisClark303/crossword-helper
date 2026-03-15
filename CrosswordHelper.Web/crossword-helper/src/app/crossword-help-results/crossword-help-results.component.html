@@ -2,7 +2,7 @@
   <ul class="words">
     @for (word of (crosswordHelp$ | async)?.wordDetails; track word) {
       <li class="crossword-help-item-list"> <!--  -->
-        <span class="crossword-help-item-row">
+        <div class="crossword-help-item-row">
           <div class="original-word-container"><span class="crossword-help-item original-word">{{word.originalWord}}</span></div>
           @if (word.couldBeAnagramIndicator) {
             <span class="crossword-help-item anagram">
@@ -44,12 +44,16 @@
               separator
             </span>
           }
+          @if (word.potentialReplacements) {
+            <div>
           @for (replacement of word.potentialReplacements; track replacement) {
-            <span class="crossword-help-item replacement">
-              {{replacement}}
+            <span class="crossword-help-item replacement" title='{{replacement.description}}'>
+              {{replacement.replacementWord}}
             </span>
           }
-        </span>
+          </div>
+        }
+        </div>
       </li>
     }
   </ul>

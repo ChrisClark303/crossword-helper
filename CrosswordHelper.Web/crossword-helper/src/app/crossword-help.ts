@@ -18,9 +18,14 @@ export class CrosswordHelp {
     //   }
 }
 
+export class Replacement {
+    replacementWord: string;
+    description: string;
+}
+
 export class WordDetails {
     originalWord: string;
-    potentialReplacements: [string];
+    potentialReplacements: [Replacement];
     couldBeAnagramIndicator: boolean;
     couldBeContainerIndicator: boolean;
     couldBeRemovalIndicator: boolean;

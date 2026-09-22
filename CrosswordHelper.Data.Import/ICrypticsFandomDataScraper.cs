@@ -1,7 +1,7 @@
 ﻿
 namespace CrosswordHelper.Data.Import;
 
-public interface IBestForPuzzlesUsualSuspectDataScraper
+public interface ICrypticsFandomDataScraper
 {
     Task Scrape();
 }

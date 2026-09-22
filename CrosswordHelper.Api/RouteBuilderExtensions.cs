@@ -29,10 +29,6 @@ namespace CrosswordHelper.Api
             app.MapGet("/help/{crosswordClue}", (string crosswordClue, [FromServices] ICrosswordHelperService helperService)
                 => helperService.Help(crosswordClue))
                .WithName("GetCrosswordHelp");
-
-            app.MapPost("/help/search", ([FromBody]SearchArgs args)
-                => Console.WriteLine("Hello"))
-               .WithName("Search");
         }
 
         public class SearchArgs

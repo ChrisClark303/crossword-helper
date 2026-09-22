@@ -25,8 +25,15 @@ builder.Services.AddScoped<ICrosswordHelperManagerService, CrosswordHelperManage
 builder.Services.AddScoped<ICrosswordHelperManagerRepository, CrosswordHelperManagerRepository>();
 builder.Services.AddTransient<IUsualSuspectDataImporter, UsualSuspectDataImporter>();
 builder.Services.AddScoped<IUrlBuilder, UrlBuilder>();
+
 builder.Services.AddScoped<IBestForPuzzlesUsualSuspectDataScraper, BestForPuzzlesUsualSuspectDataScraper>();
-builder.Services.AddHttpClient<IBestForPuzzlesUsualSuspectDataScraper, BestForPuzzlesUsualSuspectDataScraper>((_, client) => client.BaseAddress = new Uri("https://bestforpuzzles.com/cryptic-crossword-dictionary/"));
+builder.Services.AddHttpClient<IHtmlDocumentFromUrlProvider, HtmlDocumentFromUrlProvider>((_, client) => client.BaseAddress = new Uri("https://bestforpuzzles.com/cryptic-crossword-dictionary/"));
+builder.Services.AddScoped<ICrypticsFandomDataScraper, CrypticsFandomDataScraper>();
+
+builder.Services.AddScoped<IHtmlDocumentFromUrlProvider, HtmlDocumentFromUrlProvider>();
+builder.Services.AddScoped<IHtmlDocumentProvider, HtmlStaticDocumentProvider>();
+builder.Services.AddSingleton<IDictionary<ScrapeType, string>>(new Dictionary<ScrapeType, string>());
+
 builder.Services.AddScoped<ICrosswordHelperRepository, CrosswordHelperRepository>();
 builder.Services.AddScoped<ICrosswordDataExtractionService, CrosswordDataExtractionService>();
 

@@ -6,8 +6,8 @@ namespace CrosswordHelper.Data.Cache
     {
         public IEnumerable<WordDetails> CheckWords(string[] words)
         {
-            var q = from word in words
-            join anagram in cache.Anagrams on word equals anagram.Word 
+            var q = from word in words.Select(w => w.Trim().ToLower())
+            join anagram in cache.Anagrams on word equals anagram.Word
                 into a from anagrams in a.DefaultIfEmpty()
             join container in cache.Containers on word equals container.Word
                 into c from containers in c.DefaultIfEmpty()

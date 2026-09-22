@@ -2,6 +2,6 @@
 {
     public interface IUrlBuilder
     {
-        string[] GetUrls();
+        string[] GetUrls(ScrapeType scrapeType);
     }
 }

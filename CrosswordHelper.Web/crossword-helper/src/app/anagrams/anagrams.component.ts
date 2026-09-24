@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { WordsService } from '../words.service';
 import { delay, Observable, of } from 'rxjs';
 import { WordType } from '../word-type';
@@ -8,6 +8,7 @@ import { IndicatorWord } from '../indicator-word';
     selector: 'app-anagrams',
     templateUrl: './anagrams.component.html',
     styleUrls: ['./anagrams.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AnagramsComponent implements OnInit {

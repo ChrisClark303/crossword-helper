@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS, withXhr } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 
@@ -36,7 +36,7 @@ import { HttpApiKeyInterceptor } from './HttpApiKeyInterceptor';
         FormsModule,
         AppRoutingModule], 
     providers: [
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         {provide: HTTP_INTERCEPTORS, useClass: HttpApiKeyInterceptor, multi: true}
     ] })
 export class AppModule { }

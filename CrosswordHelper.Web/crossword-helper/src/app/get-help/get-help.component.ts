@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CrosswordHelp } from '../crossword-help';
 import { HelpService } from '../help-service';
@@ -7,6 +7,7 @@ import { HelpService } from '../help-service';
     selector: 'app-get-help',
     templateUrl: './get-help.component.html',
     styleUrls: ['./get-help.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class GetHelpComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit, NgModule, EventEmitter, Output, Input } from '@angular/core';
+import { Component, OnInit, NgModule, EventEmitter, Output, Input, ChangeDetectionStrategy } from '@angular/core';
 import { AddWordsService } from '../add-words.service';
 import { WordType } from '../word-type';
 
@@ -6,6 +6,7 @@ import { WordType } from '../word-type';
     selector: 'app-word-add',
     templateUrl: './word-add.component.html',
     styleUrls: ['./word-add.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class WordAddComponent implements OnInit {

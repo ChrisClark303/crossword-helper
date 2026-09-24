@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "typescript": "5.4",
+    "typescript": "5.9",
     "zone.js": "^0.14.10"
   }
 }

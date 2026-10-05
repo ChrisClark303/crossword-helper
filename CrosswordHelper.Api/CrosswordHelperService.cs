@@ -3,7 +3,6 @@ using CrosswordHelper.Data.Models;
 
 namespace CrosswordHelper.Api;
 
-
 public class CrosswordHelperService(ICrosswordHelperRepository helperRepository) : ICrosswordHelperService
 {
     private ILogger<ICrosswordHelperService> _logger;
@@ -62,8 +61,8 @@ public class CrosswordHelperService(ICrosswordHelperRepository helperRepository)
 
 public class CrosswordHelperResult
 {
-    public WordDetailsResponse[] WordDetails { get; }
     public string OriginalClue { get; }
+    public WordDetailsResponse[] WordDetails { get; }
 
     public CrosswordHelperResult(string originalClue, IEnumerable<WordDetails> wordDetails)
     {
@@ -80,16 +79,30 @@ public class CrosswordHelperResult
                 CouldBeReversalIndicator = wd.CouldBeReversalIndicator,
                 CouldBeSubstitutionIndicator = wd.CouldBeSubstitutionIndicator,
                 OriginalWord = wd.OriginalWord,
-                PotentialReplacements = wd.PotentialReplacements?.Select(pr => 
-                {
-                    var pieces = pr.Split("(");
-                    return new ReplacementsResponse
-                    {
-                        ReplacementWord = pieces[0].Trim(),
-                        Description = pieces.Count() > 1 ? pieces[1].Trim(' ', ')') : string.Empty
-                    };
-                }).ToArray() ?? Array.Empty<ReplacementsResponse>()
+                PotentialReplacements = BuildReplacementsResponse(wd)
             })
             .ToArray();
+    }
+
+    private static ReplacementsResponse[] BuildReplacementsResponse(WordDetails wd)
+    {
+        if (wd.PotentialReplacements == null || wd.PotentialReplacements.Length == 0)
+        {
+            return [];
+        }
+
+        var replacementTuples = wd.PotentialReplacements.Select(pr =>
+        {
+            var pieces = pr.Split("(");
+            var replacement = pieces[0].Trim();
+            var description = pieces.Length > 1 ? pieces[1].Trim(' ', ')') : string.Empty;
+            return new Tuple<string, string>(replacement, description);
+        }).ToArray();
+
+        return replacementTuples.GroupBy(t => t.Item1).Select(g => new ReplacementsResponse()
+        {
+            ReplacementWord = g.Key,
+            Description = string.Join(", ", g.Select(t => t.Item2).Where(d => !string.IsNullOrEmpty(d)))
+        }).ToArray();
     }
 }
